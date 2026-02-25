@@ -97,7 +97,7 @@ export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
         </View>
 
         {/* Text Content */}
-        <View style={styles.textContainer}>
+        <View style={[styles.textContainer, { backgroundColor: 'red' }]}>
           <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' }}>
             {currentContent.title}
           </Text>
