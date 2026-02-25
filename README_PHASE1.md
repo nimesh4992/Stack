@@ -200,7 +200,7 @@ frontend/
    ```
 
 2. **Access the app:**
-   - Web: https://smart-spending-29.preview.emergentagent.com
+   - Web: https://habit-finance-dev.preview.emergentagent.com
    - Mobile: Scan the QR code with Expo Go app
 
 3. **Test the flow:**
