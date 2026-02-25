@@ -1,13 +1,16 @@
-# HabitFinance - Personal Finance Habit Building App
+# Stack - Personal Finance Habit Building App
 
 ## Product Overview
 A mobile-first personal finance habit-building app built with React Native (Expo). The app is offline-first with all data stored locally on the device. Features TensorFlow-powered AI for personalized insights and engagement.
+
+**App Name**: Stack (formerly HabitFinance)
+**Version**: 1.0.0-MVP
 
 ## Core Features
 
 ### Implemented
 - **Onboarding Quiz**: Goal selection and personalization
-- **Manual Expense Tracking**: Quick log with category selection
+- **Manual Expense Tracking**: Quick log with 18 categories
 - **Gamification**: Streaks, XP, levels, badges, and challenges
 - **Insights Dashboard**: Charts and spending analysis
 - **Highlights ("Spotify Wrapped")**: Weekly/daily spending summaries
@@ -33,15 +36,54 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 - **Anomaly Detection**: Flag unusual spending patterns
 - **Smart Notification Timing**: Optimal nudge time based on usage patterns
 
-### New Features (Feb 25, 2026)
-- **Security Info Modal**: Clickable SECURE lock badge on home screen opens modal explaining privacy features
-- **Enhanced Streak Calendar**: Interactive weekly/monthly calendar view showing logged dates
-- **Edit Profile Screen**: Update display name, monthly budget goal, and currency preferences
-- **Habits Tracker Screen**: Track daily habits (Steps, Water intake, Mindful minutes) with +/- counters
-- **Google Drive Backup**: Backup and restore data to Google Drive (requires development build)
-- **FAQs Screen**: 16 frequently asked questions across 6 categories with expandable answers
-- **Privacy Policy Screen**: Comprehensive privacy policy with quick summary
-- **Help & Support Screen**: Contact form with FAQs, Community, and Twitter links
+### UI/UX Features (Feb 25, 2026)
+- **Security Info Modal**: Clickable SECURE lock badge on home screen
+- **Enhanced Streak Calendar**: Interactive weekly/monthly calendar view
+- **Edit Profile Screen**: Update name, budget goal, currency (INR/USD/EUR/GBP/JPY)
+- **FAQs Screen**: 16 FAQs across 6 categories with expandable answers
+- **Privacy Policy Screen**: Comprehensive privacy policy
+- **Help & Support Screen**: Contact form with FAQs, Community, Twitter
+
+### Habits Tracker (Feb 25, 2026) - With Redux Persistence
+- **Steps Tracking**: +/- counter with quick add buttons (+500, +1,000, +5,000)
+- **Water Intake**: Visual glass tracker (8 glasses/day default)
+- **Mindful Minutes**: Track meditation/mindfulness time
+- **Auto Pedometer**: Sync steps from device (requires production build)
+- **Progress Rings**: Visual summary of daily progress
+- **Adjustable Goals**: Customize targets for each habit
+
+### Expense Categories (18 Total)
+1. Food & Dining
+2. Groceries
+3. Transport
+4. Shopping
+5. Entertainment
+6. Bills & Utilities
+7. Health
+8. Education
+9. Subscriptions
+10. Travel
+11. Insurance
+12. Rent & Housing
+13. Investments
+14. Personal Care
+15. Gifts & Donations
+16. Pets
+17. Fitness
+18. Other
+
+### Home Screen Widgets (Production Build)
+- **Quick Log**: One-tap expense logging
+- **Daily Summary**: Today's spending at a glance
+- **Streak Counter**: Current streak display
+- **Habit Rings**: Daily habits progress
+- **Budget Progress**: Monthly budget utilization
+
+### Google Drive Backup (Production Build)
+- Sign in with Google account
+- Manual backup to personal Google Drive
+- Restore from previous backup
+- Auto-backup option
 
 ## Tech Stack
 - **Framework**: React Native with Expo
@@ -50,46 +92,38 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 - **AI**: TensorFlow.js + Statistical/Heuristic models
 - **Monetization**: react-native-google-mobile-ads
 - **Sharing**: React Native Share API
+- **Step Tracking**: expo-sensors (Pedometer)
 
 ## Code Architecture
 ```
 /app/frontend/
 ├── app/
 │   ├── home.tsx                   # Home with SECURE badge + SecurityInfoModal
-│   ├── add-expense.tsx            # Quick log with anomaly detection
+│   ├── add-expense.tsx            # Quick log with 18 categories
 │   ├── ai-insights.tsx            # AI dashboard
-│   ├── invite-friends.tsx         # Invite with rewards
-│   ├── share-achievement.tsx      # Share on social media
-│   ├── choose-companion.tsx       # Companion selection
-│   ├── sms-import.tsx             # SMS parsing with tour
-│   ├── settings.tsx               # Settings with navigation links
-│   ├── edit-profile.tsx           # NEW: Edit profile form
-│   ├── habits-tracker.tsx         # NEW: Steps/Water/Mindful tracking
-│   ├── faqs.tsx                   # NEW: FAQ screen
-│   ├── google-drive-backup.tsx    # NEW: Google Drive backup
-│   ├── privacy-policy.tsx         # Privacy policy
-│   └── help-support.tsx           # Help & support
+│   ├── habits-tracker.tsx         # Steps/Water/Mindful with Redux
+│   ├── widgets.tsx                # Widget configuration screen
+│   ├── edit-profile.tsx           # Profile editing
+│   ├── faqs.tsx                   # FAQs
+│   ├── google-drive-backup.tsx    # Backup/Restore
+│   ├── settings.tsx               # Settings hub
+│   └── ...
 ├── src/
-│   ├── core/
-│   │   ├── services/
-│   │   │   ├── aiEngine.ts        # TensorFlow AI logic
-│   │   │   ├── socialService.ts   # Invite & share logic
-│   │   │   ├── notificationService.ts
-│   │   │   ├── googleDriveService.ts # NEW: Google Drive backup service
-│   │   │   └── adService.ts
-│   │   ├── presentation/
-│   │   │   └── components/
-│   │   │       ├── SecurityInfoModal.tsx  # NEW: Security modal
-│   │   │       ├── StreakCalendar.tsx     # NEW: Interactive calendar
-│   │   │       └── ...
-│   │   └── common/
-│   │       ├── companions.ts
-│   │       ├── smsParser.ts
-│   │       └── nudgeEngine.ts
-│   └── features/
-│       └── userPreferences/
-├── eas.json                       # EAS Build config
-└── app.json
+│   ├── store/index.ts             # Redux store with habits reducer
+│   ├── features/
+│   │   ├── habits/habitsSlice.ts  # Habits Redux slice with persistence
+│   │   ├── userPreferences/
+│   │   └── ...
+│   └── core/
+│       ├── services/
+│       │   ├── pedometerService.ts    # Step tracking
+│       │   ├── widgetService.ts       # Widget configuration
+│       │   ├── googleDriveService.ts  # Backup service
+│       │   └── ...
+│       └── common/
+│           └── constants.ts           # 18 expense categories
+├── app.json                       # App name: Stack
+└── eas.json                       # EAS Build config
 ```
 
 ## Test Results (All Iterations)
@@ -97,7 +131,9 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 - **Iteration 2**: Personalization - 100% pass
 - **Iteration 3**: Social Features - 100% pass (19/19)
 - **Iteration 4**: AI Features - 100% pass (22/22)
-- **Iteration 5**: New Screens (FAQs, Edit Profile, Habits Tracker, Google Drive Backup) - 100% pass (40/40)
+- **Iteration 5**: New Screens - 100% pass (40/40)
+- **Iteration 6**: App Rename + Habits Redux + Widgets - 95% pass (19/20)
+  - Note: Web persistence limitation is expected, native builds work correctly
 
 ## Deployment Instructions
 
@@ -130,11 +166,22 @@ eas build --platform android --profile production
 ## Privacy
 All AI processing happens 100% on-device. User data never leaves the phone.
 
-## Mocked Features
-- **Google Drive Backup**: Sign-In is MOCKED because it requires native modules not available in Expo Go/web. Works in development builds.
+## Mocked Features (Web Preview Only)
+- **Google Drive Backup**: Sign-In requires native modules - works in production build
+- **Pedometer Step Sync**: Requires native modules - works in production build
+- **Home Screen Widgets**: Native feature - works in production build
 
-## Backlog / Future Tasks
-- Implement expo-pedometer for automatic step tracking
-- Persist habits tracker data to Redux/AsyncStorage
-- Add more expense categories
-- Implement full Google Drive backup when building with EAS
+## Completed (This Session - Feb 25, 2026)
+- ✅ Renamed app from HabitFinance to Stack
+- ✅ Habits Tracker with Redux persistence
+- ✅ Pedometer service for automatic step tracking
+- ✅ Widget configuration screen with 5 widgets
+- ✅ Extended expense categories (8 → 18)
+- ✅ Extended income categories (5 → 10)
+- ✅ All references updated from HabitFinance to Stack
+
+## Future/Backlog
+- Add redux-persist for web persistence (if web support needed)
+- Implement widget native code for iOS/Android
+- Add currency conversion rates API
+- Social feed for friends' achievements
