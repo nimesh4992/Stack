@@ -372,8 +372,8 @@ export default function HabitsTrackerScreen() {
             <HabitCounter
               value={habits.water}
               label="Glasses Today"
-              onDecrease={() => updateWater(-1)}
-              onIncrease={() => updateWater(1)}
+              onDecrease={() => handleUpdateWater(-1)}
+              onIncrease={() => handleUpdateWater(1)}
               unit="glasses"
             />
             
@@ -386,7 +386,7 @@ export default function HabitsTrackerScreen() {
                     styles.waterGlass,
                     index < habits.water && styles.waterGlassFilled,
                   ]}
-                  onPress={() => setHabits(prev => ({ ...prev, water: index + 1 }))}
+                  onPress={() => dispatch(updateWater({ glasses: index + 1 - habits.water }))}
                 >
                   <Text style={styles.waterIcon}>
                     {index < habits.water ? '💧' : '⚪'}
@@ -402,8 +402,8 @@ export default function HabitsTrackerScreen() {
                   'Adjust Water Goal',
                   `Current goal: ${habits.waterGoal} glasses`,
                   [
-                    { text: '-1', onPress: () => updateGoal('water', -1) },
-                    { text: '+1', onPress: () => updateGoal('water', 1) },
+                    { text: '-1', onPress: () => handleUpdateGoal('water', -1) },
+                    { text: '+1', onPress: () => handleUpdateGoal('water', 1) },
                     { text: 'Cancel', style: 'cancel' },
                   ]
                 );
@@ -433,8 +433,8 @@ export default function HabitsTrackerScreen() {
             <HabitCounter
               value={habits.mindfulMinutes}
               label="Minutes Today"
-              onDecrease={() => updateMindful(-5)}
-              onIncrease={() => updateMindful(5)}
+              onDecrease={() => handleUpdateMindful(-5)}
+              onIncrease={() => handleUpdateMindful(5)}
               step={5}
               unit="min"
             />
