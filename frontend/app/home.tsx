@@ -1,5 +1,5 @@
-// 🏠 Home Dashboard Screen (The Dojo Style)
-import React from 'react';
+// 🏠 Home Dashboard Screen (Enhanced Polish Version)
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
@@ -23,12 +24,52 @@ import {
   BORDER_RADIUS,
 } from '../src/core/common/constants';
 
+// Extended Habit Rings Data
+const HABIT_RINGS_DATA = [
+  { id: 'logging', label: 'Daily Log', icon: '💰', color: COLORS.habitBlue, percentage: 0 },
+  { id: 'budget', label: 'Budget', icon: '🎯', color: COLORS.habitCyan, percentage: 65 },
+  { id: 'savings', label: 'Savings', icon: '💎', color: COLORS.habitPurple, percentage: 85 },
+  { id: 'mindful', label: 'Mindful $', icon: '🧘', color: COLORS.habitOrange, percentage: 40 },
+  { id: 'income', label: 'Income', icon: '💵', color: COLORS.success, percentage: 100 },
+];
+
+// Extended Power-Ups Data
+const POWER_UPS_DATA = [
+  { id: 'streak_7', label: '7-Day Streak', emoji: '🔥', color: COLORS.habitCyan, active: true },
+  { id: 'first_save', label: 'First Save', emoji: '💰', color: COLORS.primary, active: true },
+  { id: 'budget_king', label: 'Budget King', emoji: '👑', color: COLORS.habitPurple, active: true },
+  { id: 'early_bird', label: 'Early Bird', emoji: '🌅', color: COLORS.habitOrange, active: false },
+  { id: 'night_owl', label: 'Night Owl', emoji: '🦉', color: COLORS.habitBlue, active: false },
+  { id: 'penny_pincher', label: 'Saver', emoji: '🐷', color: COLORS.habitPink, active: true },
+];
+
 export default function HomeScreen() {
   const router = useRouter();
   const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
   const gamification = useSelector((state: RootState) => state.gamification);
   const todayBalance = useSelector(selectTodayBalance);
   const transactions = useSelector((state: RootState) => state.expense.transactions);
+
+  // Animation values
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const slideAnim = React.useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    // Entrance animations
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const todayTransactions = transactions.filter(t => {
     const transactionDate = new Date(t.date);
@@ -40,12 +81,12 @@ export default function HomeScreen() {
     );
   });
 
-  // Calculate XP progress (points) for next level
+  // Calculate XP progress
   const xpForNextLevel = (gamification.level + 1) * 500;
   const currentLevelXP = gamification.level * 500;
   const xpProgress = gamification.points - currentLevelXP;
   const xpRequired = xpForNextLevel - currentLevelXP;
-  const xpPercentage = (xpProgress / xpRequired) * 100;
+  const xpPercentage = Math.min((xpProgress / xpRequired) * 100, 100);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,41 +95,93 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
+        {/* Header with Animation */}
+        <Animated.View
+          style={[
+            styles.header,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
           <View style={styles.headerLeft}>
             <View style={styles.appIconContainer}>
               <Text style={styles.appIcon}>💰</Text>
             </View>
-            <Text style={styles.appName}>HabitFinance</Text>
+            <View>
+              <Text style={styles.appName}>HabitFinance</Text>
+              <Text style={styles.appTagline}>Build wealth, one habit at a time</Text>
+            </View>
           </View>
           <View style={styles.onDeviceBadge}>
             <View style={styles.onDeviceIcon} />
             <Text style={styles.onDeviceText}>ON-DEVICE</Text>
           </View>
-        </View>
+        </Animated.View>
 
-        {/* Current Rank Card */}
-        <Card style={styles.rankCard}>
-          <Text style={styles.rankLabel}>CURRENT RANK</Text>
-          <Text style={styles.rankTitle}>Level {gamification.level} - Finance Apprentice</Text>
-          <View style={styles.xpProgressContainer}>
-            <View style={styles.xpBar}>
-              <View style={[styles.xpBarFill, { width: `${xpPercentage}%` }]} />
+        {/* Current Rank Card - Enhanced */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <Card style={styles.rankCard}>
+            <View style={styles.rankHeader}>
+              <Text style={styles.rankLabel}>CURRENT RANK</Text>
+              <View style={styles.levelBadge}>
+                <Text style={styles.levelBadgeText}>LV {gamification.level}</Text>
+              </View>
             </View>
-            <Text style={styles.xpText}>{gamification.points}/{xpForNextLevel} XP</Text>
-          </View>
-          <Text style={styles.rankHint}>
-            Earn {xpRequired - xpProgress} XP more to unlock 'Consistency King' status
-          </Text>
-        </Card>
+            <Text style={styles.rankTitle}>Finance Apprentice</Text>
+            <Text style={styles.rankSubtitle}>
+              Keep logging daily to reach "Consistency King" 👑
+            </Text>
+            <View style={styles.xpProgressContainer}>
+              <View style={styles.xpBar}>
+                <Animated.View
+                  style={[
+                    styles.xpBarFill,
+                    {
+                      width: `${xpPercentage}%`,
+                      opacity: fadeAnim,
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.xpText}>
+                {gamification.points}/{xpForNextLevel} XP
+              </Text>
+            </View>
+            <View style={styles.rankFooter}>
+              <View style={styles.rankStat}>
+                <Text style={styles.rankStatValue}>{gamification.totalTransactions}</Text>
+                <Text style={styles.rankStatLabel}>Logs</Text>
+              </View>
+              <View style={styles.rankDivider} />
+              <View style={styles.rankStat}>
+                <Text style={styles.rankStatValue}>{gamification.currentStreak}</Text>
+                <Text style={styles.rankStatLabel}>Day Streak</Text>
+              </View>
+              <View style={styles.rankDivider} />
+              <View style={styles.rankStat}>
+                <Text style={styles.rankStatValue}>{gamification.badges.length + 3}</Text>
+                <Text style={styles.rankStatLabel}>Badges</Text>
+              </View>
+            </View>
+          </Card>
+        </Animated.View>
 
-        {/* Habit Rings */}
+        {/* Habit Rings - Enhanced with More Rings */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Habit Rings</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Habit Rings</Text>
+              <Text style={styles.sectionSubtitle}>Your daily progress tracked</Text>
+            </View>
             <TouchableOpacity>
-              <Text style={styles.seeAllText}>See All</Text>
+              <Text style={styles.seeAllText}>See All →</Text>
             </TouchableOpacity>
           </View>
           <ScrollView
@@ -96,199 +189,259 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.habitRings}
           >
-            <View style={styles.habitRingCard}>
-              <CircularProgress
-                size={120}
-                strokeWidth={10}
-                percentage={gamification.currentStreak > 0 ? 80 : 0}
-                color={COLORS.habitBlue}
-                icon="💰"
-              />
-              <Text style={styles.habitRingLabel}>Logging</Text>
-              <Text style={[styles.habitRingPercent, { color: COLORS.habitBlue }]}>
-                {gamification.currentStreak > 0 ? '80%' : '0%'}
-              </Text>
-            </View>
-
-            <View style={styles.habitRingCard}>
-              <CircularProgress
-                size={120}
-                strokeWidth={10}
-                percentage={45}
-                color={COLORS.habitCyan}
-                icon="🎯"
-              />
-              <Text style={styles.habitRingLabel}>Budget</Text>
-              <Text style={[styles.habitRingPercent, { color: COLORS.habitCyan }]}>45%</Text>
-            </View>
-
-            <View style={styles.habitRingCard}>
-              <CircularProgress
-                size={120}
-                strokeWidth={10}
-                percentage={100}
-                color={COLORS.habitPurple}
-                icon="💎"
-              />
-              <Text style={styles.habitRingLabel}>Savings</Text>
-              <Text style={[styles.habitRingPercent, { color: COLORS.habitPurple }]}>100%</Text>
-            </View>
+            {HABIT_RINGS_DATA.map((ring, index) => (
+              <Animated.View
+                key={ring.id}
+                style={[
+                  styles.habitRingCard,
+                  {
+                    opacity: fadeAnim,
+                    transform: [
+                      {
+                        translateY: Animated.multiply(slideAnim, new Animated.Value(1 + index * 0.1)),
+                      },
+                    ],
+                  },
+                ]}
+              >
+                <CircularProgress
+                  size={110}
+                  strokeWidth={8}
+                  percentage={ring.percentage}
+                  color={ring.color}
+                  icon={ring.icon}
+                />
+                <Text style={styles.habitRingLabel}>{ring.label}</Text>
+                <Text style={[styles.habitRingPercent, { color: ring.color }]}>
+                  {ring.percentage}%
+                </Text>
+                {ring.percentage === 100 && (
+                  <View style={[styles.completeBadge, { backgroundColor: ring.color }]}>
+                    <Text style={styles.completeBadgeText}>✓</Text>
+                  </View>
+                )}
+              </Animated.View>
+            ))}
           </ScrollView>
         </View>
 
-        {/* Streak Calendar */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Streak Calendar</Text>
-          <Card style={styles.streakCard}>
-            <View style={styles.streakHeader}>
-              <View style={styles.streakIcon}>
-                <Text style={styles.streakEmoji}>🔥</Text>
-              </View>
-              <Text style={styles.streakText}>
-                Logging Streak: {gamification.currentStreak} Days
-              </Text>
-              <Text style={styles.streakDate}>February 2026</Text>
-            </View>
-            <View style={styles.calendarDays}>
-              <Text style={styles.dayLabel}>M</Text>
-              <Text style={styles.dayLabel}>T</Text>
-              <Text style={styles.dayLabel}>W</Text>
-              <Text style={styles.dayLabel}>T</Text>
-              <Text style={styles.dayLabel}>F</Text>
-              <Text style={styles.dayLabel}>S</Text>
-              <Text style={styles.dayLabel}>S</Text>
-            </View>
-            <View style={styles.calendarDates}>
-              {[24, 25, 26, 27, 28, 1, 2].map((date, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.calendarDate,
-                    index < gamification.currentStreak && styles.calendarDateActive,
-                    index === 2 && styles.calendarDateToday,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.calendarDateText,
-                      (index < gamification.currentStreak || index === 2) &&
-                        styles.calendarDateTextActive,
-                    ]}
-                  >
-                    {date}
-                  </Text>
+        {/* Streak Calendar - Enhanced */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Streak Calendar</Text>
+            <Card style={styles.streakCard}>
+              <View style={styles.streakHeader}>
+                <View style={styles.streakIconContainer}>
+                  <Text style={styles.streakEmoji}>🔥</Text>
                 </View>
-              ))}
-            </View>
-          </Card>
-        </View>
+                <View style={styles.streakInfo}>
+                  <Text style={styles.streakText}>
+                    {gamification.currentStreak} Day Streak
+                  </Text>
+                  <Text style={styles.streakSubtext}>Keep it burning! 🔥</Text>
+                </View>
+                <Text style={styles.streakDate}>Feb 2026</Text>
+              </View>
+              <View style={styles.calendarDays}>
+                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
+                  <Text key={i} style={styles.dayLabel}>
+                    {day}
+                  </Text>
+                ))}
+              </View>
+              <View style={styles.calendarDates}>
+                {[24, 25, 26, 27, 28, 1, 2].map((date, index) => {
+                  const isActive = index < gamification.currentStreak;
+                  const isToday = index === 2;
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.calendarDate,
+                        isActive && styles.calendarDateActive,
+                        isToday && styles.calendarDateToday,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.calendarDateText,
+                          (isActive || isToday) && styles.calendarDateTextActive,
+                        ]}
+                      >
+                        {date}
+                      </Text>
+                      {isActive && !isToday && (
+                        <View style={styles.checkDot}>
+                          <Text style={styles.checkDotText}>✓</Text>
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+            </Card>
+          </View>
+        </Animated.View>
 
-        {/* Power-Ups Earned */}
+        {/* Power-Ups Earned - Enhanced with More Badges */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Power-Ups Earned</Text>
-            <View style={styles.activeBadge}>
-              <Text style={styles.activeIcon}>⚡</Text>
-              <Text style={styles.activeText}>Active: {gamification.badges.length}</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Power-Ups Collection</Text>
+              <Text style={styles.sectionSubtitle}>4 active • 2 locked</Text>
             </View>
           </View>
-          <View style={styles.powerUps}>
-            <Card
-              style={[
-                styles.powerUpCard,
-                { borderColor: COLORS.habitCyan, backgroundColor: COLORS.habitCyan + '10' },
-              ]}
-            >
-              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.habitCyan + '30' }]}>
-                <Text style={styles.powerUpEmoji}>⚡</Text>
-              </View>
-              <Text style={styles.powerUpLabel}>7-Day Streak</Text>
-            </Card>
-
-            <Card
-              style={[
-                styles.powerUpCard,
-                { borderColor: COLORS.primary, backgroundColor: COLORS.primary + '10' },
-              ]}
-            >
-              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.primary + '30' }]}>
-                <Text style={styles.powerUpEmoji}>💰</Text>
-              </View>
-              <Text style={styles.powerUpLabel}>Savings Master</Text>
-            </Card>
-
-            <Card
-              style={[
-                styles.powerUpCard,
-                { borderColor: COLORS.habitPurple, backgroundColor: COLORS.habitPurple + '10' },
-              ]}
-            >
-              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.habitPurple + '30' }]}>
-                <Text style={styles.powerUpEmoji}>👑</Text>
-              </View>
-              <Text style={styles.powerUpLabel}>Daily Habit</Text>
-            </Card>
+          <View style={styles.powerUpsGrid}>
+            {POWER_UPS_DATA.map((powerUp, index) => (
+              <Animated.View
+                key={powerUp.id}
+                style={{
+                  opacity: fadeAnim,
+                  transform: [
+                    {
+                      translateY: Animated.multiply(
+                        slideAnim,
+                        new Animated.Value(1 + (index % 3) * 0.1)
+                      ),
+                    },
+                  ],
+                }}
+              >
+                <Card
+                  style={[
+                    styles.powerUpCard,
+                    powerUp.active
+                      ? {
+                          borderColor: powerUp.color,
+                          backgroundColor: powerUp.color + '10',
+                        }
+                      : styles.powerUpCardLocked,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.powerUpIcon,
+                      {
+                        backgroundColor: powerUp.active
+                          ? powerUp.color + '30'
+                          : COLORS.border,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.powerUpEmoji, !powerUp.active && styles.powerUpEmojiLocked]}>
+                      {powerUp.emoji}
+                    </Text>
+                  </View>
+                  <Text style={[styles.powerUpLabel, !powerUp.active && styles.powerUpLabelLocked]}>
+                    {powerUp.label}
+                  </Text>
+                  {powerUp.active && (
+                    <View style={styles.activeDot}>
+                      <Text style={styles.activeDotText}>⚡</Text>
+                    </View>
+                  )}
+                  {!powerUp.active && (
+                    <View style={styles.lockOverlay}>
+                      <Text style={styles.lockIcon}>🔒</Text>
+                    </View>
+                  )}
+                </Card>
+              </Animated.View>
+            ))}
           </View>
         </View>
 
-        {/* Recent Activity */}
+        {/* Recent Activity - Enhanced */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Activity</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Activity</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>View All →</Text>
+            </TouchableOpacity>
+          </View>
           {transactions.length === 0 ? (
             <Card style={styles.emptyCard}>
-              <Text style={styles.emptyEmoji}>📝</Text>
-              <Text style={styles.emptyText}>No transactions yet</Text>
+              <View style={styles.emptyIconContainer}>
+                <Text style={styles.emptyEmoji}>🌱</Text>
+              </View>
+              <Text style={styles.emptyText}>Start Your Journey</Text>
               <Text style={styles.emptySubtext}>
-                Start logging to build your financial habits!
+                Log your first transaction to build financial habits!
               </Text>
+              <TouchableOpacity
+                style={styles.emptyButton}
+                onPress={() => router.push('/add-expense')}
+              >
+                <Text style={styles.emptyButtonText}>Log First Transaction</Text>
+              </TouchableOpacity>
             </Card>
           ) : (
             <View style={styles.activityList}>
-              {transactions.slice(0, 3).map((transaction) => (
-                <Card key={transaction.id} style={styles.activityCard}>
-                  <View style={styles.activityLeft}>
-                    <View
-                      style={[
-                        styles.activityIcon,
-                        {
-                          backgroundColor:
-                            transaction.type === 'expense'
-                              ? COLORS.accent + '20'
-                              : COLORS.success + '20',
-                        },
-                      ]}
-                    >
-                      <Text style={styles.activityEmoji}>{transaction.categoryIcon}</Text>
+              {transactions.slice(0, 4).map((transaction, index) => (
+                <Animated.View
+                  key={transaction.id}
+                  style={{
+                    opacity: fadeAnim,
+                    transform: [
+                      {
+                        translateY: Animated.multiply(slideAnim, new Animated.Value(1 + index * 0.05)),
+                      },
+                    ],
+                  }}
+                >
+                  <Card style={styles.activityCard}>
+                    <View style={styles.activityLeft}>
+                      <View
+                        style={[
+                          styles.activityIcon,
+                          {
+                            backgroundColor:
+                              transaction.type === 'expense'
+                                ? COLORS.accent + '20'
+                                : COLORS.success + '20',
+                          },
+                        ]}
+                      >
+                        <Text style={styles.activityEmoji}>{transaction.categoryIcon}</Text>
+                      </View>
+                      <View>
+                        <Text style={styles.activityCategory}>{transaction.categoryLabel}</Text>
+                        <Text style={styles.activityTime}>Today • Just now</Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text style={styles.activityCategory}>{transaction.categoryLabel}</Text>
-                      <Text style={styles.activityTime}>Today, 09:15 AM</Text>
+                    <View style={styles.activityRight}>
+                      <Text
+                        style={[
+                          styles.activityAmount,
+                          transaction.type === 'expense'
+                            ? styles.expenseAmount
+                            : styles.incomeAmount,
+                        ]}
+                      >
+                        {transaction.type === 'expense' ? '-' : '+'}
+                        {formatCurrency(transaction.amount).replace('₹', '₹')}
+                      </Text>
+                      <View style={styles.xpBadge}>
+                        <Text style={styles.xpBadgeText}>+10 XP</Text>
+                      </View>
                     </View>
-                  </View>
-                  <View style={styles.activityRight}>
-                    <Text
-                      style={[
-                        styles.activityAmount,
-                        transaction.type === 'expense'
-                          ? styles.expenseAmount
-                          : styles.incomeAmount,
-                      ]}
-                    >
-                      {transaction.type === 'expense' ? '-' : '+'}
-                      {formatCurrency(transaction.amount).replace('₹', '$')}
-                    </Text>
-                    <Text style={styles.activityXP}>
-                      +{transaction.type === 'expense' ? '10' : '15'} XP
-                    </Text>
-                  </View>
-                </Card>
+                  </Card>
+                </Animated.View>
               ))}
             </View>
           )}
         </View>
+
+        {/* Bottom Padding */}
+        <View style={{ height: SPACING.xxl }} />
       </ScrollView>
 
-      {/* Bottom Navigation - The Dojo Style */}
+      {/* Bottom Navigation - Enhanced */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <View style={styles.navIconActive}>
@@ -301,10 +454,10 @@ export default function HomeScreen() {
           <View style={styles.navIcon}>
             <Text style={styles.navIconText}>👁</Text>
           </View>
-          <Text style={styles.navLabel}>DOJO</Text>
+          <Text style={styles.navLabel}>INSIGHTS</Text>
         </TouchableOpacity>
 
-        {/* FAB - Center */}
+        {/* FAB - Enhanced */}
         <TouchableOpacity
           style={styles.fab}
           onPress={() => router.push('/add-expense')}
@@ -313,13 +466,14 @@ export default function HomeScreen() {
           <View style={styles.fabInner}>
             <Text style={styles.fabIcon}>+</Text>
           </View>
+          <View style={styles.fabPulse} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem}>
           <View style={styles.navIcon}>
-            <Text style={styles.navIconText}>🔒</Text>
+            <Text style={styles.navIconText}>📊</Text>
           </View>
-          <Text style={styles.navLabel}>VAULT</Text>
+          <Text style={styles.navLabel}>STATS</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem}>
@@ -342,7 +496,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100, // Space for bottom nav
+    paddingBottom: 100,
   },
   header: {
     flexDirection: 'row',
@@ -350,28 +504,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.md,
-    paddingBottom: SPACING.lg,
+    paddingBottom: SPACING.xl,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   appIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: BORDER_RADIUS.md,
+    width: 52,
+    height: 52,
+    borderRadius: BORDER_RADIUS.lg,
     backgroundColor: COLORS.primary + '20',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: SPACING.md,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   appIcon: {
-    fontSize: 24,
+    fontSize: 28,
   },
   appName: {
     fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
+    marginBottom: 2,
+  },
+  appTagline: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textSecondary,
   },
   onDeviceBadge: {
     flexDirection: 'row',
@@ -390,37 +554,58 @@ const styles = StyleSheet.create({
   },
   onDeviceText: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
   },
   rankCard: {
     marginHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.xl,
     padding: SPACING.xl,
     backgroundColor: COLORS.surfaceTint,
   },
+  rankHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
   rankLabel: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textSecondary,
-    letterSpacing: 1,
-    marginBottom: SPACING.xs,
+    letterSpacing: 1.2,
+  },
+  levelBadge: {
+    backgroundColor: COLORS.primary + '20',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  levelBadgeText: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.primary,
   },
   rankTitle: {
-    fontSize: FONT_SIZE.xl,
+    fontSize: 28,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.xs,
+  },
+  rankSubtitle: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
   },
   xpProgressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.lg,
   },
   xpBar: {
     flex: 1,
-    height: 8,
+    height: 10,
     backgroundColor: COLORS.border,
     borderRadius: BORDER_RADIUS.full,
     marginRight: SPACING.md,
@@ -433,27 +618,56 @@ const styles = StyleSheet.create({
   },
   xpText: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.primary,
+    minWidth: 80,
+    textAlign: 'right',
   },
-  rankHint: {
-    fontSize: FONT_SIZE.sm,
+  rankFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingTop: SPACING.md,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  rankStat: {
+    alignItems: 'center',
+  },
+  rankStatValue: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
+  },
+  rankStatLabel: {
+    fontSize: FONT_SIZE.xs,
     color: COLORS.textSecondary,
   },
+  rankDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: COLORS.border,
+  },
   section: {
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.xl,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
   },
   sectionTitle: {
-    fontSize: FONT_SIZE.xl,
+    fontSize: FONT_SIZE.xxl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
+    marginBottom: 2,
+  },
+  sectionSubtitle: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
   },
   seeAllText: {
     fontSize: FONT_SIZE.md,
@@ -468,52 +682,80 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.surface,
     padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.xl,
+    borderRadius: BORDER_RADIUS.xxl,
     marginRight: SPACING.md,
-    minWidth: 160,
+    minWidth: 140,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
   habitRingLabel: {
     fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
     marginTop: SPACING.md,
   },
   habitRingPercent: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.lg,
     fontWeight: FONT_WEIGHT.bold,
     marginTop: SPACING.xs,
   },
+  completeBadge: {
+    position: 'absolute',
+    top: SPACING.sm,
+    right: SPACING.sm,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  completeBadgeText: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    fontWeight: FONT_WEIGHT.bold,
+  },
   streakCard: {
     marginHorizontal: SPACING.lg,
-    padding: SPACING.lg,
+    padding: SPACING.xl,
     backgroundColor: COLORS.primary,
   },
   streakHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.xl,
   },
-  streakIcon: {
-    width: 40,
-    height: 40,
+  streakIconContainer: {
+    width: 48,
+    height: 48,
     borderRadius: BORDER_RADIUS.full,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: SPACING.md,
   },
   streakEmoji: {
-    fontSize: 20,
+    fontSize: 24,
+  },
+  streakInfo: {
+    flex: 1,
   },
   streakText: {
-    flex: 1,
-    fontSize: FONT_SIZE.md,
+    fontSize: FONT_SIZE.lg,
     fontWeight: FONT_WEIGHT.bold,
     color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  streakSubtext: {
+    fontSize: FONT_SIZE.sm,
+    color: 'rgba(255, 255, 255, 0.85)',
   },
   streakDate: {
     fontSize: FONT_SIZE.sm,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: FONT_WEIGHT.semibold,
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   calendarDays: {
     flexDirection: 'row',
@@ -522,9 +764,9 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: 'rgba(255, 255, 255, 0.7)',
-    width: 40,
+    fontWeight: FONT_WEIGHT.bold,
+    color: 'rgba(255, 255, 255, 0.75)',
+    width: 44,
     textAlign: 'center',
   },
   calendarDates: {
@@ -532,58 +774,65 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   calendarDate: {
-    width: 40,
-    height: 40,
-    borderRadius: BORDER_RADIUS.full,
+    width: 44,
+    height: 44,
+    borderRadius: BORDER_RADIUS.md,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
   },
   calendarDateActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
   },
   calendarDateToday: {
     backgroundColor: '#FFFFFF',
   },
   calendarDateText: {
     fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: FONT_WEIGHT.bold,
+    color: 'rgba(255, 255, 255, 0.95)',
   },
   calendarDateTextActive: {
     color: COLORS.primary,
   },
-  activeBadge: {
-    flexDirection: 'row',
+  checkDot: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: COLORS.success,
     alignItems: 'center',
-    backgroundColor: COLORS.primary + '15',
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.full,
+    justifyContent: 'center',
   },
-  activeIcon: {
-    fontSize: 12,
-    marginRight: SPACING.xs,
+  checkDotText: {
+    fontSize: 8,
+    color: '#FFFFFF',
+    fontWeight: FONT_WEIGHT.bold,
   },
-  activeText: {
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.primary,
-  },
-  powerUps: {
-    flexDirection: 'row',
+  powerUpsGrid: {
     paddingHorizontal: SPACING.lg,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: SPACING.md,
   },
   powerUpCard: {
-    flex: 1,
-    padding: SPACING.lg,
+    width: '31%',
+    padding: SPACING.md,
     alignItems: 'center',
     borderWidth: 2,
+    position: 'relative',
+  },
+  powerUpCardLocked: {
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.surfaceAlt,
+    opacity: 0.6,
   },
   powerUpIcon: {
-    width: 60,
-    height: 60,
+    width: 56,
+    height: 56,
     borderRadius: BORDER_RADIUS.full,
     alignItems: 'center',
     justifyContent: 'center',
@@ -592,21 +841,49 @@ const styles = StyleSheet.create({
   powerUpEmoji: {
     fontSize: 28,
   },
+  powerUpEmojiLocked: {
+    opacity: 0.4,
+  },
   powerUpLabel: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.xs,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textPrimary,
     textAlign: 'center',
   },
+  powerUpLabelLocked: {
+    color: COLORS.textTertiary,
+  },
+  activeDot: {
+    position: 'absolute',
+    top: SPACING.sm,
+    right: SPACING.sm,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.success,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeDotText: {
+    fontSize: 12,
+  },
+  lockOverlay: {
+    position: 'absolute',
+    top: SPACING.sm,
+    right: SPACING.sm,
+  },
+  lockIcon: {
+    fontSize: 16,
+  },
   activityList: {
     paddingHorizontal: SPACING.lg,
-    gap: SPACING.sm,
+    gap: SPACING.md,
   },
   activityCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SPACING.md,
+    padding: SPACING.lg,
   },
   activityLeft: {
     flexDirection: 'row',
@@ -614,24 +891,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activityIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: BORDER_RADIUS.md,
+    width: 52,
+    height: 52,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: SPACING.md,
   },
   activityEmoji: {
-    fontSize: 24,
+    fontSize: 26,
   },
   activityCategory: {
     fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
+    marginBottom: 2,
   },
   activityTime: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.xs,
     color: COLORS.textSecondary,
   },
   activityRight: {
@@ -648,9 +925,15 @@ const styles = StyleSheet.create({
   incomeAmount: {
     color: COLORS.success,
   },
-  activityXP: {
+  xpBadge: {
+    backgroundColor: COLORS.primary + '20',
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 2,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  xpBadgeText: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.primary,
   },
   emptyCard: {
@@ -658,20 +941,40 @@ const styles = StyleSheet.create({
     padding: SPACING.xxl,
     alignItems: 'center',
   },
+  emptyIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.lg,
+  },
   emptyEmoji: {
-    fontSize: 64,
-    marginBottom: SPACING.md,
+    fontSize: 48,
   },
   emptyText: {
-    fontSize: FONT_SIZE.lg,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
   emptySubtext: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.md,
     color: COLORS.textSecondary,
     textAlign: 'center',
+    marginBottom: SPACING.lg,
+  },
+  emptyButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  emptyButtonText: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: '#FFFFFF',
   },
   bottomNav: {
     position: 'absolute',
@@ -681,42 +984,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.surface,
     paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.lg,
+    paddingHorizontal: SPACING.md,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
+    shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowRadius: 12,
+    elevation: 10,
   },
   navItem: {
     flex: 1,
     alignItems: 'center',
   },
   navIcon: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.xs,
   },
   navIconActive: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.primary + '15',
+    backgroundColor: COLORS.primary + '20',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.xs,
   },
   navIconText: {
-    fontSize: 20,
+    fontSize: 22,
   },
   navLabel: {
-    fontSize: 10,
-    fontWeight: FONT_WEIGHT.semibold,
+    fontSize: 9,
+    fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textSecondary,
     letterSpacing: 0.5,
   },
@@ -731,24 +1034,33 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: BORDER_RADIUS.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fabInner: {
+    width: 56,
+    height: 56,
+    borderRadius: BORDER_RADIUS.full,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  fabInner: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    elevation: 10,
   },
   fabIcon: {
-    fontSize: 28,
+    fontSize: 32,
     color: '#FFFFFF',
     fontWeight: FONT_WEIGHT.bold,
+  },
+  fabPulse: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary,
+    opacity: 0.2,
   },
 });
