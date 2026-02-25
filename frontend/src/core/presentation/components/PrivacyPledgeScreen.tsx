@@ -64,8 +64,8 @@ export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current; // Start visible
+  const scaleAnim = useRef(new Animated.Value(1)).current; // Start at full scale
   const glowAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
