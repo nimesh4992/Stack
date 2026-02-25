@@ -1,4 +1,4 @@
-// 💰 Add Expense/Income Screen
+// 💰 Add Expense/Income Screen (The Dojo Style - Quick Log)
 import React, { useState } from 'react';
 import {
   View,
@@ -6,8 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -16,9 +14,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppDispatch } from '../src/store';
 import { addTransaction } from '../src/features/expenseTracking/expenseSlice';
 import { awardPoints, updateStreak } from '../src/features/gamification/gamificationSlice';
-import { Button } from '../src/core/presentation/components/Button';
-import { Input } from '../src/core/presentation/components/Input';
-import { Card } from '../src/core/presentation/components/Card';
 import {
   COLORS,
   SPACING,
@@ -30,21 +25,51 @@ import {
   POINTS,
 } from '../src/core/common/constants';
 
+// Quick select categories (simplified for Dojo style)
+const QUICK_CATEGORIES = [
+  { id: 'food', label: 'Coffee', icon: '☕', color: '#FF9A3C' },
+  { id: 'food', label: 'Food', icon: '🍔', color: '#00D4AA' },
+  { id: 'entertainment', label: 'Fun', icon: '🎭', color: '#7C3AED' },
+  { id: 'transport', label: 'Transit', icon: '🚗', color: '#2E5CFF' },
+];
+
+// Check-ins (habit tracking)
+const CHECK_INS = [
+  { id: 'water', label: 'Drink Water', icon: '💧' },
+  { id: 'workout', label: 'Workout', icon: '🏃' },
+  { id: 'no_spend', label: 'No Spend', icon: '💰' },
+];
+
 export default function AddExpenseScreen() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const [type, setType] = useState<'expense' | 'income'>('expense');
-  const [amount, setAmount] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [note, setNote] = useState('');
+  const [type, setType] = useState<'expense' | 'habit'>('expense');
+  const [amount, setAmount] = useState('50.00');
+  const [selectedCategory, setSelectedCategory] = useState<any>(QUICK_CATEGORIES[0]);
   const [loading, setLoading] = useState(false);
 
-  const categories = type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
+  const handleNumberPress = (num: string) => {
+    if (num === '.' && amount.includes('.')) return;
+    if (num === 'backspace') {
+      setAmount(amount.length > 1 ? amount.slice(0, -1) : '0');
+    } else {
+      setAmount(amount === '0' ? num : amount + num);
+    }
+  };
 
   const handleSave = async () => {
-    // Validation
-    if (!amount || parseFloat(amount) <= 0) {
+    if (type === 'habit') {
+      // Handle habit check-in
+      Alert.alert('Success! 🎉', 'Habit logged successfully!', [
+        { text: 'OK', onPress: () => router.back() },
+      ]);
+      return;
+    }
+
+    // Validate
+    const amountNum = parseFloat(amount);
+    if (!amountNum || amountNum <= 0) {
       Alert.alert('Invalid Amount', 'Please enter a valid amount');
       return;
     }
@@ -56,35 +81,24 @@ export default function AddExpenseScreen() {
 
     setLoading(true);
     try {
-      // Add transaction
       await dispatch(
         addTransaction({
-          type,
-          amount: parseFloat(amount),
+          type: 'expense',
+          amount: amountNum,
           categoryId: selectedCategory.id,
           categoryLabel: selectedCategory.label,
           categoryIcon: selectedCategory.icon,
-          note: note.trim() || undefined,
           date: new Date().toISOString(),
           source: 'manual',
         })
       ).unwrap();
 
-      // Award points and update streak
-      await dispatch(awardPoints(type === 'expense' ? POINTS.LOG_EXPENSE : POINTS.LOG_INCOME));
+      await dispatch(awardPoints(POINTS.LOG_EXPENSE));
       await dispatch(updateStreak());
 
-      // Show success feedback
-      Alert.alert(
-        'Success! 🎉',
-        `${type === 'expense' ? 'Expense' : 'Income'} logged successfully!`,
-        [
-          {
-            text: 'OK',
-            onPress: () => router.back(),
-          },
-        ]
-      );
+      Alert.alert('Success! 🎉', 'Expense logged successfully!', [
+        { text: 'OK', onPress: () => router.back() },
+      ]);
     } catch (error) {
       console.error('Failed to add transaction:', error);
       Alert.alert('Error', 'Failed to save transaction. Please try again.');
@@ -95,129 +109,165 @@ export default function AddExpenseScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <KeyboardAvoidingView
-        style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
+          <Text style={styles.closeIcon}>✕</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Quick Log</Text>
+        <View style={styles.headerRight} />
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Text style={styles.backIcon}>←</Text>
+        {/* Type Toggle */}
+        <View style={styles.typeToggle}>
+          <TouchableOpacity
+            style={[styles.typeButton, type === 'expense' && styles.typeButtonActive]}
+            onPress={() => setType('expense')}
+          >
+            <Text style={[styles.typeText, type === 'expense' && styles.typeTextActive]}>
+              Expense
+            </Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Transaction</Text>
-          <View style={styles.headerRight} />
+          <TouchableOpacity
+            style={[styles.typeButton, type === 'habit' && styles.typeButtonActive]}
+            onPress={() => setType('habit')}
+          >
+            <Text style={[styles.typeText, type === 'habit' && styles.typeTextActive]}>
+              Habit
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Type Selector */}
-          <View style={styles.typeSelector}>
-            <TouchableOpacity
-              style={[styles.typeButton, type === 'expense' && styles.typeButtonActive]}
-              onPress={() => {
-                setType('expense');
-                setSelectedCategory(null);
-              }}
-            >
-              <Text
-                style={[styles.typeText, type === 'expense' && styles.typeTextActive]}
-              >
-                💸 Expense
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.typeButton, type === 'income' && styles.typeButtonActive]}
-              onPress={() => {
-                setType('income');
-                setSelectedCategory(null);
-              }}
-            >
-              <Text
-                style={[styles.typeText, type === 'income' && styles.typeTextActive]}
-              >
-                💰 Income
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Amount Input */}
-          <Card style={styles.amountCard}>
-            <Text style={styles.amountLabel}>Amount</Text>
-            <View style={styles.amountInputContainer}>
-              <Text style={styles.currencySymbol}>₹</Text>
-              <Input
-                placeholder="0"
-                keyboardType="numeric"
-                value={amount}
-                onChangeText={setAmount}
-                style={styles.amountInput}
-                containerStyle={styles.amountInputWrapper}
-              />
+        {type === 'expense' ? (
+          <>
+            {/* Amount Display */}
+            <View style={styles.amountSection}>
+              <Text style={styles.amountDisplay}>${amount}</Text>
+              <View style={styles.onDeviceBadge}>
+                <View style={styles.lockIcon}>
+                  <Text style={styles.lockEmoji}>🔒</Text>
+                </View>
+                <Text style={styles.onDeviceText}>ON-DEVICE ONLY</Text>
+              </View>
             </View>
-          </Card>
 
-          {/* Category Selector */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Select Category</Text>
-            <View style={styles.categoriesGrid}>
-              {categories.map((category) => (
-                <TouchableOpacity
-                  key={category.id}
-                  onPress={() => setSelectedCategory(category)}
-                  activeOpacity={0.7}
-                >
-                  <Card
+            {/* Quick Select Categories */}
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>QUICK SELECT</Text>
+              <View style={styles.quickCategories}>
+                {QUICK_CATEGORIES.map((cat) => (
+                  <TouchableOpacity
+                    key={cat.label}
                     style={[
-                      styles.categoryCard,
-                      selectedCategory?.id === category.id && styles.categoryCardSelected,
+                      styles.quickCategoryButton,
+                      { backgroundColor: cat.color + '20' },
+                      selectedCategory?.label === cat.label && {
+                        backgroundColor: cat.color + '40',
+                        borderWidth: 2,
+                        borderColor: cat.color,
+                      },
                     ]}
+                    onPress={() => setSelectedCategory(cat)}
                   >
-                    <View
-                      style={[
-                        styles.categoryIconContainer,
-                        { backgroundColor: category.color + '20' },
-                        selectedCategory?.id === category.id && {
-                          backgroundColor: category.color + '40',
-                        },
-                      ]}
-                    >
-                      <Text style={styles.categoryIcon}>{category.icon}</Text>
-                    </View>
-                    <Text style={styles.categoryLabel} numberOfLines={2}>
-                      {category.label}
-                    </Text>
-                  </Card>
+                    <Text style={styles.quickCategoryIcon}>{cat.icon}</Text>
+                    <Text style={styles.quickCategoryLabel}>{cat.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Number Pad */}
+            <View style={styles.numberPad}>
+              <View style={styles.numberRow}>
+                {['1', '2', '3'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    style={styles.numberButton}
+                    onPress={() => handleNumberPress(num)}
+                  >
+                    <Text style={styles.numberText}>{num}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.numberRow}>
+                {['4', '5', '6'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    style={styles.numberButton}
+                    onPress={() => handleNumberPress(num)}
+                  >
+                    <Text style={styles.numberText}>{num}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.numberRow}>
+                {['7', '8', '9'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    style={styles.numberButton}
+                    onPress={() => handleNumberPress(num)}
+                  >
+                    <Text style={styles.numberText}>{num}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.numberRow}>
+                <TouchableOpacity
+                  style={styles.numberButton}
+                  onPress={() => handleNumberPress('.')}
+                >
+                  <Text style={styles.numberText}>.</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.numberButton}
+                  onPress={() => handleNumberPress('0')}
+                >
+                  <Text style={styles.numberText}>0</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.numberButton}
+                  onPress={() => handleNumberPress('backspace')}
+                >
+                  <Text style={styles.numberText}>⌫</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        ) : (
+          // Habit Check-ins
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>CHECK-INS</Text>
+            <View style={styles.checkIns}>
+              {CHECK_INS.map((habit) => (
+                <TouchableOpacity
+                  key={habit.id}
+                  style={styles.checkInButton}
+                  onPress={() => {}}
+                >
+                  <Text style={styles.checkInIcon}>{habit.icon}</Text>
+                  <Text style={styles.checkInLabel}>{habit.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
+        )}
+      </ScrollView>
 
-          {/* Note Input */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Add Note (Optional)</Text>
-            <Input
-              placeholder="e.g., Lunch at café"
-              value={note}
-              onChangeText={setNote}
-              multiline
-              numberOfLines={3}
-              style={styles.noteInput}
-            />
-          </View>
-
-          {/* Save Button */}
-          <Button
-            title={`Save ${type === 'expense' ? 'Expense' : 'Income'}`}
-            onPress={handleSave}
-            loading={loading}
-            style={styles.saveButton}
-            fullWidth
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
+      {/* Log Button */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.logButton}
+          onPress={handleSave}
+          disabled={loading}
+        >
+          <Text style={styles.logButtonText}>Log it ✓</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -227,31 +277,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  keyboardView: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
   },
-  backButton: {
+  closeButton: {
     width: 40,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backIcon: {
-    fontSize: FONT_SIZE.xxl,
+  closeIcon: {
+    fontSize: 24,
     color: COLORS.textPrimary,
   },
   headerTitle: {
-    fontSize: FONT_SIZE.lg,
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
   },
@@ -264,23 +308,21 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: SPACING.lg,
   },
-  typeSelector: {
+  typeToggle: {
     flexDirection: 'row',
-    gap: SPACING.md,
-    marginBottom: SPACING.lg,
+    backgroundColor: COLORS.surface,
+    borderRadius: BORDER_RADIUS.full,
+    padding: 4,
+    marginBottom: SPACING.xl,
   },
   typeButton: {
     flex: 1,
     paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.surface,
-    borderWidth: 2,
-    borderColor: COLORS.border,
+    borderRadius: BORDER_RADIUS.full,
     alignItems: 'center',
   },
   typeButtonActive: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.primaryLight + '20',
+    backgroundColor: COLORS.primary,
   },
   typeText: {
     fontSize: FONT_SIZE.md,
@@ -288,84 +330,125 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   typeTextActive: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
   },
-  amountCard: {
-    padding: SPACING.xl,
-    marginBottom: SPACING.lg,
-  },
-  amountLabel: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.sm,
-  },
-  amountInputContainer: {
-    flexDirection: 'row',
+  amountSection: {
     alignItems: 'center',
+    marginBottom: SPACING.xl,
   },
-  currencySymbol: {
-    fontSize: FONT_SIZE.xxxl,
+  amountDisplay: {
+    fontSize: 72,
     fontWeight: FONT_WEIGHT.bold,
-    color: COLORS.textPrimary,
-    marginRight: SPACING.sm,
-  },
-  amountInputWrapper: {
-    flex: 1,
-  },
-  amountInput: {
-    fontSize: FONT_SIZE.xxxl,
-    fontWeight: FONT_WEIGHT.bold,
-    color: COLORS.textPrimary,
-    padding: 0,
-  },
-  section: {
-    marginBottom: SPACING.lg,
-  },
-  sectionTitle: {
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textPrimary,
     marginBottom: SPACING.md,
   },
-  categoriesGrid: {
+  onDeviceBadge: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    backgroundColor: COLORS.primary + '15',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  lockIcon: {
+    marginRight: SPACING.xs,
+  },
+  lockEmoji: {
+    fontSize: 12,
+  },
+  onDeviceText: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
+    letterSpacing: 0.5,
+  },
+  section: {
+    marginBottom: SPACING.xl,
+  },
+  sectionLabel: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textSecondary,
+    letterSpacing: 1,
+    marginBottom: SPACING.md,
+  },
+  quickCategories: {
+    flexDirection: 'row',
     gap: SPACING.md,
   },
-  categoryCard: {
-    width: (360 - SPACING.lg * 2 - SPACING.md * 2) / 3, // Approximate width for 3 columns
-    padding: SPACING.md,
+  quickCategoryButton: {
+    flex: 1,
+    paddingVertical: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
     alignItems: 'center',
+  },
+  quickCategoryIcon: {
+    fontSize: 32,
+    marginBottom: SPACING.sm,
+  },
+  quickCategoryLabel: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+  },
+  checkIns: {
+    gap: SPACING.md,
+  },
+  checkInButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
     borderWidth: 2,
     borderColor: COLORS.border,
   },
-  categoryCardSelected: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.primaryLight + '10',
+  checkInIcon: {
+    fontSize: 28,
+    marginRight: SPACING.md,
   },
-  categoryIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: BORDER_RADIUS.full,
+  checkInLabel: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+  },
+  numberPad: {
+    gap: SPACING.md,
+  },
+  numberRow: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+  },
+  numberButton: {
+    flex: 1,
+    aspectRatio: 1,
+    backgroundColor: COLORS.surface,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACING.sm,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
-  categoryIcon: {
-    fontSize: FONT_SIZE.xl,
+  numberText: {
+    fontSize: 32,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
   },
-  categoryLabel: {
-    fontSize: FONT_SIZE.xs,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    height: 32, // Fixed height for 2 lines
+  footer: {
+    padding: SPACING.lg,
+    backgroundColor: COLORS.surface,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
-  noteInput: {
-    textAlignVertical: 'top',
-    minHeight: 80,
+  logButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xxl,
+    alignItems: 'center',
   },
-  saveButton: {
-    marginTop: SPACING.md,
-    marginBottom: SPACING.xl,
+  logButtonText: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    color: '#FFFFFF',
   },
 });
