@@ -13,7 +13,8 @@ import {
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { RootState, AppDispatch } from '../src/store';
+import { RootState } from '../src/store';
+import { AppDispatch } from '../src/store';
 import { Card } from '../src/core/presentation/components/Card';
 import { storageService } from '../src/core/data/storage';
 import {
