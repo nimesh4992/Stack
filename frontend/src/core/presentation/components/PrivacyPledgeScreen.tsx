@@ -1,32 +1,21 @@
-// 🎨 Privacy Pledge Splash Screen - Beautiful Redesign
-// Matches "The Dojo" design aesthetic with privacy-first messaging
-
+// 🎨 Privacy Pledge Splash Screen
 import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-  COLORS,
-  SPACING,
-  FONT_SIZE,
-  FONT_WEIGHT,
-  BORDER_RADIUS,
-} from '../../common/constants';
+import { COLORS } from '../../common/constants';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-// Privacy slides content
+// Privacy slides
 const SLIDES = [
   {
-    id: 1,
     icon: 'shield-checkmark',
     iconColor: '#4ECDC4',
     title: 'Your Data,',
@@ -34,122 +23,96 @@ const SLIDES = [
     description: 'Everything stays on your phone. No cloud, no tracking, just progress.',
   },
   {
-    id: 2,
     icon: 'lock-closed',
     iconColor: '#7C3AED',
     title: 'Bank-Level',
     titleHighlight: 'Privacy',
-    description: 'Your financial data is encrypted and never leaves your device. Period.',
+    description: 'Your financial data is encrypted and never leaves your device.',
   },
   {
-    id: 3,
     icon: 'rocket',
     iconColor: '#FF6B6B',
     title: 'Build Habits,',
     titleHighlight: 'Build Wealth',
-    description: 'Smart nudges, gamified tracking, and insights that help you save more.',
+    description: 'Smart nudges, gamified tracking, and insights that help you save.',
   },
 ];
 
-interface PrivacyPledgeScreenProps {
+interface Props {
   onComplete: () => void;
 }
 
-export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const currentContent = SLIDES[currentSlide];
+export function PrivacyPledgeScreen({ onComplete }: Props) {
+  const [slide, setSlide] = useState(0);
+  const current = SLIDES[slide];
 
-  const handleNext = () => {
-    if (currentSlide < SLIDES.length - 1) {
-      setCurrentSlide(currentSlide + 1);
-    } else {
-      onComplete();
-    }
+  const next = () => {
+    if (slide < SLIDES.length - 1) setSlide(slide + 1);
+    else onComplete();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Skip Button */}
-      <TouchableOpacity style={styles.skipButton} onPress={onComplete}>
-        <Text style={styles.skipText}>Skip</Text>
-      </TouchableOpacity>
-
-      {/* Main Content */}
-      <View style={styles.content}>
-        {/* Dark Card with Icon */}
-        <View style={styles.darkCard}>
-          {/* Glow Effect */}
-          <View style={[styles.glowEffect, { backgroundColor: currentContent.iconColor }]} />
-          
-          {/* Icon */}
-          <View style={[styles.iconCircle, { backgroundColor: currentContent.iconColor + '30' }]}>
-            <Ionicons
-              name={currentContent.icon as any}
-              size={56}
-              color={currentContent.iconColor}
-            />
-          </View>
-          
-          {/* Badge */}
-          <View style={styles.badge}>
-            <Ionicons name="lock-closed" size={14} color="#FFFFFF" />
-          </View>
-        </View>
-
-        {/* Text Content */}
-        <View style={{ backgroundColor: 'red', padding: 20, minHeight: 150, width: '100%' }}>
-          <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' }}>
-            Your Data,
-          </Text>
-          <Text style={{ fontSize: 28, fontWeight: '700', color: '#4F46E5', textAlign: 'center', marginBottom: 12 }}>
-            Your Control
-          </Text>
-          <Text style={{ fontSize: 16, color: '#AAAAAA', textAlign: 'center', lineHeight: 24 }}>
-            Everything stays on your phone. No cloud, no tracking, just progress.
-          </Text>
-        </View>
-
-        {/* Pagination Dots */}
-        <View style={styles.pagination}>
-          {SLIDES.map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === currentSlide && styles.dotActive,
-              ]}
-            />
-          ))}
-        </View>
-      </View>
-
-      {/* CTA Button */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.ctaButton} onPress={handleNext} activeOpacity={0.9}>
-          <LinearGradient
-            colors={[COLORS.primary, '#6366F1']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.ctaGradient}
-          >
-            <Text style={styles.ctaText}>
-              {currentSlide === SLIDES.length - 1 ? 'Start Your Journey' : 'Continue'}
-            </Text>
-            <Ionicons
-              name={currentSlide === SLIDES.length - 1 ? 'flash' : 'arrow-forward'}
-              size={20}
-              color="#FFFFFF"
-            />
-          </LinearGradient>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Skip */}
+        <TouchableOpacity style={styles.skip} onPress={onComplete}>
+          <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
 
-        {/* Encryption Badge */}
-        <View style={styles.encryptionBadge}>
-          <Ionicons name="globe-outline" size={14} color="#888888" />
-          <Text style={styles.encryptionText}>END-TO-END ENCRYPTED</Text>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Card */}
+          <View style={styles.card}>
+            <View style={[styles.glow, { backgroundColor: current.iconColor }]} />
+            <View style={[styles.iconBg, { backgroundColor: current.iconColor + '30' }]}>
+              <Ionicons name={current.icon as any} size={56} color={current.iconColor} />
+            </View>
+            <View style={styles.badge}>
+              <Ionicons name="lock-closed" size={14} color="#FFF" />
+            </View>
+          </View>
+
+          {/* Text */}
+          <Text style={styles.title}>{current.title}</Text>
+          <Text style={styles.highlight}>{current.titleHighlight}</Text>
+          <Text style={styles.desc}>{current.description}</Text>
+
+          {/* Dots */}
+          <View style={styles.dots}>
+            {SLIDES.map((_, i) => (
+              <View key={i} style={[styles.dot, i === slide && styles.dotActive]} />
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* Button */}
+        <View style={styles.btnWrap}>
+          <TouchableOpacity onPress={next} activeOpacity={0.9}>
+            <LinearGradient
+              colors={[COLORS.primary, '#6366F1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>
+                {slide === SLIDES.length - 1 ? 'Start Your Journey' : 'Continue'}
+              </Text>
+              <Ionicons
+                name={slide === SLIDES.length - 1 ? 'flash' : 'arrow-forward'}
+                size={20}
+                color="#FFF"
+              />
+            </LinearGradient>
+          </TouchableOpacity>
+          <View style={styles.encrypted}>
+            <Ionicons name="globe-outline" size={12} color="#666" />
+            <Text style={styles.encText}>END-TO-END ENCRYPTED</Text>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -158,35 +121,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0F0F1A',
   },
-  skipButton: {
+  safeArea: {
+    flex: 1,
+  },
+  skip: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 40,
+    top: 10,
     right: 20,
     zIndex: 10,
     padding: 10,
   },
   skipText: {
     fontSize: 16,
-    color: '#888888',
+    color: '#888',
     fontWeight: '600',
   },
-  content: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 20,
   },
-  darkCard: {
-    width: SCREEN_WIDTH - 48,
+  card: {
+    width: '100%',
     height: 200,
     backgroundColor: '#1A1A2E',
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
     marginBottom: 32,
+    overflow: 'hidden',
   },
-  glowEffect: {
+  glow: {
     position: 'absolute',
     bottom: -30,
     width: 150,
@@ -194,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     opacity: 0.4,
   },
-  iconCircle: {
+  iconBg: {
     width: 100,
     height: 100,
     borderRadius: 50,
@@ -212,30 +180,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 16,
-  },
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
     textAlign: 'center',
   },
-  titleHighlight: {
+  highlight: {
     fontSize: 28,
     fontWeight: '700',
+    color: COLORS.primary,
     textAlign: 'center',
     marginBottom: 12,
   },
-  description: {
+  desc: {
     fontSize: 16,
-    color: '#AAAAAA',
+    color: '#AAA',
     textAlign: 'center',
     lineHeight: 24,
+    marginBottom: 24,
+    paddingHorizontal: 16,
   },
-  pagination: {
+  dots: {
     flexDirection: 'row',
     gap: 8,
   },
@@ -243,42 +209,41 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#333344',
+    backgroundColor: '#333',
   },
   dotActive: {
     width: 24,
     backgroundColor: COLORS.primary,
   },
-  buttonContainer: {
+  btnWrap: {
     paddingHorizontal: 24,
-    paddingBottom: 32,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 32,
     alignItems: 'center',
   },
-  ctaButton: {
-    width: '100%',
-    marginBottom: 16,
-  },
-  ctaGradient: {
+  btn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
+    paddingHorizontal: 32,
     borderRadius: 16,
     gap: 8,
+    width: 300,
   },
-  ctaText: {
+  btnText: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#FFF',
   },
-  encryptionBadge: {
+  encrypted: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
+    marginTop: 16,
   },
-  encryptionText: {
-    fontSize: 12,
-    color: '#666666',
+  encText: {
+    fontSize: 11,
+    color: '#666',
     letterSpacing: 1,
     fontWeight: '600',
   },
