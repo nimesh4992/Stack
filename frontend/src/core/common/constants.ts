@@ -82,24 +82,39 @@ export const FONT_WEIGHT = {
   bold: '700' as const,
 };
 
-// 💰 Expense Categories
+// 💰 Expense Categories (Extended)
 export const EXPENSE_CATEGORIES = [
   { id: 'food', label: 'Food & Dining', icon: '🍔', color: '#F59E0B' },
+  { id: 'groceries', label: 'Groceries', icon: '🛒', color: '#84CC16' },
   { id: 'transport', label: 'Transport', icon: '🚗', color: '#3B82F6' },
   { id: 'shopping', label: 'Shopping', icon: '🛍️', color: '#EC4899' },
   { id: 'entertainment', label: 'Entertainment', icon: '🎬', color: '#8B5CF6' },
   { id: 'bills', label: 'Bills & Utilities', icon: '💡', color: '#EF4444' },
   { id: 'health', label: 'Health', icon: '🏥', color: '#10B981' },
   { id: 'education', label: 'Education', icon: '📚', color: '#06B6D4' },
+  { id: 'subscriptions', label: 'Subscriptions', icon: '📺', color: '#F97316' },
+  { id: 'travel', label: 'Travel', icon: '✈️', color: '#0EA5E9' },
+  { id: 'insurance', label: 'Insurance', icon: '🛡️', color: '#6366F1' },
+  { id: 'rent', label: 'Rent & Housing', icon: '🏠', color: '#A855F7' },
+  { id: 'investments', label: 'Investments', icon: '📈', color: '#14B8A6' },
+  { id: 'personal', label: 'Personal Care', icon: '💅', color: '#F472B6' },
+  { id: 'gifts', label: 'Gifts & Donations', icon: '🎁', color: '#FB7185' },
+  { id: 'pets', label: 'Pets', icon: '🐾', color: '#FBBF24' },
+  { id: 'fitness', label: 'Fitness', icon: '💪', color: '#22C55E' },
   { id: 'other', label: 'Other', icon: '📦', color: '#6B7280' },
 ];
 
-// 💵 Income Categories
+// 💵 Income Categories (Extended)
 export const INCOME_CATEGORIES = [
   { id: 'salary', label: 'Salary', icon: '💼', color: '#10B981' },
   { id: 'freelance', label: 'Freelance', icon: '💻', color: '#3B82F6' },
-  { id: 'investment', label: 'Investment', icon: '📈', color: '#8B5CF6' },
+  { id: 'investment', label: 'Investment Returns', icon: '📈', color: '#8B5CF6' },
+  { id: 'business', label: 'Business Income', icon: '🏢', color: '#F59E0B' },
+  { id: 'rental', label: 'Rental Income', icon: '🏠', color: '#A855F7' },
+  { id: 'dividend', label: 'Dividends', icon: '💹', color: '#14B8A6' },
+  { id: 'refund', label: 'Refund', icon: '↩️', color: '#06B6D4' },
   { id: 'gift', label: 'Gift', icon: '🎁', color: '#EC4899' },
+  { id: 'cashback', label: 'Cashback', icon: '💰', color: '#22C55E' },
   { id: 'other', label: 'Other', icon: '💰', color: '#6B7280' },
 ];
 

@@ -1,18 +1,19 @@
 {
   "expo": {
-    "name": "HabitFinance",
-    "slug": "habitfinance",
+    "name": "Stack",
+    "slug": "stack-finance",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "habitfinance",
+    "scheme": "stack",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Scan receipts to track expenses",
-        "NSPhotoLibraryUsageDescription": "Save expense receipts and reports"
+        "NSPhotoLibraryUsageDescription": "Save expense receipts and reports",
+        "NSMotionUsageDescription": "Track your daily steps for habit building"
       }
     },
     "android": {
@@ -26,7 +27,8 @@
         "READ_SMS",
         "POST_NOTIFICATIONS",
         "VIBRATE",
-        "WAKE_LOCK"
+        "WAKE_LOCK",
+        "ACTIVITY_RECOGNITION"
       ]
     },
     "web": {

@@ -4,6 +4,7 @@ import onboardingReducer from '../features/onboarding/onboardingSlice';
 import expenseReducer from '../features/expenseTracking/expenseSlice';
 import gamificationReducer from '../features/gamification/gamificationSlice';
 import userPreferencesReducer from '../features/userPreferences/userPreferencesSlice';
+import habitsReducer from '../features/habits/habitsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     expense: expenseReducer,
     gamification: gamificationReducer,
     userPreferences: userPreferencesReducer,
+    habits: habitsReducer,
   },
 });
 
