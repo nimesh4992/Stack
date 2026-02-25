@@ -51,6 +51,11 @@ const TONE_STYLES: Record<NudgeTone, {
     icon: 'flame',
     iconColor: COLORS.habitPurple,
   },
+  sentimental: {
+    gradient: [COLORS.habitPink + '15', COLORS.habitPink + '05'],
+    icon: 'heart-circle',
+    iconColor: COLORS.habitPink,
+  },
   educational: {
     gradient: [COLORS.habitCyan + '15', COLORS.habitCyan + '05'],
     icon: 'bulb',
