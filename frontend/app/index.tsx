@@ -1,13 +1,15 @@
 // 🚀 App Entry Point - Splash & Router
 import { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../src/store';
 import { loadOnboardingStatus } from '../src/features/onboarding/onboardingSlice';
 import { loadTransactions } from '../src/features/expenseTracking/expenseSlice';
 import { loadGamification } from '../src/features/gamification/gamificationSlice';
-import { SplashScreen } from '../src/core/presentation/components/SplashScreen';
+import { PrivacyPledgeScreen } from '../src/core/presentation/components/PrivacyPledgeScreen';
+import { initializeAds } from '../src/core/services/adService';
+import { initializeNotifications } from '../src/core/services/notificationService';
 import { COLORS } from '../src/core/common/constants';
 
 export default function Index() {
@@ -15,6 +17,7 @@ export default function Index() {
   const dispatch = useDispatch<AppDispatch>();
   const [showSplash, setShowSplash] = useState(true);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     initializeApp();
@@ -27,10 +30,16 @@ export default function Index() {
       await dispatch(loadTransactions());
       await dispatch(loadGamification());
       
+      // Initialize services (non-blocking)
+      initializeNotifications().catch(console.log);
+      initializeAds().catch(console.log);
+      
       setOnboardingComplete(result.isComplete);
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to initialize app:', error);
       setOnboardingComplete(false);
+      setIsLoading(false);
     }
   };
 
@@ -46,8 +55,8 @@ export default function Index() {
     }, 100);
   };
 
-  if (showSplash) {
-    return <SplashScreen onFinish={handleSplashFinish} />;
+  if (showSplash && !isLoading) {
+    return <PrivacyPledgeScreen onComplete={handleSplashFinish} />;
   }
 
   // Loading state while navigating
