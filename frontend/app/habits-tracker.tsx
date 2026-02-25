@@ -1,7 +1,7 @@
 // Habits Tracker Screen
-// Track daily habits like steps and water intake
+// Track daily habits like steps and water intake with Redux persistence
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card } from '../src/core/presentation/components/Card';
 import { CircularProgress } from '../src/core/presentation/components/CircularProgress';
+import { RootState, AppDispatch } from '../src/store';
+import {
+  initTodayHabits,
+  updateSteps,
+  updateWater,
+  updateMindful,
+  updateGoal,
+  saveHabits,
+  loadHabits,
+  selectTodayHabits,
+  selectDefaultGoals,
+  selectAllTimeStats,
+} from '../src/features/habits/habitsSlice';
+import {
+  isPedometerAvailable,
+  getPedometerPermission,
+  getTodaySteps,
+  getPedometerNotes,
+} from '../src/core/services/pedometerService';
 import {
   COLORS,
   SPACING,
@@ -25,32 +44,81 @@ import {
   BORDER_RADIUS,
 } from '../src/core/common/constants';
 
-interface HabitData {
-  steps: number;
-  stepsGoal: number;
-  water: number; // glasses
-  waterGoal: number;
-  mindfulMinutes: number;
-  mindfulGoal: number;
-}
-
-const DEFAULT_HABITS: HabitData = {
-  steps: 0,
-  stepsGoal: 10000,
-  water: 0,
-  waterGoal: 8,
-  mindfulMinutes: 0,
-  mindfulGoal: 15,
-};
-
 export default function HabitsTrackerScreen() {
   const router = useRouter();
-  const [habits, setHabits] = useState<HabitData>(DEFAULT_HABITS);
+  const dispatch = useDispatch<AppDispatch>();
+  
+  // Redux state
+  const todayHabits = useSelector(selectTodayHabits);
+  const defaultGoals = useSelector(selectDefaultGoals);
+  const allTimeStats = useSelector(selectAllTimeStats);
+  
+  // Pedometer state
+  const [pedometerAvailable, setPedometerAvailable] = useState(false);
+  const [autoStepsEnabled, setAutoStepsEnabled] = useState(false);
+  
   const [animatedValues] = useState({
     steps: new Animated.Value(0),
     water: new Animated.Value(0),
     mindful: new Animated.Value(0),
   });
+
+  // Initialize habits on mount
+  useEffect(() => {
+    dispatch(loadHabits()).then(() => {
+      dispatch(initTodayHabits());
+    });
+    checkPedometer();
+  }, []);
+
+  // Save habits when they change
+  useEffect(() => {
+    if (todayHabits) {
+      dispatch(saveHabits());
+    }
+  }, [todayHabits]);
+  
+  // Check pedometer availability
+  const checkPedometer = async () => {
+    const available = await isPedometerAvailable();
+    setPedometerAvailable(available);
+  };
+  
+  // Enable auto step tracking
+  const enableAutoSteps = async () => {
+    const hasPermission = await getPedometerPermission();
+    if (hasPermission) {
+      setAutoStepsEnabled(true);
+      const steps = await getTodaySteps();
+      if (steps > 0) {
+        dispatch(updateSteps({ steps, isAbsolute: true }));
+      }
+      Alert.alert('Auto Steps Enabled', 'Your steps will be synced automatically from your device.');
+    } else {
+      Alert.alert('Permission Required', getPedometerNotes());
+    }
+  };
+  
+  // Sync steps from pedometer
+  const syncSteps = async () => {
+    if (!pedometerAvailable) {
+      Alert.alert('Not Available', 'Step tracking requires a development build with expo-sensors.');
+      return;
+    }
+    const steps = await getTodaySteps();
+    dispatch(updateSteps({ steps, isAbsolute: true }));
+    Alert.alert('Steps Synced', `Today's steps: ${steps.toLocaleString()}`);
+  };
+  
+  // Get current values (from Redux or defaults)
+  const habits = todayHabits || {
+    steps: 0,
+    stepsGoal: defaultGoals.steps,
+    water: 0,
+    waterGoal: defaultGoals.water,
+    mindfulMinutes: 0,
+    mindfulGoal: defaultGoals.mindful,
+  };
 
   // Animate progress on mount
   useEffect(() => {
@@ -66,14 +134,12 @@ export default function HabitsTrackerScreen() {
           toValue: 1,
           tension: 50,
           friction: 8,
-          delay: 100,
           useNativeDriver: true,
         }),
         Animated.spring(animatedValues.mindful, {
           toValue: 1,
           tension: 50,
           friction: 8,
-          delay: 200,
           useNativeDriver: true,
         }),
       ]).start();
