@@ -256,27 +256,23 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: SPACING.xl,
+    paddingTop: 60,
+    paddingBottom: 20,
   },
   cardContainer: {
     width: SCREEN_WIDTH - SPACING.xl * 2,
     height: 200,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.lg,
   },
   darkCard: {
     flex: 1,
     backgroundColor: '#1A1A2E',
-    borderRadius: BORDER_RADIUS.xxl,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    // Shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.4,
-    shadowRadius: 30,
-    elevation: 20,
   },
   glowEffect: {
     position: 'absolute',
