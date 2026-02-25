@@ -704,6 +704,12 @@ export default function HomeScreen() {
           <Text style={styles.navLabel}>SETTINGS</Text>
         </TouchableOpacity>
       </View>
+      
+      {/* Security Info Modal */}
+      <SecurityInfoModal 
+        visible={showSecurityModal} 
+        onClose={() => setShowSecurityModal(false)} 
+      />
     </SafeAreaView>
   );
 }
