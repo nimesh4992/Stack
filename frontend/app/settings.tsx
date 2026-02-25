@@ -437,6 +437,14 @@ export default function SettingsScreen() {
             <View style={styles.divider} />
             <SettingsItem
               icon="sparkles-outline"
+              title="AI Insights"
+              subtitle="View predictions and analytics"
+              onPress={() => router.push('/ai-insights')}
+              color={COLORS.primary}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="happy-outline"
               title="Choose Companion"
               subtitle="Change your avatar buddy"
               onPress={() => router.push('/choose-companion')}
