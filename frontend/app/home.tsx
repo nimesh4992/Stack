@@ -1,5 +1,5 @@
-// 🏠 Home Dashboard Screen
-import React, { useEffect } from 'react';
+// 🏠 Home Dashboard Screen (The Dojo Style)
+import React from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
-import { LinearGradient } from 'expo-linear-gradient';
 import { RootState } from '../src/store';
 import { selectTodayBalance } from '../src/features/expenseTracking/expenseSlice';
 import { Card } from '../src/core/presentation/components/Card';
+import { CircularProgress } from '../src/core/presentation/components/CircularProgress';
 import { formatCurrency } from '../src/core/common/utils';
 import {
   COLORS,
@@ -40,18 +40,12 @@ export default function HomeScreen() {
     );
   });
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
-  };
-
-  const getMotivationalMessage = () => {
-    if (todayBalance > 0) return 'Great job! Your money is growing! 🌱';
-    if (todayBalance === 0) return 'Ready to track your finances today?';
-    return 'Every rupee counts. Stay mindful! 💪';
-  };
+  // Calculate XP progress (points) for next level
+  const xpForNextLevel = (gamification.level + 1) * 500;
+  const currentLevelXP = gamification.level * 500;
+  const xpProgress = gamification.points - currentLevelXP;
+  const xpRequired = xpForNextLevel - currentLevelXP;
+  const xpPercentage = (xpProgress / xpRequired) * 100;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,118 +54,231 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header with Gradient */}
-        <LinearGradient
-          colors={[COLORS.primary, COLORS.primaryDark]}
-          style={styles.header}
-        >
-          <View style={styles.headerContent}>
-            <View>
-              <Text style={styles.greeting}>{getGreeting()}! 👋</Text>
-              <Text style={styles.userName}>{userProfile?.name || 'User'}</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <View style={styles.appIconContainer}>
+              <Text style={styles.appIcon}>💰</Text>
             </View>
-            <TouchableOpacity
-              style={styles.levelBadge}
-              onPress={() => {
-                // Navigate to gamification details
-              }}
-            >
-              <Text style={styles.levelText}>Lv {gamification.level}</Text>
-              <Text style={styles.pointsText}>{gamification.points} pts</Text>
-            </TouchableOpacity>
+            <Text style={styles.appName}>HabitFinance</Text>
           </View>
-        </LinearGradient>
+          <View style={styles.onDeviceBadge}>
+            <View style={styles.onDeviceIcon} />
+            <Text style={styles.onDeviceText}>ON-DEVICE</Text>
+          </View>
+        </View>
 
-        {/* Today's Balance Card */}
-        <Card style={styles.balanceCard} variant="elevated">
-          <View style={styles.balanceHeader}>
-            <Text style={styles.balanceLabel}>Today's Balance</Text>
-            <View style={styles.streakBadge}>
-              <Text style={styles.streakEmoji}>🔥</Text>
-              <Text style={styles.streakText}>{gamification.currentStreak} days</Text>
+        {/* Current Rank Card */}
+        <Card style={styles.rankCard}>
+          <Text style={styles.rankLabel}>CURRENT RANK</Text>
+          <Text style={styles.rankTitle}>Level {gamification.level} - Finance Apprentice</Text>
+          <View style={styles.xpProgressContainer}>
+            <View style={styles.xpBar}>
+              <View style={[styles.xpBarFill, { width: `${xpPercentage}%` }]} />
             </View>
+            <Text style={styles.xpText}>{gamification.points}/{xpForNextLevel} XP</Text>
           </View>
-          <Text
-            style={[
-              styles.balanceAmount,
-              todayBalance >= 0 ? styles.balancePositive : styles.balanceNegative,
-            ]}
-          >
-            {formatCurrency(todayBalance)}
+          <Text style={styles.rankHint}>
+            Earn {xpRequired - xpProgress} XP more to unlock 'Consistency King' status
           </Text>
-          <Text style={styles.motivationalText}>{getMotivationalMessage()}</Text>
         </Card>
 
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <Card style={styles.statCard} variant="outlined">
-            <Text style={styles.statEmoji}>💰</Text>
-            <Text style={styles.statValue}>{todayTransactions.length}</Text>
-            <Text style={styles.statLabel}>Today's Logs</Text>
-          </Card>
-          <Card style={styles.statCard} variant="outlined">
-            <Text style={styles.statEmoji}>🎯</Text>
-            <Text style={styles.statValue}>
-              {formatCurrency(userProfile?.monthlyTarget || 0)}
-            </Text>
-            <Text style={styles.statLabel}>Monthly Goal</Text>
-          </Card>
-          <Card style={styles.statCard} variant="outlined">
-            <Text style={styles.statEmoji}>🏆</Text>
-            <Text style={styles.statValue}>{gamification.badges.length}</Text>
-            <Text style={styles.statLabel}>Badges Earned</Text>
+        {/* Habit Rings */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Habit Rings</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.habitRings}
+          >
+            <View style={styles.habitRingCard}>
+              <CircularProgress
+                size={120}
+                strokeWidth={10}
+                percentage={gamification.currentStreak > 0 ? 80 : 0}
+                color={COLORS.habitBlue}
+                icon="💰"
+              />
+              <Text style={styles.habitRingLabel}>Logging</Text>
+              <Text style={[styles.habitRingPercent, { color: COLORS.habitBlue }]}>
+                {gamification.currentStreak > 0 ? '80%' : '0%'}
+              </Text>
+            </View>
+
+            <View style={styles.habitRingCard}>
+              <CircularProgress
+                size={120}
+                strokeWidth={10}
+                percentage={45}
+                color={COLORS.habitCyan}
+                icon="🎯"
+              />
+              <Text style={styles.habitRingLabel}>Budget</Text>
+              <Text style={[styles.habitRingPercent, { color: COLORS.habitCyan }]}>45%</Text>
+            </View>
+
+            <View style={styles.habitRingCard}>
+              <CircularProgress
+                size={120}
+                strokeWidth={10}
+                percentage={100}
+                color={COLORS.habitPurple}
+                icon="💎"
+              />
+              <Text style={styles.habitRingLabel}>Savings</Text>
+              <Text style={[styles.habitRingPercent, { color: COLORS.habitPurple }]}>100%</Text>
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* Streak Calendar */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Streak Calendar</Text>
+          <Card style={styles.streakCard}>
+            <View style={styles.streakHeader}>
+              <View style={styles.streakIcon}>
+                <Text style={styles.streakEmoji}>🔥</Text>
+              </View>
+              <Text style={styles.streakText}>
+                Logging Streak: {gamification.currentStreak} Days
+              </Text>
+              <Text style={styles.streakDate}>February 2026</Text>
+            </View>
+            <View style={styles.calendarDays}>
+              <Text style={styles.dayLabel}>M</Text>
+              <Text style={styles.dayLabel}>T</Text>
+              <Text style={styles.dayLabel}>W</Text>
+              <Text style={styles.dayLabel}>T</Text>
+              <Text style={styles.dayLabel}>F</Text>
+              <Text style={styles.dayLabel}>S</Text>
+              <Text style={styles.dayLabel}>S</Text>
+            </View>
+            <View style={styles.calendarDates}>
+              {[24, 25, 26, 27, 28, 1, 2].map((date, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.calendarDate,
+                    index < gamification.currentStreak && styles.calendarDateActive,
+                    index === 2 && styles.calendarDateToday,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.calendarDateText,
+                      (index < gamification.currentStreak || index === 2) &&
+                        styles.calendarDateTextActive,
+                    ]}
+                  >
+                    {date}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </Card>
         </View>
 
-        {/* Recent Transactions */}
+        {/* Power-Ups Earned */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Activity</Text>
-            {transactions.length > 5 && (
-              <TouchableOpacity>
-                <Text style={styles.seeAllText}>See All</Text>
-              </TouchableOpacity>
-            )}
+            <Text style={styles.sectionTitle}>Power-Ups Earned</Text>
+            <View style={styles.activeBadge}>
+              <Text style={styles.activeIcon}>⚡</Text>
+              <Text style={styles.activeText}>Active: {gamification.badges.length}</Text>
+            </View>
           </View>
+          <View style={styles.powerUps}>
+            <Card
+              style={[
+                styles.powerUpCard,
+                { borderColor: COLORS.habitCyan, backgroundColor: COLORS.habitCyan + '10' },
+              ]}
+            >
+              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.habitCyan + '30' }]}>
+                <Text style={styles.powerUpEmoji}>⚡</Text>
+              </View>
+              <Text style={styles.powerUpLabel}>7-Day Streak</Text>
+            </Card>
 
+            <Card
+              style={[
+                styles.powerUpCard,
+                { borderColor: COLORS.primary, backgroundColor: COLORS.primary + '10' },
+              ]}
+            >
+              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.primary + '30' }]}>
+                <Text style={styles.powerUpEmoji}>💰</Text>
+              </View>
+              <Text style={styles.powerUpLabel}>Savings Master</Text>
+            </Card>
+
+            <Card
+              style={[
+                styles.powerUpCard,
+                { borderColor: COLORS.habitPurple, backgroundColor: COLORS.habitPurple + '10' },
+              ]}
+            >
+              <View style={[styles.powerUpIcon, { backgroundColor: COLORS.habitPurple + '30' }]}>
+                <Text style={styles.powerUpEmoji}>👑</Text>
+              </View>
+              <Text style={styles.powerUpLabel}>Daily Habit</Text>
+            </Card>
+          </View>
+        </View>
+
+        {/* Recent Activity */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Activity</Text>
           {transactions.length === 0 ? (
             <Card style={styles.emptyCard}>
               <Text style={styles.emptyEmoji}>📝</Text>
               <Text style={styles.emptyText}>No transactions yet</Text>
               <Text style={styles.emptySubtext}>
-                Start logging your expenses to build your financial habits!
+                Start logging to build your financial habits!
               </Text>
             </Card>
           ) : (
-            <View style={styles.transactionsList}>
-              {transactions.slice(0, 5).map((transaction) => (
-                <Card key={transaction.id} style={styles.transactionCard}>
-                  <View style={styles.transactionContent}>
-                    <View style={styles.transactionLeft}>
-                      <Text style={styles.transactionEmoji}>
-                        {transaction.categoryIcon}
-                      </Text>
-                      <View>
-                        <Text style={styles.transactionCategory}>
-                          {transaction.categoryLabel}
-                        </Text>
-                        {transaction.note && (
-                          <Text style={styles.transactionNote} numberOfLines={1}>
-                            {transaction.note}
-                          </Text>
-                        )}
-                      </View>
+            <View style={styles.activityList}>
+              {transactions.slice(0, 3).map((transaction) => (
+                <Card key={transaction.id} style={styles.activityCard}>
+                  <View style={styles.activityLeft}>
+                    <View
+                      style={[
+                        styles.activityIcon,
+                        {
+                          backgroundColor:
+                            transaction.type === 'expense'
+                              ? COLORS.accent + '20'
+                              : COLORS.success + '20',
+                        },
+                      ]}
+                    >
+                      <Text style={styles.activityEmoji}>{transaction.categoryIcon}</Text>
                     </View>
+                    <View>
+                      <Text style={styles.activityCategory}>{transaction.categoryLabel}</Text>
+                      <Text style={styles.activityTime}>Today, 09:15 AM</Text>
+                    </View>
+                  </View>
+                  <View style={styles.activityRight}>
                     <Text
                       style={[
-                        styles.transactionAmount,
+                        styles.activityAmount,
                         transaction.type === 'expense'
                           ? styles.expenseAmount
                           : styles.incomeAmount,
                       ]}
                     >
                       {transaction.type === 'expense' ? '-' : '+'}
-                      {formatCurrency(transaction.amount)}
+                      {formatCurrency(transaction.amount).replace('₹', '$')}
+                    </Text>
+                    <Text style={styles.activityXP}>
+                      +{transaction.type === 'expense' ? '10' : '15'} XP
                     </Text>
                   </View>
                 </Card>
@@ -181,19 +288,47 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* Floating Action Button */}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => router.push('/add-expense')}
-        activeOpacity={0.8}
-      >
-        <LinearGradient
-          colors={[COLORS.accent, COLORS.accentDark]}
-          style={styles.fabGradient}
+      {/* Bottom Navigation - The Dojo Style */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem}>
+          <View style={styles.navIconActive}>
+            <Text style={styles.navIconText}>☰</Text>
+          </View>
+          <Text style={[styles.navLabel, styles.navLabelActive]}>DASH</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <View style={styles.navIcon}>
+            <Text style={styles.navIconText}>👁</Text>
+          </View>
+          <Text style={styles.navLabel}>DOJO</Text>
+        </TouchableOpacity>
+
+        {/* FAB - Center */}
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => router.push('/add-expense')}
+          activeOpacity={0.8}
         >
-          <Text style={styles.fabIcon}>+</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+          <View style={styles.fabInner}>
+            <Text style={styles.fabIcon}>+</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <View style={styles.navIcon}>
+            <Text style={styles.navIconText}>🔒</Text>
+          </View>
+          <Text style={styles.navLabel}>VAULT</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <View style={styles.navIcon}>
+            <Text style={styles.navIconText}>👤</Text>
+          </View>
+          <Text style={styles.navLabel}>PROFILE</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -207,141 +342,319 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: SPACING.xxl + 60, // Space for FAB
+    paddingBottom: 100, // Space for bottom nav
   },
   header: {
-    paddingTop: SPACING.lg,
-    paddingBottom: SPACING.xl,
-    paddingHorizontal: SPACING.lg,
-    borderBottomLeftRadius: BORDER_RADIUS.xl,
-    borderBottomRightRadius: BORDER_RADIUS.xl,
-  },
-  headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.lg,
   },
-  greeting: {
-    fontSize: FONT_SIZE.md,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: SPACING.xs,
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  userName: {
-    fontSize: FONT_SIZE.xxl,
-    fontWeight: FONT_WEIGHT.bold,
-    color: '#FFFFFF',
-  },
-  levelBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
+  appIconContainer: {
+    width: 48,
+    height: 48,
     borderRadius: BORDER_RADIUS.md,
+    backgroundColor: COLORS.primary + '20',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
   },
-  levelText: {
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.bold,
-    color: '#FFFFFF',
+  appIcon: {
+    fontSize: 24,
   },
-  pointsText: {
-    fontSize: FONT_SIZE.xs,
-    color: 'rgba(255, 255, 255, 0.9)',
-  },
-  balanceCard: {
-    margin: SPACING.lg,
-    marginTop: -SPACING.xl - 20,
-    padding: SPACING.xl,
-  },
-  balanceHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  balanceLabel: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.textSecondary,
-    fontWeight: FONT_WEIGHT.medium,
-  },
-  streakBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.accentLight + '30',
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.full,
-  },
-  streakEmoji: {
-    fontSize: FONT_SIZE.md,
-    marginRight: SPACING.xs,
-  },
-  streakText: {
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.accentDark,
-  },
-  balanceAmount: {
-    fontSize: FONT_SIZE.xxxl,
-    fontWeight: FONT_WEIGHT.bold,
-    marginBottom: SPACING.sm,
-  },
-  balancePositive: {
-    color: COLORS.success,
-  },
-  balanceNegative: {
-    color: COLORS.danger,
-  },
-  motivationalText: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.textSecondary,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: SPACING.lg,
-    gap: SPACING.md,
-    marginBottom: SPACING.lg,
-  },
-  statCard: {
-    flex: 1,
-    padding: SPACING.md,
-    alignItems: 'center',
-  },
-  statEmoji: {
-    fontSize: FONT_SIZE.xxl,
-    marginBottom: SPACING.xs,
-  },
-  statValue: {
-    fontSize: FONT_SIZE.lg,
+  appName: {
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
+  },
+  onDeviceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primary + '15',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  onDeviceIcon: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.primary,
+    marginRight: SPACING.xs,
+  },
+  onDeviceText: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
+    letterSpacing: 0.5,
+  },
+  rankCard: {
+    marginHorizontal: SPACING.lg,
+    marginBottom: SPACING.lg,
+    padding: SPACING.xl,
+    backgroundColor: COLORS.surfaceTint,
+  },
+  rankLabel: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textSecondary,
+    letterSpacing: 1,
     marginBottom: SPACING.xs,
   },
-  statLabel: {
-    fontSize: FONT_SIZE.xs,
+  rankTitle: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.md,
+  },
+  xpProgressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  xpBar: {
+    flex: 1,
+    height: 8,
+    backgroundColor: COLORS.border,
+    borderRadius: BORDER_RADIUS.full,
+    marginRight: SPACING.md,
+    overflow: 'hidden',
+  },
+  xpBarFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  xpText: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
+  },
+  rankHint: {
+    fontSize: FONT_SIZE.sm,
     color: COLORS.textSecondary,
-    textAlign: 'center',
   },
   section: {
-    paddingHorizontal: SPACING.lg,
     marginBottom: SPACING.lg,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: SPACING.lg,
     marginBottom: SPACING.md,
   },
   sectionTitle: {
-    fontSize: FONT_SIZE.lg,
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
   },
   seeAllText: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.primary,
+    fontSize: FONT_SIZE.md,
     fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
+  },
+  habitRings: {
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.md,
+  },
+  habitRingCard: {
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    marginRight: SPACING.md,
+    minWidth: 160,
+  },
+  habitRingLabel: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+    marginTop: SPACING.md,
+  },
+  habitRingPercent: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+    marginTop: SPACING.xs,
+  },
+  streakCard: {
+    marginHorizontal: SPACING.lg,
+    padding: SPACING.lg,
+    backgroundColor: COLORS.primary,
+  },
+  streakHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+  },
+  streakIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  streakEmoji: {
+    fontSize: 20,
+  },
+  streakText: {
+    flex: 1,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: '#FFFFFF',
+  },
+  streakDate: {
+    fontSize: FONT_SIZE.sm,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  calendarDays: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: SPACING.md,
+  },
+  dayLabel: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: 'rgba(255, 255, 255, 0.7)',
+    width: 40,
+    textAlign: 'center',
+  },
+  calendarDates: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  calendarDate: {
+    width: 40,
+    height: 40,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarDateActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  calendarDateToday: {
+    backgroundColor: '#FFFFFF',
+  },
+  calendarDateText: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  calendarDateTextActive: {
+    color: COLORS.primary,
+  },
+  activeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primary + '15',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.full,
+  },
+  activeIcon: {
+    fontSize: 12,
+    marginRight: SPACING.xs,
+  },
+  activeText: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
+  },
+  powerUps: {
+    flexDirection: 'row',
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.md,
+  },
+  powerUpCard: {
+    flex: 1,
+    padding: SPACING.lg,
+    alignItems: 'center',
+    borderWidth: 2,
+  },
+  powerUpIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: BORDER_RADIUS.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.md,
+  },
+  powerUpEmoji: {
+    fontSize: 28,
+  },
+  powerUpLabel: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+    textAlign: 'center',
+  },
+  activityList: {
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.sm,
+  },
+  activityCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: SPACING.md,
+  },
+  activityLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  activityIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: BORDER_RADIUS.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  activityEmoji: {
+    fontSize: 24,
+  },
+  activityCategory: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
+  },
+  activityTime: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+  },
+  activityRight: {
+    alignItems: 'flex-end',
+  },
+  activityAmount: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    marginBottom: SPACING.xs,
+  },
+  expenseAmount: {
+    color: COLORS.textPrimary,
+  },
+  incomeAmount: {
+    color: COLORS.success,
+  },
+  activityXP: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.primary,
   },
   emptyCard: {
+    marginHorizontal: SPACING.lg,
     padding: SPACING.xxl,
     alignItems: 'center',
   },
@@ -360,66 +673,81 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     textAlign: 'center',
   },
-  transactionsList: {
-    gap: SPACING.sm,
-  },
-  transactionCard: {
-    padding: SPACING.md,
-  },
-  transactionContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  transactionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  transactionEmoji: {
-    fontSize: FONT_SIZE.xxl,
-    marginRight: SPACING.md,
-  },
-  transactionCategory: {
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  transactionNote: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.textSecondary,
-  },
-  transactionAmount: {
-    fontSize: FONT_SIZE.lg,
-    fontWeight: FONT_WEIGHT.bold,
-  },
-  expenseAmount: {
-    color: COLORS.danger,
-  },
-  incomeAmount: {
-    color: COLORS.success,
-  },
-  fab: {
+  bottomNav: {
     position: 'absolute',
-    bottom: SPACING.xl,
-    right: SPACING.lg,
-    borderRadius: BORDER_RADIUS.full,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: COLORS.surface,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 8,
   },
-  fabGradient: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  navIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: BORDER_RADIUS.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.xs,
+  },
+  navIconActive: {
+    width: 40,
+    height: 40,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: COLORS.primary + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.xs,
+  },
+  navIconText: {
+    fontSize: 20,
+  },
+  navLabel: {
+    fontSize: 10,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textSecondary,
+    letterSpacing: 0.5,
+  },
+  navLabelActive: {
+    color: COLORS.primary,
+  },
+  fab: {
+    position: 'absolute',
+    top: -28,
+    left: '50%',
+    marginLeft: -28,
+    width: 56,
+    height: 56,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  fabInner: {
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   fabIcon: {
-    fontSize: 32,
+    fontSize: 28,
     color: '#FFFFFF',
     fontWeight: FONT_WEIGHT.bold,
   },
