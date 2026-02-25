@@ -88,10 +88,10 @@ export default function EditProfileScreen() {
   const selectedCurrency = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} data-testid="edit-profile-screen">
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton} data-testid="edit-profile-back-btn">
           <Ionicons name="arrow-back" size={24} color={COLORS.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
@@ -99,6 +99,7 @@ export default function EditProfileScreen() {
           onPress={handleSave} 
           style={styles.saveButton}
           disabled={isSaving}
+          data-testid="edit-profile-save-btn"
         >
           <Text style={[styles.saveButtonText, isSaving && styles.saveButtonDisabled]}>
             {isSaving ? 'Saving...' : 'Save'}
