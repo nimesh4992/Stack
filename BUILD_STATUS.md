@@ -207,7 +207,7 @@ Splash (4s) →
 **Version:** 1.0.0-beta  
 **Last Updated:** Feb 25, 2026  
 **Completion:** ~65%  
-**App URL:** https://offline-finance-test.preview.emergentagent.com
+**App URL:** https://money-mindful-test.preview.emergentagent.com
 
 ### Package Dependencies
 ```json

@@ -200,7 +200,7 @@ frontend/
    ```
 
 2. **Access the app:**
-   - Web: https://offline-finance-test.preview.emergentagent.com
+   - Web: https://money-mindful-test.preview.emergentagent.com
    - Mobile: Scan the QR code with Expo Go app
 
 3. **Test the flow:**

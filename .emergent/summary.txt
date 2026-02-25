@@ -1,213 +1,201 @@
-<analysis>
-
-**original_problem_statement**: The user wants to build a personal finance habit-building app, HabitFinance, using React Native (Expo). The app must be offline-first, with all data stored on the device.
+<analysis>**original_problem_statement**: The user wants to build a personal finance habit-building app, HabitFinance, using React Native (Expo). The app must be offline-first, with all data stored on the device.
 
 **PRODUCT REQUIREMENTS**:
 - **Core Features**: Onboarding quiz, manual expense tracking, habit building (streaks, challenges), gamification, and visualizations.
 - **Advanced Features**:
-    - **SMS Parsing**: Initially mocked, then implemented with real SMS permissions to auto-log expenses from Indian bank SMS.
-    - **AI/Smart Nudges**: An engine to provide witty, sarcastic, motivational, and sentimental nudges based on user behavior. The user provided a detailed list of desired nudges. TensorFlow Lite was discussed but deprioritized in favor of a rule-based engine.
-    - **Monetization**: Integration of AdMob with a smart placement strategy (max 3 ads/day) to maximize revenue without disrupting UX. The user provided AdMob IDs.
-- **UI/UX**: A polished, minimal, and attractive UI, with an initial reference to The Dojo app. The user later provided a specific design for a new, light-themed splash screen.
+    - **SMS Parsing**: Auto-log expenses from Indian bank SMS.
+    - **AI/Smart Nudges**: An engine to provide witty, sarcastic, motivational, and sentimental nudges.
+    - **TensorFlow AI**: On-device AI for spending predictions, smart notifications, auto-categorization, and churn prediction.
+    - **Monetization**: AdMob integration with smart placement.
+    - **Social Features**: Invite friends with rewards and share achievements.
+- **UI/UX**: A polished, minimal, and attractive UI with personalization (avatars/companions).
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a nearly feature-complete Expo (React Native) app. It has a modular architecture, Redux for state management, and  for navigation.
+The application is a feature-rich, offline-first Expo (React Native) app. It has a modular architecture, Redux for state management, and  for navigation.
 
-Most core and advanced features have been implemented, including:
-- A functional onboarding flow and manual expense logging.
-- A gamified home dashboard, redesigned Insights screen with chart placeholders, and a working Highlights (Spotify Wrapped) feature.
-- A feature-rich Settings screen with toggles for new functionalities.
-- A mock SMS import screen with a partially functional parser.
-- A Challenges & Goals screen.
-- A sophisticated, rule-based Smart Nudge Engine that displays contextual messages on the home screen.
-- Infrastructure for local notifications, real SMS reading (with permissions), and AdMob ads.
+Implemented features include:
+- A complete onboarding and expense logging flow.
+- A gamified home dashboard with a personalized companion/avatar system.
+- A functional SMS parser with a user-guided tour.
+- A sophisticated rule-based Smart Nudge Engine and a TensorFlow.js-based AI engine for advanced insights.
+- AdMob ad integration with display logic.
+- Social features for inviting friends and sharing achievements.
+- Placeholder files have been created for a large new batch of features including a new streak calendar, privacy policy, help/support screens, habit trackers, and Google Drive backup.
 
 **Last working item**:
--   **Last item agent was working**: The agent was working on a user request to redesign the splash screen to match a provided image and integrate AdMob ads. The agent implemented a **dark-themed** splash screen () and set up the AdMob infrastructure. However, this was a difficult process due to web-specific rendering bugs. After a lengthy debugging session, the user saw the result and rejected it, stating it looks pathetic and requesting a **white/light theme** instead.
--   **Status**: BLOCKED (The implementation was rejected by the user).
--   **Agent Testing Done**: Y (Agent used the screenshot tool but failed to resolve visual bugs on the web preview).
--   **Which testing method agent to use?**: frontend testing agent (screenshot tool) to verify the new light-themed UI.
--   **User Testing Done**: Y (User explicitly rejected the dark-themed design).
+-   **Last item agent was working**: The agent was scaffolding a large batch of new features requested by the user. This involved creating numerous placeholder files for UI polishing (a new home screen header, security modal), a new weekly/monthly streak calendar, new informational screens (Privacy Policy, Help & Support, FAQs), new habit trackers (steps, water), and a service for Google Drive backup.
+-   **Status**: IN PROGRESS
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: frontend testing agent. This is necessary to verify the integration and functionality of the many new screens and components.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Redesign Splash Screen with a Light Theme (P0)
--   Issue 2: Fix SMS Parser Logic (P1)
--   Issue 3: Implement AdMob Ad Display Logic (P2)
--   Issue 4: Minor UI/State Bugs (P3)
+-   Issue 1: Complete and Integrate the New Batch of Features (P0)
+-   Issue 2: Implement Step and Water Tracking Logic (P1)
+-   Issue 3: Implement Google Drive Backup Functionality (P1)
 
 **Issues Detail**:
--   **Issue 1: Redesign Splash Screen with a Light Theme**
-    -   **Attempted fixes**: The agent spent a significant amount of time creating a dark-themed splash screen in . This approach was explicitly rejected by the user.
+-   **Issue 1: Complete and Integrate the New Batch of Features**
+    -   **Attempted fixes**: The agent created multiple new files (, , , etc.) but did not integrate them into the app's navigation or UI.
     -   **Next debug checklist**:
-        1.  Delete or completely overhaul the existing .
-        2.  Re-create the splash screen from scratch using a light/white color scheme, referencing the user's provided design.
-        3.  Ensure all text content (Your Data, Your Control, description, etc.) is visible and correctly styled.
-        4.  Verify the new design on the web preview using the screenshot tool.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the user's highest priority request. Fixing it will satisfy the user's design requirements for the app's entry point.
-    -   **Status**: NOT STARTED
+        1.  Integrate the new screens (, , , , ) into the app navigation (e.g., via the Settings screen).
+        2.  Replace the existing home screen header with  and the streak component with .
+        3.  Implement the trigger for  from the On-Device lock icon.
+        4.  Add the new expense categories to the  screen.
+        5.  Implement the currency selector.
+        6.  Populate the new screens with their respective UI and content.
+    -   **Why fix this issue and what will be achieved with the fix?**: This will implement the user's latest set of requests, significantly enhancing the app's features and user experience.
+    -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: frontend
     -   **Blocked on other issue**: None
 
--   **Issue 2: Fix SMS Parser Logic**
-    -   **Attempted fixes**: The agent identified a bug where the parser in  was extracting the account balance instead of the debited amount from an SMS string. The agent correctly diagnosed the issue but did not implement a fix.
+-   **Issue 2: Implement Step and Water Tracking Logic**
+    -   **Attempted fixes**: Created a placeholder file .
     -   **Next debug checklist**:
-        1.  Inspect the regex patterns in .
-        2.  Modify the generic parser and bank-specific parsers to correctly distinguish between the transaction amount and the remaining balance.
-        3.  Test the fix using the  screen with the sample HDFC Bank message.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is a core part of the automated expense logging feature. Fixing it will make the SMS parsing feature functional and useful.
+        1.  Install and configure  for step tracking.
+        2.  Build the UI in  for logging steps and water intake.
+        3.  Create or update a Redux slice to store daily habit data.
+        4.  Integrate with the  to send AI-driven notifications based on habit progress.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a key user request for new, interactive habit-tracking features.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None
+    -   **Blocked on other issue**: Blocked on Issue 1 (screen integration).
 
--   **Issue 3: Implement AdMob Ad Display Logic**
-    -   **Attempted fixes**: The agent successfully installed , configured  with the user's AdMob ID, and created a web-compatible  to handle initialization. However, no logic to actually *trigger and display* the ads was implemented.
+-   **Issue 3: Implement Google Drive Backup Functionality**
+    -   **Attempted fixes**: Created a placeholder service file .
     -   **Next debug checklist**:
-        1.  In , implement functions to load and show interstitial ads.
-        2.  Develop the smart placement logic (e.g., track app opens, last ad shown time) to limit ads to max 3 per day.
-        3.  Integrate ad triggers into the app flow (e.g., after completing a task, on certain screen loads) as discussed in the AdMob strategy.
-    -   **Why fix this issue and what will be achieved with the fix?**: This will complete the monetization feature requested by the user.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: frontend (Note: Ads will not show in web preview, requires testing on Expo Go).
-    -   **Blocked on other issue**: None
-
--   **Issue 4: Minor UI/State Bugs**
-    -   **Attempted fixes**: None. The agent noted these issues but moved on to higher-priority tasks.
-    -   **Next debug checklist**:
-        1.  Investigate the state management for the tab switcher in  to ensure the UI updates correctly when switching between Challenges and Goals.
-        2.  Confirm that state persistence with Redux Persist and AsyncStorage is configured correctly for native builds, even if it's flaky on the web preview.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves the overall polish and stability of the user experience.
+        1.  Install and configure  for authentication.
+        2.  Implement methods in  to sign in, and then upload/download the app's state as a JSON file using the Google Drive API.
+        3.  Add UI elements in the Settings screen to trigger manual backup and restore.
+    -   **Why fix this issue and what will be achieved with the fix?**: Adds a critical data backup feature to prevent data loss for users.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None
+    -   **Blocked on other issue**: Blocked on Issue 1 (UI integration).
 
 **In progress Task List**:
-None. The last task was rejected and needs to be restarted.
+-   **Task 1: Complete and Integrate New UI/UX Features**
+    -   **Where to resume**: The agent has just created several new component and screen files. The next step is to import and render these components in the correct places (e.g., , ), add navigation links, and then build out their internal logic and UI.
+    -   **What will be achieved with this?**: A more polished app with several new features and informational screens as requested by the user.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on something**: None.
 
 **Upcoming and Future Tasks**
--   **Upcoming Tasks (P1):**
-    -   **Implement Functional Dark Mode**: The UI toggle exists in Settings, but the theme-switching logic needs to be implemented.
-    -   **Implement Post-Log Nudge Toast**: Use the Nudge Engine to show a toast notification immediately after a user logs an expense.
--   **Future Tasks (P2):**
-    -   **Implement Data Export/Backup**: Add functionality to the Export Data button in Settings to export user transactions to a CSV or JSON file.
-    -   **Implement Functional Local Notifications**: The service () and permissions are in place. The logic to schedule and trigger streak reminders and daily check-ins needs to be implemented.
-    -   **Implement Educational Micro-lessons**: Build a new screen to render educational content from Markdown files.
+-   There are no upcoming tasks beyond the large, in-progress batch requested by the user.
 
 **Completed work in this session**
--   **Bug Fixes & UI Polish**:
-    -   Resolved the critical, recurring bug in , making the component functional.
-    -   Redesigned the  screen with smaller vector icons and an improved grid layout.
-    -   Updated the main tab navigator in  to use vector icons instead of emojis and added the  tab.
--   **Feature Implementation**:
-    -   **SMS Parsing (Mock)**: Created  screen and  logic.
-    -   **Challenges & Goals**: Created the  screen with UI for tracking progress.
-    -   **Smart Nudge Engine**: Designed and implemented a comprehensive rule-based engine in  and integrated a  on the home screen, populated with user-provided content.
-    -   **Notifications & SMS Permissions**: Installed necessary packages, added Android permissions to , and built the UI toggles in the Settings screen.
-    -   **AdMob Integration**: Installed the AdMob package, configured , and created a web-safe  for initialization.
+-   **TensorFlow AI Engine**: Implemented an on-device AI engine () for spending forecasts, engagement tracking, and retention risk analysis, displayed on a new  screen.
+-   **Social & Sharing Features**: Created Invite Friends and Share Achievement screens with backend logic for rewards and sharing.
+-   **Personalization System**: Implemented a Companion avatar system, personalized time-based greetings on the home screen, and smart companion-based notifications.
+-   **SMS Reading Tour**: Created a multi-step overlay tutorial for the SMS import feature to improve user onboarding for that feature.
+-   **AdMob Logic**: Implemented the logic to trigger and display interstitial ads at key moments (e.g., after logging an expense).
+-   **Critical Bug Fixes**:
+    -   **SMS Parser**: Fixed a major bug where the parser was extracting the account balance instead of the transaction amount.
+    -   **UI Glitches**: Resolved UI bugs on the Challenges and Goals screens.
+-   **Post-Log Nudge Toast**: Added an animated toast notification that appears after a user logs an expense.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: SMS Parser Bug**
-    -   **Debug checklist**: See All Pending/In progress Issue list. The parser confuses transaction amounts with account balances.
-    -   **Why to solve this issue and what will be achieved with this?**: It is a blocker for the automatic expense tracking feature.
-    -   **Should Test frontend/backend/both after fix**: frontend
-    -   **Is recurring issue?**: N
+-   All previously known issues have been resolved.
 
 **Known issue recurrence from previous fork**
-- N/A
+-   N/A
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
 -   **Framework**: React Native with Expo
--   **State Management**: Redux Toolkit with  and .
--   **Navigation**: .
--   **UI & Styling**: Custom components with .
--   **Monetization**:  for AdMob.
--   **Device Features**:
-    -    for local notifications.
-    -    for reading SMS on Android.
--   **Logic**: A custom rule-based engine () for personalization.
+-   **State Management**: Redux Toolkit, , 
+-   **Navigation**: 
+-   **AI/ML**:  and  for on-device inference.
+-   **Animations**: 
+-   **Device Features**: , .  and  are planned.
 
 **key DB schema**
--   N/A. Data is stored locally via Redux slices and AsyncStorage.
+-   N/A. Data is stored locally via Redux slices and persisted with AsyncStorage. A new  was added.
 
 **changes in tech stack**
-- No major changes. New libraries were added to support requested features.
+-   , 
+-   
+-   
 
 **All files of reference**
--   : **NEEDS COMPLETE REDESIGN**. This file was the source of a major debugging loop and the final design was rejected.
--   : Contains the **buggy** SMS parsing logic that needs to be fixed.
--   : Contains the full implementation of the smart nudge engine and all user-provided nudge content.
--   : Contains the foundation for AdMob integration but lacks the logic to display ads.
--   : Was significantly updated with new UI toggles for notifications and SMS auto-detection.
--   : Updated with Android permissions (, ) and the AdMob App ID.
+-   **In Progress / Needing Integration**:
+    -   
+    -   
+    -   
+    -   
+    -   , , 
+-   **Recently Completed**:
+    -   
+    -   
+    -   , 
+    -   
+    -   
+    -   
 
 **Areas that need refactoring**:
--   : This file must be completely rewritten to a light theme as per the user's latest request.
+-   As new navigation items are added to the Settings screen, it may become crowded and could benefit from being organized into sub-screens.
 
 **key api endpoints**
 -   N/A. The application is offline-first.
 
 **Critical Info for New Agent**
--   **Highest Priority**: The user has explicitly rejected the dark-themed splash screen. Your first task is to rebuild  using a **light/white theme** that matches the user's visual reference. Do not try to fix the old dark version.
--   **Web Preview Limitations**: The agent spent a lot of time debugging visual issues that only appeared on the web preview. Be aware that  does not work on the web, and some styling/animation may behave differently. The  has a web-specific mock to prevent crashes.
--   **Known Bugs**: There is a known, unfixed bug in  where it misidentifies the transaction amount.
--   **Incomplete Features**: The infrastructure for AdMob and Local Notifications is in place, but the logic to trigger them is missing.
+-   **Priority 1**: Your main task is to complete the large feature batch started by the previous agent. You need to integrate the newly created files (, , etc.) into the app, add them to the navigation, and implement their functionality.
+-   **Expo Restart is Key**: When you add new screens (files in the  directory), you **must** restart the Expo development server for the new routes to be recognized.
+-   **Planned Dependencies**: Be prepared to install  (for step tracking) and  (for Google Drive backup) to complete the user's requests.
+-   **Web Preview Issues**: The web preview can be unreliable for certain native features, navigation events, and animations. Trust your code and use the testing agent for robust verification.
 
-**documents created in this job**
-- No new documents were created. The agent worked on the existing codebase.
+**documents and test reports created in this job**
+-   
+-   
+-    through 
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  ** (Message 255)**: User requested a new splash screen design, AdMob integration, and a smart ad strategy. (IN PROGRESS - implementation rejected)
-2.  ** (Message 258)**: User provided the necessary AdMob IDs. (IMPLEMENTED)
-3.  ** (Message 212)**: User set the priority to build notification/SMS features and deprioritized TensorFlow. (IMPLEMENTED)
-4.  ** (Message 210)**: User asked for a status update. (Completed)
-5.  ** (Message 179)**: User requested the Smart Nudge Engine. (IMPLEMENTED)
-6.  ** (Message 185)**: User provided the detailed content for the Nudge Engine. (IMPLEMENTED)
-7.  ** (Message 177)**: User inquired about the AI feature. (Completed)
-8.  ** (Message 116)**: User requested the next set of features. (IMPLEMENTED)
-9.  ** (Message 5)**: User's initial go-ahead for the work session. (Completed)
-10. ** (Message 373)**: User's final, critical feedback rejecting the splash screen implementation. (PENDING - HIGHEST PRIORITY)
+1.  ** (LATEST & IN PROGRESS)**: User requested a large batch of new features including UI polishing, new screens (Privacy Policy, Help/Support), habit trackers, Google Drive backup, and more.
+2.  ** (IN PROGRESS)**: User provided clarification for Google Drive and habit tracking implementation.
+3.  ** (Completed)**: User approved the implementation of all TensorFlow AI features.
+4.  ** (Completed)**: User confirmed the AI feature plan.
+5.  ** (Completed)**: User asked for ideas on using TensorFlow for engagement.
+6.  ** (Completed)**: User asked for instructions on app branding.
+7.  ** (Completed)**: User asked for deployment instructions.
+8.  ** (Completed)**: User requested social sharing features.
+9.  ** (Completed)**: User clarified requirements for social features.
+10. ** (Completed)**: User requested personalization, smart notifications, and an SMS tour.
 
 **Project Health Check:**
--   **Broken**:
-    -   The Splash Screen () is visually incorrect and was rejected by the user. It needs a complete rewrite.
-    -   The SMS Parser () has a known bug preventing it from working correctly.
+-   **Broken**: No features are currently broken. The app is stable.
 -   **Mocked**:
-    -   AdMob is integrated but no ads are actually shown. The display logic is missing.
-    -   Local Notifications are integrated but are not yet being scheduled or triggered.
+    -   Google Drive Backup () exists but contains no logic.
+    -   Habit Tracking () is a placeholder screen without functionality.
+    -   The Privacy Policy, Help & Support, and FAQ screens are placeholders.
 
 **3rd Party Integrations**
--   , : State management.
--   , : Local data persistence.
--   : Navigation.
--   , , : Visualizations.
--   : Monetization (for native only).
--   : For local push notifications.
--   : For reading SMS on Android.
+-   , 
+-   , 
+-   
+-   
+-   
+-   
+-   , 
+-   
+-   
 
 **Testing status**
--   **Testing agent used after significant changes**: NO
--   **Troubleshoot agent used after agent stuck in loop**: NO (The agent got stuck in a long debugging loop on the splash screen but did not call the troubleshooter).
--   **Test files created**: None.
--   **Known regressions**: None. The previous  regression was fixed.
+-   **Testing agent used after significant changes**: YES
+-   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Test files created**: None
+-   **Known regressions**: None
 
 **Credentials to test flow:**
 -   **AdMob IDs**:
     -   App ID: 
     -   Interstitial: 
-    -   Native: 
 
 **What agent forgot to execute**
--   The agent identified the SMS parser bug but did not fix it.
--   The agent created services for notifications and ads but did not implement the logic to trigger them.
--   The agent did not fix the minor UI bug on the  screen where the Goals tab doesn't visually update on click.
--   The agent got stuck in a prolonged debugging loop on the splash screen for over 100 messages without calling the .
-
-</analysis>
+-   The agent created placeholder files for a large feature request but did not proceed with the integration and implementation of those features before the session ended. The entire task remains to be completed.</analysis>
