@@ -437,9 +437,12 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.lg,
     backgroundColor: COLORS.surfaceAlt,
     gap: SPACING.sm,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   tabActive: {
     backgroundColor: COLORS.primary + '15',
+    borderColor: COLORS.primary + '40',
   },
   tabText: {
     fontSize: FONT_SIZE.md,
