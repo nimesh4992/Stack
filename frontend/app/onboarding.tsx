@@ -34,8 +34,16 @@ export default function OnboardingScreen() {
   const handleOptionSelect = (optionId: string) => {
     if (currentStep === 0) {
       dispatch(setQuizAnswer({ personality: optionId as any }));
+      // Auto-advance to next step after short delay
+      setTimeout(() => {
+        dispatch(nextStep());
+      }, 500);
     } else if (currentStep === 1) {
       dispatch(setQuizAnswer({ goal: optionId as any }));
+      // Auto-advance to next step after short delay
+      setTimeout(() => {
+        dispatch(nextStep());
+      }, 500);
     }
   };
 
