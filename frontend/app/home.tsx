@@ -891,6 +891,7 @@ const styles = StyleSheet.create({
   calendarDates: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    marginBottom: SPACING.sm,
   },
   calendarDate: {
     width: 44,
