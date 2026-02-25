@@ -927,11 +927,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkDotText: {
-    fontSize: 8,
-    color: '#FFFFFF',
-    fontWeight: FONT_WEIGHT.bold,
-  },
   powerUpsGrid: {
     paddingHorizontal: SPACING.lg,
     flexDirection: 'row',
