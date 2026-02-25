@@ -3,8 +3,8 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { COMPANIONS, getCompanion, getDefaultCompanion } from '../../core/common/companions';
-import { COLORS, BORDER_RADIUS } from '../../core/common/constants';
+import { COMPANIONS, getCompanion, getDefaultCompanion } from '../../common/companions';
+import { COLORS, BORDER_RADIUS } from '../../common/constants';
 
 // Conditional Lottie import for web compatibility
 let LottieView: any = null;
