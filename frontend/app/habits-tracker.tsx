@@ -451,19 +451,19 @@ export default function HabitsTrackerScreen() {
             <View style={styles.quickButtons}>
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateMindful(5)}
+                onPress={() => handleUpdateMindful(5)}
               >
                 <Text style={styles.quickButtonText}>+5 min</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateMindful(10)}
+                onPress={() => handleUpdateMindful(10)}
               >
                 <Text style={styles.quickButtonText}>+10 min</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateMindful(15)}
+                onPress={() => handleUpdateMindful(15)}
               >
                 <Text style={styles.quickButtonText}>+15 min</Text>
               </TouchableOpacity>
@@ -476,8 +476,8 @@ export default function HabitsTrackerScreen() {
                   'Adjust Mindful Goal',
                   `Current goal: ${habits.mindfulGoal} minutes`,
                   [
-                    { text: '-5', onPress: () => updateGoal('mindful', -5) },
-                    { text: '+5', onPress: () => updateGoal('mindful', 5) },
+                    { text: '-5', onPress: () => handleUpdateGoal('mindful', -5) },
+                    { text: '+5', onPress: () => handleUpdateGoal('mindful', 5) },
                     { text: 'Cancel', style: 'cancel' },
                   ]
                 );
