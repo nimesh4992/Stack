@@ -328,25 +328,26 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
     marginBottom: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: FONT_WEIGHT.bold,
-    color: COLORS.textPrimary,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   titleHighlight: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: FONT_WEIGHT.bold,
     textAlign: 'center',
     marginBottom: SPACING.md,
   },
   description: {
-    fontSize: FONT_SIZE.lg,
-    color: COLORS.textSecondary,
+    fontSize: FONT_SIZE.md,
+    color: '#AAAAAA',
     textAlign: 'center',
-    lineHeight: 26,
-    paddingHorizontal: SPACING.md,
+    lineHeight: 24,
+    paddingHorizontal: SPACING.sm,
   },
   pagination: {
     flexDirection: 'row',
