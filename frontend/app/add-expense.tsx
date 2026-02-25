@@ -19,6 +19,7 @@ import { awardPoints, updateStreak } from '../src/features/gamification/gamifica
 import { getNudgeForPostLog, SelectedNudge } from '../src/core/common/nudgeEngine';
 import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
 import { triggerAd } from '../src/core/services/adService';
+import { detectSpendingAnomaly } from '../src/core/services/aiEngine';
 import {
   COLORS,
   SPACING,
