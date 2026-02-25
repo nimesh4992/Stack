@@ -97,15 +97,15 @@ export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
         </View>
 
         {/* Text Content */}
-        <View style={[styles.textContainer, { backgroundColor: 'red' }]}>
+        <View style={{ backgroundColor: 'red', padding: 20, minHeight: 150, width: '100%' }}>
           <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' }}>
-            {currentContent.title}
+            Your Data,
           </Text>
           <Text style={{ fontSize: 28, fontWeight: '700', color: '#4F46E5', textAlign: 'center', marginBottom: 12 }}>
-            {currentContent.titleHighlight}
+            Your Control
           </Text>
           <Text style={{ fontSize: 16, color: '#AAAAAA', textAlign: 'center', lineHeight: 24 }}>
-            {currentContent.description}
+            Everything stays on your phone. No cloud, no tracking, just progress.
           </Text>
         </View>
 
