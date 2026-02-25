@@ -10,15 +10,22 @@ import {
   Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { RootState } from '../src/store';
+import { RootState, AppDispatch } from '../src/store';
 import { selectTodayBalance } from '../src/features/expenseTracking/expenseSlice';
+import { 
+  loadUserPreferences, 
+  trackAppOpen,
+  selectPreferences 
+} from '../src/features/userPreferences/userPreferencesSlice';
 import { Card } from '../src/core/presentation/components/Card';
 import { CircularProgress } from '../src/core/presentation/components/CircularProgress';
 import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
+import { CompanionAvatar } from '../src/core/presentation/components/CompanionAvatar';
 import { formatCurrency } from '../src/core/common/utils';
 import { getNudgeForHome, SelectedNudge } from '../src/core/common/nudgeEngine';
+import { getTimeBasedGreeting, getContextualMessage, getCompanion } from '../src/core/common/companions';
 import {
   COLORS,
   SPACING,
