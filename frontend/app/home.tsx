@@ -181,7 +181,7 @@ export default function HomeScreen() {
             </View>
             <Text style={styles.rankTitle}>Finance Apprentice</Text>
             <Text style={styles.rankSubtitle}>
-              Keep logging daily to reach "Consistency King" 👑
+              Keep logging daily to reach &quot;Consistency King&quot; 👑
             </Text>
             <View style={styles.xpProgressContainer}>
               <View style={styles.xpBar}>
