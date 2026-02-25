@@ -271,24 +271,22 @@ export default function SettingsScreen() {
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Profile Summary Card */}
-        <Card style={styles.profileCard}>
-          <View style={styles.profileHeader}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {userProfile?.name?.charAt(0) || 'U'}
-              </Text>
+        <TouchableOpacity onPress={() => router.push('/choose-companion')} activeOpacity={0.7}>
+          <Card style={styles.profileCard}>
+            <View style={styles.profileHeader}>
+              <CompanionAvatar companionId={preferences.companionId} size="medium" />
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>{displayName}</Text>
+                <Text style={styles.profileStats}>
+                  Level {gamification.level} • {gamification.points} XP
+                </Text>
+              </View>
+              <TouchableOpacity style={styles.editButton} onPress={() => router.push('/choose-companion')}>
+                <Ionicons name="create-outline" size={20} color={COLORS.primary} />
+              </TouchableOpacity>
             </View>
-            <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{userProfile?.name || 'User'}</Text>
-              <Text style={styles.profileStats}>
-                Level {gamification.level} • {gamification.points} XP
-              </Text>
-            </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Ionicons name="create-outline" size={20} color={COLORS.primary} />
-            </TouchableOpacity>
-          </View>
-        </Card>
+          </Card>
+        </TouchableOpacity>
 
         {/* Account Settings */}
         <SettingsSection title="Account">
