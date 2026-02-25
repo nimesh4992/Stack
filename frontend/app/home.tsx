@@ -23,6 +23,8 @@ import { Card } from '../src/core/presentation/components/Card';
 import { CircularProgress } from '../src/core/presentation/components/CircularProgress';
 import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
 import { CompanionAvatar } from '../src/core/presentation/components/CompanionAvatar';
+import { SecurityInfoModal } from '../src/core/presentation/components/SecurityInfoModal';
+import { StreakCalendar } from '../src/core/presentation/components/StreakCalendar';
 import { formatCurrency } from '../src/core/common/utils';
 import { getNudgeForHome, SelectedNudge } from '../src/core/common/nudgeEngine';
 import { getTimeBasedGreeting, getContextualMessage, getCompanion } from '../src/core/common/companions';
