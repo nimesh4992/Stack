@@ -50,11 +50,68 @@ const CHECK_INS = [
 export default function AddExpenseScreen() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  
+  // Get state for nudge context
+  const transactions = useSelector((state: RootState) => state.expense.transactions);
+  const gamification = useSelector((state: RootState) => state.gamification);
+  const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
 
   const [type, setType] = useState<'expense' | 'habit'>('expense');
   const [amount, setAmount] = useState('50.00');
   const [selectedCategory, setSelectedCategory] = useState<any>(QUICK_CATEGORIES[0]);
   const [loading, setLoading] = useState(false);
+  
+  // Post-log nudge state
+  const [postLogNudge, setPostLogNudge] = useState<SelectedNudge | null>(null);
+  const [showNudgeToast, setShowNudgeToast] = useState(false);
+  
+  // Animation for toast
+  const toastAnim = useRef(new Animated.Value(-100)).current;
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  
+  // Show toast animation
+  const showToast = (nudge: SelectedNudge) => {
+    setPostLogNudge(nudge);
+    setShowNudgeToast(true);
+    
+    Animated.parallel([
+      Animated.spring(toastAnim, {
+        toValue: 0,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+      Animated.timing(toastOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+      dismissToast();
+    }, 4000);
+  };
+  
+  // Dismiss toast animation
+  const dismissToast = () => {
+    Animated.parallel([
+      Animated.timing(toastAnim, {
+        toValue: -100,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(toastOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowNudgeToast(false);
+      setPostLogNudge(null);
+    });
+  };
 
   const handleNumberPress = (num: string) => {
     if (num === '.' && amount.includes('.')) return;
