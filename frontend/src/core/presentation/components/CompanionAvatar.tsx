@@ -6,16 +6,6 @@ import { View, Text, StyleSheet, Platform } from 'react-native';
 import { COMPANIONS, getCompanion, getDefaultCompanion } from '../../common/companions';
 import { COLORS, BORDER_RADIUS } from '../../common/constants';
 
-// Conditional Lottie import for web compatibility
-let LottieView: any = null;
-if (Platform.OS !== 'web') {
-  try {
-    LottieView = require('lottie-react-native').default;
-  } catch (e) {
-    console.log('Lottie not available');
-  }
-}
-
 interface CompanionAvatarProps {
   companionId: string;
   size?: 'small' | 'medium' | 'large';
@@ -48,29 +38,8 @@ export const CompanionAvatar: React.FC<CompanionAvatarProps> = ({
   const sizeValue = SIZE_MAP[size];
   const emojiSize = sizeValue * 0.6;
 
-  // Web fallback - show emoji
-  if (Platform.OS === 'web' || !LottieView || !showAnimation) {
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            width: sizeValue,
-            height: sizeValue,
-            backgroundColor: companion.color + '20',
-            borderRadius: sizeValue / 2,
-          },
-          style,
-        ]}
-      >
-        <Text style={[styles.emoji, { fontSize: emojiSize }]}>
-          {EMOJI_MAP[companionId] || '🐻'}
-        </Text>
-      </View>
-    );
-  }
-
-  // Native - show Lottie animation
+  // Always use emoji fallback for simplicity and web compatibility
+  // Lottie can be enabled on native in future with proper setup
   return (
     <View
       style={[
@@ -78,21 +47,15 @@ export const CompanionAvatar: React.FC<CompanionAvatarProps> = ({
         {
           width: sizeValue,
           height: sizeValue,
-          backgroundColor: companion.color + '15',
+          backgroundColor: companion.color + '20',
           borderRadius: sizeValue / 2,
         },
         style,
       ]}
     >
-      <LottieView
-        source={companion.lottieSource}
-        autoPlay
-        loop
-        style={{
-          width: sizeValue * 0.85,
-          height: sizeValue * 0.85,
-        }}
-      />
+      <Text style={[styles.emoji, { fontSize: emojiSize }]}>
+        {EMOJI_MAP[companionId] || '🐻'}
+      </Text>
     </View>
   );
 };
