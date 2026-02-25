@@ -101,3 +101,112 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test HabitFinance app comprehensively. This is a mobile-first financial habit tracking app with splash screen, onboarding, home dashboard, add transaction functionality, insights/charts, highlights feature, and comprehensive navigation."
+
+frontend:
+  - task: "Splash Screen & Initialization"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/core/presentation/components/SplashScreen.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test splash screen with privacy features, 4-second auto-dismiss, and proper navigation"
+
+  - task: "Onboarding Flow"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/onboarding.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test 2-step onboarding: goal selection and target amount entry with progress indicator"
+
+  - task: "Home Dashboard"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/home.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test home dashboard with habit rings, streak calendar, power-ups collection, and bottom navigation"
+
+  - task: "Add Transaction Flow"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/add-expense.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test expense/habit toggle, number pad, quick categories, and transaction saving with points award"
+
+  - task: "Insights & Charts Screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/insights.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test charts (pie, line, bar), stats cards, and navigation"
+
+  - task: "Highlights Feature"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/highlights.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test Spotify-wrapped style highlights with swipeable cards"
+
+  - task: "Navigation & Routing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/_layout.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test all navigation flows and bottom nav functionality"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Splash Screen & Initialization"
+    - "Onboarding Flow"
+    - "Home Dashboard"
+    - "Add Transaction Flow"
+    - "Insights & Charts Screen"
+    - "Highlights Feature"
+    - "Navigation & Routing"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+    - message: "Starting comprehensive testing of HabitFinance mobile app. Will test on mobile viewport (390x844) as specified. App URL: https://smart-spending-29.preview.emergentagent.com"
