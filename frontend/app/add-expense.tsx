@@ -383,6 +383,25 @@ export default function AddExpenseScreen() {
           <Text style={styles.logButtonText}>Log it ✓</Text>
         </TouchableOpacity>
       </View>
+      
+      {/* Post-Log Nudge Toast */}
+      {showNudgeToast && postLogNudge && (
+        <Animated.View 
+          style={[
+            styles.toastOverlay,
+            {
+              transform: [{ translateY: toastAnim }],
+              opacity: toastOpacity,
+            }
+          ]}
+        >
+          <NudgeCard 
+            nudge={postLogNudge} 
+            variant="toast" 
+            onDismiss={dismissToast}
+          />
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 }
