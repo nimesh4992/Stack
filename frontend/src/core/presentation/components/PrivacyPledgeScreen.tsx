@@ -261,8 +261,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: SCREEN_WIDTH - SPACING.xl * 2,
-    aspectRatio: 1.4,
-    marginBottom: SPACING.xxl,
+    height: 200,
+    marginBottom: SPACING.xl,
   },
   darkCard: {
     flex: 1,
