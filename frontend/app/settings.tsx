@@ -412,6 +412,35 @@ export default function SettingsScreen() {
           </Text>
         </SettingsSection>
 
+        {/* Social & Sharing */}
+        <SettingsSection title="Social">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="person-add-outline"
+              title="Invite Friends"
+              subtitle="Earn rewards for referrals"
+              onPress={() => router.push('/invite-friends')}
+              color={COLORS.habitPurple}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="share-social-outline"
+              title="Share Achievement"
+              subtitle="Post your progress on social media"
+              onPress={() => router.push('/share-achievement')}
+              color={COLORS.habitCyan}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="sparkles-outline"
+              title="Choose Companion"
+              subtitle="Change your avatar buddy"
+              onPress={() => router.push('/choose-companion')}
+              color={COLORS.habitOrange}
+            />
+          </Card>
+        </SettingsSection>
+
         {/* Appearance */}
         <SettingsSection title="Appearance">
           <Card style={styles.settingsCard}>
