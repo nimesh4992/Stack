@@ -679,6 +679,13 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.full,
     borderWidth: 1,
     borderColor: COLORS.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  syncButton: {
+    borderColor: COLORS.habitBlue,
+    backgroundColor: COLORS.habitBlue + '10',
   },
   quickButtonText: {
     fontSize: FONT_SIZE.sm,
