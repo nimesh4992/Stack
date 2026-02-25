@@ -782,22 +782,16 @@ const styles = StyleSheet.create({
   onDeviceBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.primary + '15',
+    backgroundColor: COLORS.success + '15',
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
     borderRadius: BORDER_RADIUS.full,
-  },
-  onDeviceIcon: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: COLORS.primary,
-    marginRight: SPACING.xs,
+    gap: SPACING.xs,
   },
   onDeviceText: {
     fontSize: FONT_SIZE.xs,
     fontWeight: FONT_WEIGHT.bold,
-    color: COLORS.primary,
+    color: COLORS.success,
     letterSpacing: 0.8,
   },
   rankCard: {
