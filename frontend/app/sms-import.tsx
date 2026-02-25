@@ -151,16 +151,63 @@ export default function SMSImportScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* SMS Tour Overlay */}
+      <SMSTour visible={showTour} onComplete={handleTourComplete} />
+      
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={COLORS.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>SMS Import</Text>
-        <View style={styles.headerRight} />
+        <TouchableOpacity onPress={() => setShowTour(true)} style={styles.helpButton}>
+          <Ionicons name="help-circle-outline" size={24} color={COLORS.primary} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        {/* Permission & Auto-Log Settings */}
+        {Platform.OS === 'android' && (
+          <Card style={styles.settingsCard}>
+            <View style={styles.settingRow}>
+              <View style={styles.settingInfo}>
+                <Ionicons name="shield-checkmark" size={24} color={smsPermissionStatus.hasRead ? COLORS.success : COLORS.textTertiary} />
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>SMS Permission</Text>
+                  <Text style={styles.settingSubtitle}>
+                    {smsPermissionStatus.hasRead ? 'Granted - Auto-detect enabled' : 'Required for auto-detection'}
+                  </Text>
+                </View>
+              </View>
+              {!smsPermissionStatus.hasRead && (
+                <TouchableOpacity style={styles.grantButton} onPress={handleRequestPermission}>
+                  <Text style={styles.grantButtonText}>Grant</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            
+            <View style={styles.settingDivider} />
+            
+            <View style={styles.settingRow}>
+              <View style={styles.settingInfo}>
+                <Ionicons name="flash" size={24} color={preferences.smsAutoLogEnabled ? COLORS.habitOrange : COLORS.textTertiary} />
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>Auto-Log Transactions</Text>
+                  <Text style={styles.settingSubtitle}>
+                    {preferences.smsAutoLogEnabled ? 'Log without confirmation' : 'Confirm each transaction'}
+                  </Text>
+                </View>
+              </View>
+              <Switch
+                value={preferences.smsAutoLogEnabled}
+                onValueChange={handleToggleAutoLog}
+                trackColor={{ false: COLORS.border, true: COLORS.habitOrange + '50' }}
+                thumbColor={preferences.smsAutoLogEnabled ? COLORS.habitOrange : COLORS.textTertiary}
+              />
+            </View>
+          </Card>
+        )}
+        
         {/* Info Card */}
         <Card style={styles.infoCard}>
           <View style={styles.infoIcon}>
