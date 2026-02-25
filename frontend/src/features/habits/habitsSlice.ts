@@ -1,7 +1,7 @@
 // 🏃 Habits Tracker Redux Slice
 // Persists steps, water, mindful minutes data
 
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootState } from '../../store';
 
@@ -285,10 +285,16 @@ export const selectHabitsStreak = (state: RootState): number => state.habits.str
 
 export const selectDefaultGoals = (state: RootState) => state.habits.defaultGoals;
 
-export const selectAllTimeStats = (state: RootState) => ({
-  steps: state.habits.totalStepsAllTime,
-  water: state.habits.totalWaterAllTime,
-  mindful: state.habits.totalMindfulAllTime,
-});
+// Memoized selector for all-time stats
+const selectHabitsState = (state: RootState) => state.habits;
+
+export const selectAllTimeStats = createSelector(
+  [selectHabitsState],
+  (habits) => ({
+    steps: habits.totalStepsAllTime,
+    water: habits.totalWaterAllTime,
+    mindful: habits.totalMindfulAllTime,
+  })
+);
 
 export default habitsSlice.reducer;
