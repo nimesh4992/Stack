@@ -203,13 +203,13 @@ const styles = StyleSheet.create({
   },
   dots: {
     flexDirection: 'row',
-    gap: 8,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#333',
+    marginHorizontal: 4,
   },
   dotActive: {
     width: 24,
