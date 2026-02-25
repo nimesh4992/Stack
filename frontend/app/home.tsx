@@ -164,10 +164,14 @@ export default function HomeScreen() {
               <Text style={styles.contextMessage}>{contextMessage}</Text>
             </View>
           </TouchableOpacity>
-          <View style={styles.onDeviceBadge}>
-            <View style={styles.onDeviceIcon} />
-            <Text style={styles.onDeviceText}>ON-DEVICE</Text>
-          </View>
+          <TouchableOpacity 
+            style={styles.onDeviceBadge}
+            onPress={() => setShowSecurityModal(true)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="lock-closed" size={14} color={COLORS.success} />
+            <Text style={styles.onDeviceText}>SECURE</Text>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Current Rank Card - Enhanced */}
