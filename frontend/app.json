@@ -53,7 +53,13 @@
           "sounds": []
         }
       ],
-      "react-native-google-mobile-ads"
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7302439791882329~8253964613",
+          "iosAppId": "ca-app-pub-7302439791882329~8253964613"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
