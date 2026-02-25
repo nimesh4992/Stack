@@ -8,7 +8,6 @@ import { loadOnboardingStatus } from '../src/features/onboarding/onboardingSlice
 import { loadTransactions } from '../src/features/expenseTracking/expenseSlice';
 import { loadGamification } from '../src/features/gamification/gamificationSlice';
 import { PrivacyPledgeScreen } from '../src/core/presentation/components/PrivacyPledgeScreen';
-import { initializeAds } from '../src/core/services/adService';
 import { initializeNotifications } from '../src/core/services/notificationService';
 import { COLORS } from '../src/core/common/constants';
 
@@ -32,7 +31,13 @@ export default function Index() {
       
       // Initialize services (non-blocking)
       initializeNotifications().catch(console.log);
-      initializeAds().catch(console.log);
+      
+      // Initialize AdMob only on native platforms
+      if (Platform.OS !== 'web') {
+        import('../src/core/services/adService')
+          .then(adService => adService.initializeAds())
+          .catch(console.log);
+      }
       
       setOnboardingComplete(result.isComplete);
       setIsLoading(false);
