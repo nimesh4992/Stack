@@ -107,15 +107,18 @@ user_problem_statement: "Test HabitFinance app comprehensively. This is a mobile
 frontend:
   - task: "Splash Screen & Initialization"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/core/presentation/components/SplashScreen.tsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Splash screen renders perfectly with HabitFinance branding, 'PRIVACY FIRST' badge with pulsing dot, and all 4 privacy feature cards (100% On-Device, Zero Cloud Storage, No Tracking, Your Data Only). Beautiful blue gradient design as expected."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: App now shows only blue gradient background and is completely stuck. No content loads after 5-10 seconds of waiting. This appears to be a JavaScript runtime error or React/Expo initialization failure. All UI elements are inaccessible. Prevents any testing of the comprehensive test suite."
 
   - task: "Onboarding Flow"
     implemented: true
