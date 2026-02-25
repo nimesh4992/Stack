@@ -198,6 +198,39 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </Animated.View>
 
+        {/* Quick Actions */}
+        <View style={styles.quickActionsRow}>
+          <TouchableOpacity
+            style={styles.quickActionButton}
+            onPress={() => router.push('/sms-import')}
+          >
+            <View style={[styles.quickActionIcon, { backgroundColor: COLORS.habitCyan + '20' }]}>
+              <Ionicons name="chatbubble-ellipses" size={20} color={COLORS.habitCyan} />
+            </View>
+            <Text style={styles.quickActionText}>SMS Import</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.quickActionButton}
+            onPress={() => router.push('/challenges')}
+          >
+            <View style={[styles.quickActionIcon, { backgroundColor: COLORS.habitOrange + '20' }]}>
+              <Ionicons name="trophy" size={20} color={COLORS.habitOrange} />
+            </View>
+            <Text style={styles.quickActionText}>Challenges</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.quickActionButton}
+            onPress={() => router.push('/insights')}
+          >
+            <View style={[styles.quickActionIcon, { backgroundColor: COLORS.habitPurple + '20' }]}>
+              <Ionicons name="stats-chart" size={20} color={COLORS.habitPurple} />
+            </View>
+            <Text style={styles.quickActionText}>Insights</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Habit Rings - Enhanced with More Rings */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
