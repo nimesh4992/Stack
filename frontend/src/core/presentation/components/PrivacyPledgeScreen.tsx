@@ -239,7 +239,7 @@ export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: '#0F0F1A', // Dark background for splash
   },
   skipButton: {
     position: 'absolute',
