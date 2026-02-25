@@ -762,10 +762,14 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
     marginBottom: 2,
+    paddingHorizontal: SPACING.lg,
   },
   sectionSubtitle: {
     fontSize: FONT_SIZE.sm,
     color: COLORS.textSecondary,
+  },
+  streakCalendarWrapper: {
+    paddingHorizontal: SPACING.lg,
   },
   seeAllText: {
     fontSize: FONT_SIZE.md,
