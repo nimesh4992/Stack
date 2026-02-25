@@ -13,7 +13,7 @@ import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppDispatch, RootState } from '../src/store';
-import { setQuizAnswer, completeOnboarding } from '../src/features/onboarding/onboardingSlice';
+import { setQuizAnswer, nextStep, completeOnboarding } from '../src/features/onboarding/onboardingSlice';
 import { awardPoints } from '../src/features/gamification/gamificationSlice';
 import { Button } from '../src/core/presentation/components/Button';
 import { Input } from '../src/core/presentation/components/Input';
