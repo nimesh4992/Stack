@@ -588,18 +588,18 @@ export default function HomeScreen() {
           <View style={styles.fabPulse} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/highlights')}>
           <View style={styles.navIcon}>
-            <Text style={styles.navIconText}>📊</Text>
+            <Ionicons name="sparkles" size={22} color={COLORS.textSecondary} />
           </View>
-          <Text style={styles.navLabel}>STATS</Text>
+          <Text style={styles.navLabel}>HIGHLIGHTS</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/settings')}>
           <View style={styles.navIcon}>
-            <Text style={styles.navIconText}>👤</Text>
+            <Ionicons name="settings-outline" size={22} color={COLORS.textSecondary} />
           </View>
-          <Text style={styles.navLabel}>PROFILE</Text>
+          <Text style={styles.navLabel}>SETTINGS</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
