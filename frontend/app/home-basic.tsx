@@ -60,7 +60,7 @@ export default function HomeScreen() {
             <View style={styles.appIconContainer}>
               <Text style={styles.appIcon}>💰</Text>
             </View>
-            <Text style={styles.appName}>HabitFinance</Text>
+            <Text style={styles.appName}>Stack</Text>
           </View>
           <View style={styles.onDeviceBadge}>
             <View style={styles.onDeviceIcon} />

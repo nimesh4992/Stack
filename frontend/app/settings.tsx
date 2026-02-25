@@ -123,7 +123,7 @@ export default function SettingsScreen() {
       // Request permission first
       Alert.alert(
         'SMS Permission Required',
-        'HabitFinance needs permission to read incoming SMS messages to auto-detect bank transactions.\n\nYour messages are processed locally and never leave your device.',
+        'Stack needs permission to read incoming SMS messages to auto-detect bank transactions.\n\nYour messages are processed locally and never leave your device.',
         [
           { text: 'Cancel', style: 'cancel' },
           {
@@ -539,9 +539,9 @@ export default function SettingsScreen() {
             <View style={styles.divider} />
             <SettingsItem
               icon="information-circle-outline"
-              title="About HabitFinance"
+              title="About Stack"
               subtitle="Version 1.0.0-MVP"
-              onPress={() => Alert.alert('HabitFinance', 'Build wealth, one habit at a time.\n\nVersion: 1.0.0-MVP\nBuild: 2026.02.25')}
+              onPress={() => Alert.alert('Stack', 'Build wealth, one habit at a time.\n\nVersion: 1.0.0-MVP\nBuild: 2026.02.25')}
               color={COLORS.primary}
             />
           </Card>

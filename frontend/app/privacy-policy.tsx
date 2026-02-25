@@ -1,5 +1,5 @@
 // Privacy Policy Screen
-// Detailed privacy policy for HabitFinance
+// Detailed privacy policy for Stack
 
 import React from 'react';
 import {
@@ -25,7 +25,7 @@ const POLICY_SECTIONS = [
   {
     title: 'Data Collection',
     icon: 'document-text',
-    content: `HabitFinance is designed with privacy as a core principle. We collect ZERO personal data from your device.
+    content: `Stack is designed with privacy as a core principle. We collect ZERO personal data from your device.
 
 • No personal information is collected
 • No financial data is uploaded to any server
@@ -83,7 +83,7 @@ All notification scheduling happens locally. No external notification services a
   {
     title: 'Advertising',
     icon: 'megaphone',
-    content: `HabitFinance uses AdMob for monetization:
+    content: `Stack uses AdMob for monetization:
 
 • Ads are displayed within the app
 • We do NOT share your financial data with advertisers
@@ -158,7 +158,7 @@ export default function PrivacyPolicyScreen() {
           </View>
           <Text style={styles.heroTitle}>Your Privacy Matters</Text>
           <Text style={styles.heroSubtitle}>
-            HabitFinance is built with a privacy-first approach. Your financial data never leaves your device.
+            Stack is built with a privacy-first approach. Your financial data never leaves your device.
           </Text>
           <Text style={styles.lastUpdated}>Last Updated: December 2025</Text>
         </View>

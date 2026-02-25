@@ -1,5 +1,5 @@
 // FAQs Screen
-// Frequently Asked Questions for HabitFinance
+// Frequently Asked Questions for Stack
 
 import React, { useState } from 'react';
 import {
@@ -48,7 +48,7 @@ const FAQS: FAQ[] = [
   {
     category: 'SMS & Auto-Detection',
     question: 'How does SMS auto-detection work?',
-    answer: 'On Android, HabitFinance can read incoming bank SMS messages to automatically detect transactions. When enabled, it parses transaction details (amount, merchant, type) from the SMS and suggests logging them. All processing happens on your device - no data is sent anywhere.',
+    answer: 'On Android, Stack can read incoming bank SMS messages to automatically detect transactions. When enabled, it parses transaction details (amount, merchant, type) from the SMS and suggests logging them. All processing happens on your device - no data is sent anywhere.',
   },
   {
     category: 'SMS & Auto-Detection',
@@ -64,7 +64,7 @@ const FAQS: FAQ[] = [
   {
     category: 'Privacy & Security',
     question: 'Is my financial data safe?',
-    answer: 'Yes! HabitFinance is 100% offline-first. All your data is stored locally on your device and never uploaded to any server. We don\'t have access to your financial information, and uninstalling the app removes all data.',
+    answer: 'Yes! Stack is 100% offline-first. All your data is stored locally on your device and never uploaded to any server. We don\'t have access to your financial information, and uninstalling the app removes all data.',
   },
   {
     category: 'Privacy & Security',
@@ -101,7 +101,7 @@ const FAQS: FAQ[] = [
   {
     category: 'Technical',
     question: 'Why aren\'t notifications working?',
-    answer: 'Make sure notifications are enabled in Settings > Notifications. Also check your device\'s notification settings to ensure HabitFinance isn\'t blocked. On Android, check battery optimization settings which might prevent background notifications.',
+    answer: 'Make sure notifications are enabled in Settings > Notifications. Also check your device\'s notification settings to ensure Stack isn\'t blocked. On Android, check battery optimization settings which might prevent background notifications.',
   },
   {
     category: 'Technical',
