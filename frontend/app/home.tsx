@@ -53,6 +53,22 @@ export default function HomeScreen() {
   const todayBalance = useSelector(selectTodayBalance);
   const transactions = useSelector((state: RootState) => state.expense.transactions);
 
+  // Nudge state
+  const [showNudge, setShowNudge] = useState(true);
+  
+  // Get contextual nudge
+  const nudge = useMemo(() => {
+    return getNudgeForHome(transactions, {
+      currentStreak: gamification.currentStreak,
+      lastLogDate: gamification.lastLogDate,
+      totalTransactions: gamification.totalTransactions,
+      level: gamification.level,
+      badges: gamification.badges,
+    }, {
+      dailyBudgetLimit: userProfile?.monthlyTarget ? userProfile.monthlyTarget / 30 : 1000,
+    });
+  }, [transactions, gamification, userProfile]);
+
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(30)).current;
