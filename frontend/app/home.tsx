@@ -1,5 +1,5 @@
 // 🏠 Home Dashboard Screen (Enhanced Polish Version)
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,9 @@ import { RootState } from '../src/store';
 import { selectTodayBalance } from '../src/features/expenseTracking/expenseSlice';
 import { Card } from '../src/core/presentation/components/Card';
 import { CircularProgress } from '../src/core/presentation/components/CircularProgress';
+import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
 import { formatCurrency } from '../src/core/common/utils';
+import { getNudgeForHome, SelectedNudge } from '../src/core/common/nudgeEngine';
 import {
   COLORS,
   SPACING,
