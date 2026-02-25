@@ -569,9 +569,9 @@ export default function HomeScreen() {
           <Text style={[styles.navLabel, styles.navLabelActive]}>DASH</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/insights')}>
           <View style={styles.navIcon}>
-            <Text style={styles.navIconText}>👁</Text>
+            <Ionicons name="stats-chart" size={22} color={COLORS.textSecondary} />
           </View>
           <Text style={styles.navLabel}>INSIGHTS</Text>
         </TouchableOpacity>
