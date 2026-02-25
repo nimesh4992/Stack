@@ -1,181 +1,217 @@
-// 📅 Enhanced Streak Calendar Component (Week + Monthly View)
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+// Streak Calendar Component
+// Weekly view by default, expands to monthly on tap
+
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, FONT_SIZE, FONT_WEIGHT, BORDER_RADIUS } from '../../common/constants';
+import {
+  COLORS,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  BORDER_RADIUS,
+} from '../../common/constants';
 
 interface StreakCalendarProps {
   currentStreak: number;
   longestStreak: number;
+  loggedDates: string[]; // Array of ISO date strings
 }
 
-export const StreakCalendar: React.FC<StreakCalendarProps> = ({ currentStreak }) => {
-  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+const DAYS_OF_WEEK = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // Generate dates for current week
-  const getWeekDates = () => {
+export const StreakCalendar: React.FC<StreakCalendarProps> = ({
+  currentStreak,
+  longestStreak,
+  loggedDates,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Get current week dates
+  const weekDates = useMemo(() => {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - dayOfWeek);
-
-    return Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + i);
-      return date;
-    });
-  };
-
-  // Generate dates for current month
-  const getMonthDates = () => {
+    const dates: Date[] = [];
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - dayOfWeek + i);
+      dates.push(date);
+    }
+    
+    return dates;
+  }, []);
+  
+  // Get current month dates for calendar grid
+  const monthDates = useMemo(() => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
+    
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
-
+    
     const dates: (Date | null)[] = [];
     
-    // Add empty slots for days before month starts
-    for (let i = 0; i < startDayOfWeek; i++) {
+    // Add empty slots for days before first day
+    for (let i = 0; i < firstDay.getDay(); i++) {
       dates.push(null);
     }
     
-    // Add all days of month
-    for (let day = 1; day <= daysInMonth; day++) {
-      dates.push(new Date(year, month, day));
+    // Add all days of the month
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      dates.push(new Date(year, month, i));
     }
-
+    
     return dates;
+  }, []);
+  
+  // Check if a date has a log
+  const isDateLogged = (date: Date): boolean => {
+    const dateStr = date.toISOString().split('T')[0];
+    return loggedDates.some(d => d.startsWith(dateStr));
   };
-
-  const weekDates = getWeekDates();
-  const monthDates = getMonthDates();
+  
+  // Check if date is today
+  const isToday = (date: Date): boolean => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+  
   const today = new Date();
-
-  const isToday = (date: Date | null) => {
-    if (!date) return false;
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
-
-  const isLogged = (date: Date | null) => {
-    if (!date) return false;
-    const daysDiff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    return daysDiff >= 0 && daysDiff < currentStreak;
-  };
+  const currentMonth = MONTHS[today.getMonth()];
+  const currentYear = today.getFullYear();
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <TouchableOpacity 
+        style={styles.header}
+        onPress={() => setIsExpanded(!isExpanded)}
+        activeOpacity={0.7}
+      >
         <View style={styles.headerLeft}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="flame" size={18} color={COLORS.habitOrange} />
-          </View>
-          <View>
-            <Text style={styles.title}>Streak: {currentStreak} days</Text>
-            <Text style={styles.subtitle}>Keep it going!</Text>
+          <Ionicons name="flame" size={24} color={COLORS.habitOrange} />
+          <View style={styles.headerText}>
+            <Text style={styles.streakCount}>{currentStreak} Day Streak</Text>
+            <Text style={styles.streakBest}>Best: {longestStreak} days</Text>
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.viewToggle}
-          onPress={() => setViewMode(viewMode === 'week' ? 'month' : 'week')}
-        >
+        <View style={styles.headerRight}>
+          <Text style={styles.expandText}>{isExpanded ? 'Weekly' : 'Monthly'}</Text>
           <Ionicons 
-            name={viewMode === 'week' ? 'calendar' : 'calendar-outline'} 
-            size={18} 
-            color={COLORS.primary} 
+            name={isExpanded ? 'chevron-up' : 'chevron-down'} 
+            size={20} 
+            color={COLORS.textSecondary} 
           />
-          <Text style={styles.viewToggleText}>
-            {viewMode === 'week' ? 'Month' : 'Week'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
 
-      {/* Calendar View */}
-      {viewMode === 'week' ? (
-        // Week View
+      {/* Weekly View (Default) */}
+      {!isExpanded && (
         <View style={styles.weekView}>
-          <View style={styles.daysRow}>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <Text key={i} style={styles.dayLabel}>{day}</Text>
-            ))}
-          </View>
-          <View style={styles.datesRow}>
-            {weekDates.map((date, index) => {
-              const logged = isLogged(date);
-              const todayDate = isToday(date);
-              return (
-                <View
-                  key={index}
-                  style={[
-                    styles.dateCircle,
-                    logged && styles.dateLogged,
-                    todayDate && styles.dateToday,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.dateText,
-                      (logged || todayDate) && styles.dateTextActive,
-                    ]}
-                  >
-                    {date.getDate()}
-                  </Text>
-                  {logged && !todayDate && (
-                    <View style={styles.checkMark}>
-                      <Ionicons name="checkmark" size={8} color="#FFFFFF" />
-                    </View>
+          {weekDates.map((date, index) => {
+            const logged = isDateLogged(date);
+            const isTodayDate = isToday(date);
+            
+            return (
+              <View key={index} style={styles.dayColumn}>
+                <Text style={[
+                  styles.dayLabel,
+                  isTodayDate && styles.dayLabelToday
+                ]}>
+                  {DAYS_OF_WEEK[index]}
+                </Text>
+                <View style={[
+                  styles.dayCircle,
+                  logged && styles.dayCircleLogged,
+                  isTodayDate && styles.dayCircleToday,
+                ]}>
+                  {logged ? (
+                    <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                  ) : (
+                    <Text style={[
+                      styles.dayNumber,
+                      isTodayDate && styles.dayNumberToday
+                    ]}>
+                      {date.getDate()}
+                    </Text>
                   )}
                 </View>
-              );
-            })}
-          </View>
+              </View>
+            );
+          })}
         </View>
-      ) : (
-        // Month View
+      )}
+
+      {/* Monthly View (Expanded) */}
+      {isExpanded && (
         <View style={styles.monthView}>
-          <View style={styles.daysRow}>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <Text key={i} style={styles.dayLabel}>{day}</Text>
+          <Text style={styles.monthTitle}>{currentMonth} {currentYear}</Text>
+          
+          {/* Day headers */}
+          <View style={styles.dayHeaders}>
+            {DAYS_OF_WEEK.map((day, index) => (
+              <Text key={index} style={styles.dayHeader}>{day}</Text>
             ))}
           </View>
-          <View style={styles.monthGrid}>
+          
+          {/* Calendar grid */}
+          <View style={styles.calendarGrid}>
             {monthDates.map((date, index) => {
               if (!date) {
-                return <View key={index} style={styles.emptyDate} />;
+                return <View key={index} style={styles.emptyDay} />;
               }
-              const logged = isLogged(date);
-              const todayDate = isToday(date);
+              
+              const logged = isDateLogged(date);
+              const isTodayDate = isToday(date);
+              const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+              
               return (
-                <View
-                  key={index}
-                  style={[
-                    styles.monthDate,
-                    logged && styles.dateLogged,
-                    todayDate && styles.dateToday,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.monthDateText,
-                      (logged || todayDate) && styles.dateTextActive,
-                    ]}
-                  >
-                    {date.getDate()}
-                  </Text>
-                  {logged && !todayDate && (
-                    <View style={styles.checkDot} />
-                  )}
+                <View key={index} style={styles.calendarDay}>
+                  <View style={[
+                    styles.calendarDayInner,
+                    logged && styles.calendarDayLogged,
+                    isTodayDate && styles.calendarDayToday,
+                    isPast && !logged && styles.calendarDayMissed,
+                  ]}>
+                    {logged ? (
+                      <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+                    ) : (
+                      <Text style={[
+                        styles.calendarDayText,
+                        isTodayDate && styles.calendarDayTextToday,
+                        isPast && !logged && styles.calendarDayTextMissed,
+                      ]}>
+                        {date.getDate()}
+                      </Text>
+                    )}
+                  </View>
                 </View>
               );
             })}
+          </View>
+          
+          {/* Legend */}
+          <View style={styles.legend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: COLORS.success }]} />
+              <Text style={styles.legendText}>Logged</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: COLORS.primary }]} />
+              <Text style={styles.legendText}>Today</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, { backgroundColor: COLORS.textTertiary }]} />
+              <Text style={styles.legendText}>Missed</Text>
+            </View>
           </View>
         </View>
       )}
@@ -188,6 +224,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.xl,
     padding: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   header: {
     flexDirection: 'row',
@@ -198,123 +236,156 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.sm,
   },
-  iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.habitOrange + '20',
-    alignItems: 'center',
-    justifyContent: 'center',
+  headerText: {
+    marginLeft: SPACING.md,
   },
-  title: {
-    fontSize: FONT_SIZE.md,
+  streakCount: {
+    fontSize: FONT_SIZE.lg,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
   },
-  subtitle: {
+  streakBest: {
     fontSize: FONT_SIZE.xs,
     color: COLORS.textSecondary,
   },
-  viewToggle: {
+  headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.xs,
-    backgroundColor: COLORS.primary + '10',
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.full,
   },
-  viewToggleText: {
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.primary,
+  expandText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
   },
   weekView: {
-    gap: SPACING.sm,
-  },
-  monthView: {
-    gap: SPACING.sm,
-  },
-  daysRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+  },
+  dayColumn: {
+    alignItems: 'center',
   },
   dayLabel: {
     fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textSecondary,
-    width: 36,
-    textAlign: 'center',
+    marginBottom: SPACING.sm,
+    fontWeight: FONT_WEIGHT.medium,
   },
-  datesRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  dayLabelToday: {
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
   },
-  dateCircle: {
+  dayCircle: {
     width: 36,
     height: 36,
     borderRadius: 18,
     backgroundColor: COLORS.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
   },
-  dateLogged: {
-    backgroundColor: COLORS.primary + '20',
-  },
-  dateToday: {
-    backgroundColor: COLORS.primary,
-  },
-  dateText: {
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.textSecondary,
-  },
-  dateTextActive: {
-    color: '#FFFFFF',
-  },
-  checkMark: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+  dayCircleLogged: {
     backgroundColor: COLORS.success,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  monthGrid: {
+  dayCircleToday: {
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+  },
+  dayNumber: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  dayNumberToday: {
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  monthView: {
+    marginTop: SPACING.sm,
+  },
+  monthTitle: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+    textAlign: 'center',
+    marginBottom: SPACING.md,
+  },
+  dayHeaders: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: SPACING.sm,
+  },
+  dayHeader: {
+    width: 36,
+    textAlign: 'center',
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textSecondary,
+    fontWeight: FONT_WEIGHT.semibold,
+  },
+  calendarGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING.xs,
   },
-  monthDate: {
-    width: 38,
-    height: 38,
-    borderRadius: 8,
-    backgroundColor: COLORS.surfaceAlt,
+  emptyDay: {
+    width: '14.28%',
+    aspectRatio: 1,
+  },
+  calendarDay: {
+    width: '14.28%',
+    aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
   },
-  emptyDate: {
-    width: 38,
-    height: 38,
+  calendarDayInner: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
-  monthDateText: {
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.semibold,
-    color: COLORS.textSecondary,
-  },
-  checkDot: {
-    position: 'absolute',
-    bottom: 4,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
+  calendarDayLogged: {
     backgroundColor: COLORS.success,
   },
+  calendarDayToday: {
+    backgroundColor: COLORS.primary,
+  },
+  calendarDayMissed: {
+    backgroundColor: COLORS.textTertiary + '30',
+  },
+  calendarDayText: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textSecondary,
+  },
+  calendarDayTextToday: {
+    color: '#FFFFFF',
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  calendarDayTextMissed: {
+    color: COLORS.textTertiary,
+  },
+  legend: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: SPACING.lg,
+    marginTop: SPACING.lg,
+    paddingTop: SPACING.md,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
+  },
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  legendText: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textSecondary,
+  },
 });
+
+export default StreakCalendar;
