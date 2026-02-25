@@ -55,13 +55,30 @@ const POWER_UPS_DATA = [
 
 export default function HomeScreen() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
   const gamification = useSelector((state: RootState) => state.gamification);
   const todayBalance = useSelector(selectTodayBalance);
   const transactions = useSelector((state: RootState) => state.expense.transactions);
+  const preferences = useSelector(selectPreferences);
 
   // Nudge state
   const [showNudge, setShowNudge] = useState(true);
+  
+  // Load user preferences and track app open on mount
+  useEffect(() => {
+    dispatch(loadUserPreferences());
+    dispatch(trackAppOpen());
+  }, [dispatch]);
+  
+  // Get user's display name and companion
+  const displayName = preferences.displayName || userProfile?.name || 'Friend';
+  const companionId = preferences.companionId || 'bear';
+  const companion = getCompanion(companionId);
+  
+  // Time-based greeting
+  const greeting = getTimeBasedGreeting(displayName);
+  const contextMessage = getContextualMessage();
   
   // Get contextual nudge
   const nudge = useMemo(() => {
