@@ -3,13 +3,6 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  InterstitialAd,
-  RewardedAd,
-  AdEventType,
-  RewardedAdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
 
 // ============================================
 // AD UNIT IDS
@@ -23,8 +16,8 @@ const AD_CONFIG = {
   },
   // Test IDs for development
   test: {
-    interstitial: TestIds.INTERSTITIAL,
-    rewarded: TestIds.REWARDED,
+    interstitial: 'ca-app-pub-3940256099942544/1033173712', // Google test ID
+    rewarded: 'ca-app-pub-3940256099942544/5224354917', // Google test ID
   },
 };
 
