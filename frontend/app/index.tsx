@@ -1,16 +1,47 @@
-import { Text, View, StyleSheet, Image } from "react-native";
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+// 🚀 App Entry Point - Splash & Router
+import { useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../src/store';
+import { loadOnboardingStatus } from '../src/features/onboarding/onboardingSlice';
+import { loadTransactions } from '../src/features/expenseTracking/expenseSlice';
+import { loadGamification } from '../src/features/gamification/gamificationSlice';
+import { COLORS } from '../src/core/common/constants';
 
 export default function Index() {
-  console.log(EXPO_PUBLIC_BACKEND_URL, "EXPO_PUBLIC_BACKEND_URL");
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    initializeApp();
+  }, []);
+
+  const initializeApp = async () => {
+    try {
+      // Load all persisted data
+      const result = await dispatch(loadOnboardingStatus()).unwrap();
+      await dispatch(loadTransactions());
+      await dispatch(loadGamification());
+
+      // Navigate based on onboarding status
+      setTimeout(() => {
+        if (result.isComplete) {
+          router.replace('/home');
+        } else {
+          router.replace('/onboarding');
+        }
+      }, 1000);
+    } catch (error) {
+      console.error('Failed to initialize app:', error);
+      // Navigate to onboarding on error
+      router.replace('/onboarding');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/images/app-image.png")}
-        style={styles.image}
-      />
+      <ActivityIndicator size="large" color={COLORS.primary} />
     </View>
   );
 }
@@ -18,13 +49,8 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0c",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+    backgroundColor: COLORS.background,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
