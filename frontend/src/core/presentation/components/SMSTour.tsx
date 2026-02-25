@@ -18,7 +18,7 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
   BORDER_RADIUS,
-} from '../../core/common/constants';
+} from '../../common/constants';
 
 interface SMSTourProps {
   visible: boolean;
