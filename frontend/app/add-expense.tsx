@@ -38,9 +38,9 @@ const QUICK_CATEGORIES = [
 
 // Check-ins (habit tracking)
 const CHECK_INS = [
-  { id: 'water', label: 'Drink Water', icon: '💧' },
-  { id: 'workout', label: 'Workout', icon: '🏃' },
-  { id: 'no_spend', label: 'No Spend', icon: '💰' },
+  { id: 'water', label: 'Drink Water', iconName: 'water' },
+  { id: 'workout', label: 'Workout', iconName: 'fitness' },
+  { id: 'no_spend', label: 'No Spend', iconName: 'wallet' },
 ];
 
 export default function AddExpenseScreen() {
