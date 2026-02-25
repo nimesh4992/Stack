@@ -295,7 +295,7 @@ export default function SettingsScreen() {
               icon="person-outline"
               title="Edit Profile"
               subtitle="Update your name and preferences"
-              onPress={() => Alert.alert('Coming Soon', 'Profile editing will be available soon')}
+              onPress={() => router.push('/edit-profile')}
               color={COLORS.primary}
             />
             <View style={styles.divider} />
@@ -303,8 +303,16 @@ export default function SettingsScreen() {
               icon="wallet-outline"
               title="Monthly Goal"
               subtitle={`₹${userProfile?.monthlyTarget || 0} target`}
-              onPress={() => Alert.alert('Coming Soon', 'Goal editing will be available soon')}
+              onPress={() => router.push('/edit-profile')}
               color={COLORS.habitCyan}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="fitness-outline"
+              title="Habits Tracker"
+              subtitle="Track steps, water & more"
+              onPress={() => router.push('/habits-tracker')}
+              color={COLORS.habitPurple}
             />
           </Card>
         </SettingsSection>
@@ -477,19 +485,19 @@ export default function SettingsScreen() {
         <SettingsSection title="Data">
           <Card style={styles.settingsCard}>
             <SettingsItem
+              icon="logo-google"
+              title="Google Drive Backup"
+              subtitle="Backup & restore your data"
+              onPress={() => router.push('/google-drive-backup')}
+              color="#4285F4"
+            />
+            <View style={styles.divider} />
+            <SettingsItem
               icon="download-outline"
               title="Export Data"
               subtitle={`${transactions.length} transactions`}
               onPress={handleExportData}
               color={COLORS.success}
-            />
-            <View style={styles.divider} />
-            <SettingsItem
-              icon="refresh-outline"
-              title="Backup Settings"
-              subtitle="Auto-backup to device"
-              onPress={() => Alert.alert('Coming Soon', 'Backup settings coming soon')}
-              color={COLORS.primary}
             />
             <View style={styles.divider} />
             <SettingsItem
@@ -509,8 +517,24 @@ export default function SettingsScreen() {
               icon="shield-checkmark-outline"
               title="Privacy Policy"
               subtitle="100% on-device, zero tracking"
-              onPress={() => Alert.alert('Privacy First', '• All data stays on your device\n• No cloud storage\n• No tracking\n• No ads\n• Open source')}
+              onPress={() => router.push('/privacy-policy')}
               color={COLORS.success}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="help-circle-outline"
+              title="Help & Support"
+              subtitle="Get help and contact us"
+              onPress={() => router.push('/help-support')}
+              color={COLORS.habitOrange}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="chatbubble-ellipses-outline"
+              title="FAQs"
+              subtitle="Frequently asked questions"
+              onPress={() => router.push('/faqs')}
+              color={COLORS.habitCyan}
             />
             <View style={styles.divider} />
             <SettingsItem
@@ -519,14 +543,6 @@ export default function SettingsScreen() {
               subtitle="Version 1.0.0-MVP"
               onPress={() => Alert.alert('HabitFinance', 'Build wealth, one habit at a time.\n\nVersion: 1.0.0-MVP\nBuild: 2026.02.25')}
               color={COLORS.primary}
-            />
-            <View style={styles.divider} />
-            <SettingsItem
-              icon="help-circle-outline"
-              title="Help & Support"
-              subtitle="FAQs and tutorials"
-              onPress={() => Alert.alert('Coming Soon', 'Help center coming soon')}
-              color={COLORS.habitOrange}
             />
           </Card>
         </SettingsSection>
