@@ -37,7 +37,7 @@ const PRIVACY_FEATURES = [
     subtitle: 'We don\'t know who you are',
   },
   {
-    icon: 'fingerprint',
+    icon: 'key',
     iconFamily: 'Ionicons',
     title: 'Your Data Only',
     subtitle: 'Encrypted and private',
