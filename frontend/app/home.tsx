@@ -721,6 +721,21 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+  },
+  greetingContainer: {
+    marginLeft: SPACING.md,
+    flex: 1,
+  },
+  greetingText: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+    marginBottom: 2,
+  },
+  contextMessage: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
   },
   appIconContainer: {
     width: 52,
