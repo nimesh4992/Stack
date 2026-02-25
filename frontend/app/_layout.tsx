@@ -22,6 +22,7 @@ export default function RootLayout() {
         <Stack.Screen name="home" />
         <Stack.Screen name="add-expense" />
         <Stack.Screen name="highlights" />
+        <Stack.Screen name="insights" />
       </Stack>
     </Provider>
   );
