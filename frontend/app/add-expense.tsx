@@ -1,5 +1,5 @@
 // 💰 Add Expense/Income Screen (The Dojo Style - Quick Log)
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,18 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { AppDispatch } from '../src/store';
+import { AppDispatch, RootState } from '../src/store';
 import { addTransaction } from '../src/features/expenseTracking/expenseSlice';
 import { awardPoints, updateStreak } from '../src/features/gamification/gamificationSlice';
+import { getNudgeForPostLog, SelectedNudge } from '../src/core/common/nudgeEngine';
+import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
+import { triggerAd } from '../src/core/services/adService';
 import {
   COLORS,
   SPACING,
