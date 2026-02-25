@@ -11,21 +11,35 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 - **Gamification**: Streaks, XP, levels, badges, and challenges
 - **Insights Dashboard**: Charts and spending analysis (placeholders)
 - **Highlights ("Spotify Wrapped")**: Weekly/daily spending summaries
-- **SMS Parsing**: Auto-extract transactions from Indian bank SMS (HDFC, ICICI, SBI, Axis, Kotak, UPI)
+- **SMS Parsing**: Auto-extract transactions from Indian bank SMS (HDFC, ICICI, SBI, Axis, Kotak, UPI) - BUG FIXED
 - **Smart Nudge Engine**: Contextual, witty, motivational messages based on user behavior
 - **Challenges & Goals**: Track financial challenges and savings goals
 - **Settings**: Toggles for notifications, SMS permissions, dark mode
 
+### NEW Features (Dec 25, 2025)
+- **Personalized Greetings**: Time-based greetings (Good Morning/Afternoon/Evening, [Name]!)
+- **Companion Avatars**: 6 characters to choose from:
+  - 🐻 Teddy (Warm & Encouraging)
+  - 🐱 Whiskers (Witty & Playful)  
+  - 🤖 Sparky (Smart & Analytical)
+  - 🐼 Bamboo (Calm & Wise)
+  - 🦊 Rusty (Clever & Resourceful)
+  - 🦉 Sage (Thoughtful & Knowledgeable)
+- **Choose Companion Screen**: Set name and select companion avatar
+- **SMS Tour**: 3-step overlay tutorial explaining SMS import feature
+- **Smart Notifications**: Pattern-based notification scheduling that learns user behavior
+- **AdMob Integration**: Smart ad placement with daily limits (simulated on web)
+- **Post-Log Nudge Toast**: Animated toast showing contextual message after logging expense
+
 ### In Progress / Mocked
-- **AdMob Integration**: Infrastructure in place, ad display logic implemented (simulated on web)
-- **Local Notifications**: Service ready, scheduling logic needed
-- **Post-Log Nudge Toast**: Shows contextual message after logging expense
+- **Local Notifications**: Service ready with pattern-based scheduling, awaits native testing
+- **Real SMS Reading**: Android permissions configured, UI ready
 
 ### Future / Backlog
 - Functional Dark Mode implementation
 - Data Export/Backup to CSV/JSON
 - Educational Micro-lessons
-- Real SMS reading with permissions on native
+- Invite friends feature
 
 ## Tech Stack
 - **Framework**: React Native with Expo
@@ -38,59 +52,82 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 ## Code Architecture
 ```
 /app/frontend/
-├── app/                      # Screens (expo-router)
-│   ├── home.tsx              # Home dashboard
-│   ├── add-expense.tsx       # Quick log with post-log nudge
-│   ├── challenges.tsx        # Challenges & Goals with tab switcher
-│   ├── sms-import.tsx        # SMS parsing screen
-│   ├── settings.tsx          # App settings
+├── app/                           # Screens (expo-router)
+│   ├── home.tsx                   # Home with personalized greeting + companion
+│   ├── add-expense.tsx            # Quick log with post-log nudge toast
+│   ├── challenges.tsx             # Challenges & Goals
+│   ├── choose-companion.tsx       # NEW: Companion selection screen
+│   ├── sms-import.tsx             # SMS parsing with tour overlay
+│   ├── settings.tsx               # App settings
 │   └── ...
 ├── src/
 │   ├── core/
 │   │   ├── common/
-│   │   │   ├── smsParser.ts    # SMS parsing logic (FIXED)
-│   │   │   ├── nudgeEngine.ts  # Smart nudge logic
-│   │   │   └── constants.ts    # Colors, spacing, categories
+│   │   │   ├── companions.ts      # NEW: Companion definitions & greeting logic
+│   │   │   ├── smsParser.ts       # SMS parsing logic (FIXED)
+│   │   │   ├── nudgeEngine.ts     # Smart nudge logic
+│   │   │   └── constants.ts       # Colors, spacing, categories
 │   │   ├── services/
-│   │   │   └── adService.ts    # AdMob trigger & tracking
+│   │   │   ├── adService.ts       # AdMob trigger & tracking
+│   │   │   ├── notificationService.ts # Smart notification scheduling
+│   │   │   └── smsService.ts      # SMS permission handling
 │   │   └── presentation/
 │   │       └── components/
-│   │           ├── NudgeCard.tsx       # Nudge display
+│   │           ├── CompanionAvatar.tsx  # NEW: Avatar component
+│   │           ├── SMSTour.tsx          # NEW: 3-step tutorial overlay
+│   │           ├── NudgeCard.tsx        # Nudge display
 │   │           └── CircularProgress.tsx # Progress rings
 │   └── features/
 │       ├── expenseTracking/
 │       ├── gamification/
-│       └── onboarding/
+│       ├── onboarding/
+│       └── userPreferences/       # NEW: User preferences state
+│           └── userPreferencesSlice.ts
 ```
 
 ## Recent Changes (Dec 25, 2025)
 
-### Bug Fixes
-1. **SMS Parser Bug (FIXED)**
-   - Issue: Parser was extracting account balance instead of transaction amount
-   - Root Cause: Regex patterns were matching the last amount (balance) instead of first (transaction)
-   - Fix: Updated regex patterns to specifically match amount followed by debit/credit keywords and stop before balance keywords
-   - Tested: All 5 bank formats (HDFC, SBI, Axis, UPI, Kotak) pass
-
-2. **Goals Tab Icons (FIXED)**
-   - Issue: Icon names showing as text instead of emojis
-   - Fix: Changed goal icons from Ionicons names to emojis
-
 ### New Features
-1. **AdMob Display Logic**: Implemented smart ad placement with:
-   - Daily limits (max 3 interstitial, 5 rewarded)
-   - Cooldown between ads (60s minimum)
-   - Trigger configurations for different events
-   - XP rewards for rewarded ads
+1. **Personalized Greetings with Companion Avatars**
+   - Time-based greeting: Good Morning/Afternoon/Evening/Night
+   - 6 companion characters with unique personalities
+   - Contextual messages based on time of day
+   - Tappable header to access profile settings
 
-2. **Post-Log Nudge Toast**: Added animated toast that appears after logging expense with contextual message from nudge engine
+2. **SMS Tour Overlay**
+   - 3-step tutorial explaining SMS import
+   - Step 1: Auto-Detect Bank SMS
+   - Step 2: Your Data Stays Private
+   - Step 3: You Control Everything
+   - Skip button, progress dots, Next/Got It buttons
 
-3. **UI Improvements**: Enhanced tab switcher on Challenges screen with border and better visual feedback
+3. **Smart Notification Scheduling**
+   - Pattern-based timing that learns user behavior
+   - Tracks app open times for optimal notification delivery
+   - Challenge reminders and streak notifications
+   - Invite friends nudges
+
+4. **User Preferences System**
+   - New Redux slice for managing preferences
+   - Display name and companion selection
+   - Notification settings persistence
+   - SMS auto-log preference
+
+### Bug Fixes
+1. **SMS Parser**: Fixed regex to extract transaction amount (not balance)
+2. **Goals Tab Icons**: Changed from Ionicons names to emojis
+3. **Tab Switcher**: Added border styling for better visual feedback
+
+## Test Results (Latest)
+- **Frontend Tests**: 100% pass rate
+- **Personalization Tests**: All passed
+- **SMS Tour Tests**: All 8 tests passed
+- **Settings Tests**: All 7 tests passed
 
 ## Known Limitations
 - AdMob only works on native iOS/Android, simulated on web
-- AsyncStorage has web preview limitations
-- Some click events don't work perfectly in web preview (native works fine)
+- Local notifications scheduling works but won't trigger on web
+- Lottie animations disabled (using emoji fallback for web compatibility)
 
 ## Credentials
 - **AdMob App ID**: ca-app-pub-7302439791882329~8253964613
@@ -98,7 +135,7 @@ A mobile-first personal finance habit-building app built with React Native (Expo
 - **AdMob Native**: ca-app-pub-7302439791882329/5675144563
 
 ## Next Actions
-1. Implement functional Dark Mode toggle logic
-2. Implement Data Export/Backup functionality
-3. Implement Local Notification scheduling
-4. Test on native devices with real AdMob ads
+1. Test on native devices with real notifications and AdMob ads
+2. Implement functional Dark Mode toggle logic
+3. Implement Data Export/Backup functionality
+4. Add Invite Friends sharing feature
