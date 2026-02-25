@@ -98,11 +98,15 @@ export function PrivacyPledgeScreen({ onComplete }: PrivacyPledgeScreenProps) {
 
         {/* Text Content */}
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{currentContent.title}</Text>
-          <Text style={[styles.titleHighlight, { color: COLORS.primary }]}>
+          <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF', textAlign: 'center' }}>
+            {currentContent.title}
+          </Text>
+          <Text style={{ fontSize: 28, fontWeight: '700', color: '#4F46E5', textAlign: 'center', marginBottom: 12 }}>
             {currentContent.titleHighlight}
           </Text>
-          <Text style={styles.description}>{currentContent.description}</Text>
+          <Text style={{ fontSize: 16, color: '#AAAAAA', textAlign: 'center', lineHeight: 24 }}>
+            {currentContent.description}
+          </Text>
         </View>
 
         {/* Pagination Dots */}
