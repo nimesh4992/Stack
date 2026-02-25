@@ -235,11 +235,19 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Transaction completion refinement"
-    - "Backend integration testing"
-  stuck_tasks: []
+    - "Critical app initialization failure - blue gradient screen"
+    - "JavaScript runtime errors preventing React/Expo from loading"
+    - "Package compatibility issues with AsyncStorage and SVG"
+  stuck_tasks:
+    - "Splash Screen & Initialization"
+    - "Onboarding Flow" 
+    - "Home Dashboard"
+    - "Add Transaction Flow"
+    - "Insights & Charts Screen"
+    - "Highlights Feature"
+    - "Navigation & Routing"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "critical_blocking"
 
 agent_communication:
     - agent: "testing"
