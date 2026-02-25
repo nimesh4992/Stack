@@ -582,4 +582,11 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT.bold,
     color: '#FFFFFF',
   },
+  toastOverlay: {
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
 });
