@@ -289,8 +289,8 @@ export default function HabitsTrackerScreen() {
             <HabitCounter
               value={habits.steps}
               label="Today's Steps"
-              onDecrease={() => updateSteps(-100)}
-              onIncrease={() => updateSteps(100)}
+              onDecrease={() => handleUpdateSteps(-100)}
+              onIncrease={() => handleUpdateSteps(100)}
               step={100}
               unit="steps"
             />
@@ -305,21 +305,30 @@ export default function HabitsTrackerScreen() {
             </View>
             
             <View style={styles.quickButtons}>
+              {pedometerAvailable && (
+                <TouchableOpacity 
+                  style={[styles.quickButton, styles.syncButton]}
+                  onPress={syncSteps}
+                >
+                  <Ionicons name="sync" size={14} color={COLORS.habitBlue} />
+                  <Text style={[styles.quickButtonText, { color: COLORS.habitBlue }]}>Sync</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateSteps(500)}
+                onPress={() => handleUpdateSteps(500)}
               >
                 <Text style={styles.quickButtonText}>+500</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateSteps(1000)}
+                onPress={() => handleUpdateSteps(1000)}
               >
                 <Text style={styles.quickButtonText}>+1,000</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={styles.quickButton}
-                onPress={() => updateSteps(5000)}
+                onPress={() => handleUpdateSteps(5000)}
               >
                 <Text style={styles.quickButtonText}>+5,000</Text>
               </TouchableOpacity>
@@ -332,8 +341,8 @@ export default function HabitsTrackerScreen() {
                   'Adjust Steps Goal',
                   `Current goal: ${habits.stepsGoal.toLocaleString()}`,
                   [
-                    { text: '-1,000', onPress: () => updateGoal('steps', -1000) },
-                    { text: '+1,000', onPress: () => updateGoal('steps', 1000) },
+                    { text: '-1,000', onPress: () => handleUpdateGoal('steps', -1000) },
+                    { text: '+1,000', onPress: () => handleUpdateGoal('steps', 1000) },
                     { text: 'Cancel', style: 'cancel' },
                   ]
                 );
