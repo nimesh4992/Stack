@@ -314,6 +314,14 @@ export default function SettingsScreen() {
               onPress={() => router.push('/habits-tracker')}
               color={COLORS.habitPurple}
             />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="apps-outline"
+              title="Home Screen Widgets"
+              subtitle="Quick access widgets"
+              onPress={() => router.push('/widgets')}
+              color={COLORS.habitOrange}
+            />
           </Card>
         </SettingsSection>
 
