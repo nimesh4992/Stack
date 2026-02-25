@@ -196,17 +196,17 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Splash Screen & Initialization"
+    - "Navigation & Routing"
+  stuck_tasks:
+    - "Navigation & Routing"
     - "Onboarding Flow"
-    - "Home Dashboard"
+    - "Home Dashboard" 
     - "Add Transaction Flow"
     - "Insights & Charts Screen"
     - "Highlights Feature"
-    - "Navigation & Routing"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
     - agent: "testing"
-    - message: "Starting comprehensive testing of HabitFinance mobile app. Will test on mobile viewport (390x844) as specified. App URL: https://smart-spending-29.preview.emergentagent.com"
+    - message: "COMPLETED comprehensive testing. CRITICAL ISSUE FOUND: App is stuck on splash screen - navigation from splash to main app is broken. Splash screen itself works perfectly (all privacy features visible), but 4-second auto-dismiss timer is not functioning. This blocks access to all other features. Main agent needs to investigate splash screen navigation logic in /app/frontend/app/index.tsx and SplashScreen component. Also fixed 'fingerprint' icon error by changing it to 'key' icon."
