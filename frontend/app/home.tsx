@@ -564,7 +564,7 @@ export default function HomeScreen() {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <View style={styles.navIconActive}>
-            <Text style={styles.navIconText}>☰</Text>
+            <Ionicons name="home" size={22} color={COLORS.primary} />
           </View>
           <Text style={[styles.navLabel, styles.navLabelActive]}>DASH</Text>
         </TouchableOpacity>
