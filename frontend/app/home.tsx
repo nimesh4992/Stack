@@ -173,6 +173,30 @@ export default function HomeScreen() {
           </Card>
         </Animated.View>
 
+        {/* Highlights Button - Spotify Wrapped Style */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <TouchableOpacity
+            style={styles.highlightsButton}
+            onPress={() => router.push('/highlights')}
+          >
+            <View style={styles.highlightsButtonContent}>
+              <View style={styles.highlightsIcon}>
+                <Ionicons name="sparkles" size={24} color="#FFFFFF" />
+              </View>
+              <View style={styles.highlightsText}>
+                <Text style={styles.highlightsTitle}>Your Highlights</Text>
+                <Text style={styles.highlightsSubtitle}>See your daily & weekly wrapped</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="#FFFFFF" />
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+
         {/* Habit Rings - Enhanced with More Rings */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
