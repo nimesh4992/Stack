@@ -216,6 +216,22 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </Animated.View>
 
+        {/* Smart Nudge Card */}
+        {nudge && showNudge && (
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
+          >
+            <NudgeCard
+              nudge={nudge}
+              variant="banner"
+              onDismiss={() => setShowNudge(false)}
+            />
+          </Animated.View>
+        )}
+
         {/* Quick Actions */}
         <View style={styles.quickActionsRow}>
           <TouchableOpacity
