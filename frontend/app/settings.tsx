@@ -15,7 +15,9 @@ import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { RootState, AppDispatch } from '../src/store';
+import { selectPreferences } from '../src/features/userPreferences/userPreferencesSlice';
 import { Card } from '../src/core/presentation/components/Card';
+import { CompanionAvatar } from '../src/core/presentation/components/CompanionAvatar';
 import { storageService } from '../src/core/data/storage';
 import {
   initializeNotifications,
