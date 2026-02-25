@@ -1,5 +1,5 @@
 // 📱 SMS Import Screen - Parse Bank SMS Messages
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,25 @@ import {
   TextInput,
   Alert,
   SafeAreaView,
+  Switch,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { AppDispatch } from '../src/store';
+import { AppDispatch, RootState } from '../src/store';
 import { addTransaction } from '../src/features/expenseTracking/expenseSlice';
 import { awardPoints, updateStreak } from '../src/features/gamification/gamificationSlice';
+import { 
+  selectPreferences, 
+  markSmsTourSeen,
+  updatePreferences,
+  saveUserPreferences 
+} from '../src/features/userPreferences/userPreferencesSlice';
 import { Card } from '../src/core/presentation/components/Card';
+import { SMSTour } from '../src/core/presentation/components/SMSTour';
 import { parseSMS, SAMPLE_SMS_MESSAGES, guessCategory, ParsedTransaction } from '../src/core/common/smsParser';
+import { checkSMSPermission, requestSMSPermission } from '../src/core/services/smsService';
 import {
   COLORS,
   SPACING,
@@ -30,10 +40,67 @@ import {
 export default function SMSImportScreen() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const preferences = useSelector(selectPreferences);
   
   const [customSMS, setCustomSMS] = useState('');
   const [parsedResult, setParsedResult] = useState<ParsedTransaction | null>(null);
   const [selectedSMS, setSelectedSMS] = useState<string | null>(null);
+  const [showTour, setShowTour] = useState(false);
+  const [smsPermissionStatus, setSmsPermissionStatus] = useState<{
+    hasRead: boolean;
+    hasReceive: boolean;
+    isSupported: boolean;
+  }>({ hasRead: false, hasReceive: false, isSupported: false });
+  
+  // Show tour on first visit
+  useEffect(() => {
+    if (!preferences.hasSeenSmsTour) {
+      setShowTour(true);
+    }
+  }, [preferences.hasSeenSmsTour]);
+  
+  // Check SMS permissions on mount
+  useEffect(() => {
+    checkSMSPermission().then(status => {
+      setSmsPermissionStatus({
+        hasRead: status.hasReadPermission,
+        hasReceive: status.hasReceivePermission,
+        isSupported: status.isSupported,
+      });
+    });
+  }, []);
+  
+  const handleTourComplete = () => {
+    setShowTour(false);
+    dispatch(markSmsTourSeen());
+    dispatch(saveUserPreferences({
+      ...preferences,
+      hasSeenSmsTour: true,
+    }));
+  };
+  
+  const handleRequestPermission = async () => {
+    const granted = await requestSMSPermission();
+    if (granted) {
+      setSmsPermissionStatus(prev => ({
+        ...prev,
+        hasRead: true,
+        hasReceive: true,
+      }));
+      Alert.alert('Permission Granted!', 'SMS auto-detection is now enabled.');
+    } else {
+      Alert.alert('Permission Denied', 'You can still paste SMS manually.');
+    }
+  };
+  
+  const handleToggleAutoLog = async (value: boolean) => {
+    const updated = {
+      ...preferences,
+      smsAutoLogEnabled: value,
+    };
+    dispatch(updatePreferences({ smsAutoLogEnabled: value }));
+    dispatch(saveUserPreferences(updated));
+  };
 
   const handleParseSMS = (sms: string) => {
     const result = parseSMS(sms);
