@@ -279,10 +279,11 @@ export default function HomeScreen() {
                   </Text>
                 ))}
               </View>
+              {/* Week 1 */}
               <View style={styles.calendarDates}>
-                {[24, 25, 26, 27, 28, 1, 2].map((date, index) => {
-                  const isActive = index < gamification.currentStreak;
-                  const isToday = index === 2;
+                {[1, 2, 3, 4, 5, 6, 7].map((date, index) => {
+                  const isActive = date <= gamification.currentStreak;
+                  const isToday = date === 26;
                   return (
                     <View
                       key={index}
@@ -302,7 +303,100 @@ export default function HomeScreen() {
                       </Text>
                       {isActive && !isToday && (
                         <View style={styles.checkDot}>
-                          <Text style={styles.checkDotText}>✓</Text>
+                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+              {/* Week 2 */}
+              <View style={styles.calendarDates}>
+                {[8, 9, 10, 11, 12, 13, 14].map((date, index) => {
+                  const isActive = date <= gamification.currentStreak;
+                  const isToday = date === 26;
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.calendarDate,
+                        isActive && styles.calendarDateActive,
+                        isToday && styles.calendarDateToday,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.calendarDateText,
+                          (isActive || isToday) && styles.calendarDateTextActive,
+                        ]}
+                      >
+                        {date}
+                      </Text>
+                      {isActive && !isToday && (
+                        <View style={styles.checkDot}>
+                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+              {/* Week 3 */}
+              <View style={styles.calendarDates}>
+                {[15, 16, 17, 18, 19, 20, 21].map((date, index) => {
+                  const isActive = date <= gamification.currentStreak;
+                  const isToday = date === 26;
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.calendarDate,
+                        isActive && styles.calendarDateActive,
+                        isToday && styles.calendarDateToday,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.calendarDateText,
+                          (isActive || isToday) && styles.calendarDateTextActive,
+                        ]}
+                      >
+                        {date}
+                      </Text>
+                      {isActive && !isToday && (
+                        <View style={styles.checkDot}>
+                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+              {/* Week 4 */}
+              <View style={styles.calendarDates}>
+                {[22, 23, 24, 25, 26, 27, 28].map((date, index) => {
+                  const isActive = date <= 26 && date >= 22; // Current week active
+                  const isToday = date === 26;
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.calendarDate,
+                        isActive && styles.calendarDateActive,
+                        isToday && styles.calendarDateToday,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.calendarDateText,
+                          (isActive || isToday) && styles.calendarDateTextActive,
+                        ]}
+                      >
+                        {date}
+                      </Text>
+                      {isActive && !isToday && (
+                        <View style={styles.checkDot}>
+                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
                         </View>
                       )}
                     </View>
