@@ -23,6 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="add-expense" />
         <Stack.Screen name="highlights" />
         <Stack.Screen name="insights" />
+        <Stack.Screen name="settings" />
       </Stack>
     </Provider>
   );
