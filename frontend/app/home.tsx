@@ -352,7 +352,7 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* Streak Calendar - Enhanced */}
+        {/* Streak Calendar - New Interactive Component */}
         <Animated.View
           style={{
             opacity: fadeAnim,
@@ -361,151 +361,13 @@ export default function HomeScreen() {
         >
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Streak Calendar</Text>
-            <Card style={styles.streakCard}>
-              <View style={styles.streakHeader}>
-                <View style={styles.streakIconContainer}>
-                  <Text style={styles.streakEmoji}>🔥</Text>
-                </View>
-                <View style={styles.streakInfo}>
-                  <Text style={styles.streakText}>
-                    {gamification.currentStreak} Day Streak
-                  </Text>
-                  <Text style={styles.streakSubtext}>Keep it burning! 🔥</Text>
-                </View>
-                <Text style={styles.streakDate}>Feb 2026</Text>
-              </View>
-              <View style={styles.calendarDays}>
-                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
-                  <Text key={i} style={styles.dayLabel}>
-                    {day}
-                  </Text>
-                ))}
-              </View>
-              {/* Week 1 */}
-              <View style={styles.calendarDates}>
-                {[1, 2, 3, 4, 5, 6, 7].map((date, index) => {
-                  const isActive = date <= gamification.currentStreak;
-                  const isToday = date === 26;
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.calendarDate,
-                        isActive && styles.calendarDateActive,
-                        isToday && styles.calendarDateToday,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.calendarDateText,
-                          (isActive || isToday) && styles.calendarDateTextActive,
-                        ]}
-                      >
-                        {date}
-                      </Text>
-                      {isActive && !isToday && (
-                        <View style={styles.checkDot}>
-                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-              {/* Week 2 */}
-              <View style={styles.calendarDates}>
-                {[8, 9, 10, 11, 12, 13, 14].map((date, index) => {
-                  const isActive = date <= gamification.currentStreak;
-                  const isToday = date === 26;
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.calendarDate,
-                        isActive && styles.calendarDateActive,
-                        isToday && styles.calendarDateToday,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.calendarDateText,
-                          (isActive || isToday) && styles.calendarDateTextActive,
-                        ]}
-                      >
-                        {date}
-                      </Text>
-                      {isActive && !isToday && (
-                        <View style={styles.checkDot}>
-                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-              {/* Week 3 */}
-              <View style={styles.calendarDates}>
-                {[15, 16, 17, 18, 19, 20, 21].map((date, index) => {
-                  const isActive = date <= gamification.currentStreak;
-                  const isToday = date === 26;
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.calendarDate,
-                        isActive && styles.calendarDateActive,
-                        isToday && styles.calendarDateToday,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.calendarDateText,
-                          (isActive || isToday) && styles.calendarDateTextActive,
-                        ]}
-                      >
-                        {date}
-                      </Text>
-                      {isActive && !isToday && (
-                        <View style={styles.checkDot}>
-                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-              {/* Week 4 */}
-              <View style={styles.calendarDates}>
-                {[22, 23, 24, 25, 26, 27, 28].map((date, index) => {
-                  const isActive = date <= 26 && date >= 22; // Current week active
-                  const isToday = date === 26;
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        styles.calendarDate,
-                        isActive && styles.calendarDateActive,
-                        isToday && styles.calendarDateToday,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.calendarDateText,
-                          (isActive || isToday) && styles.calendarDateTextActive,
-                        ]}
-                      >
-                        {date}
-                      </Text>
-                      {isActive && !isToday && (
-                        <View style={styles.checkDot}>
-                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            </Card>
+            <View style={styles.streakCalendarWrapper}>
+              <StreakCalendar
+                currentStreak={gamification.currentStreak}
+                longestStreak={Math.max(gamification.currentStreak, gamification.badges.length * 7)}
+                loggedDates={transactions.map(t => t.date)}
+              />
+            </View>
           </View>
         </Animated.View>
 
