@@ -52,7 +52,8 @@
           "color": "#4F46E5",
           "sounds": []
         }
-      ]
+      ],
+      "react-native-google-mobile-ads"
     ],
     "experiments": {
       "typedRoutes": true
