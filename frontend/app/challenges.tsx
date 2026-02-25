@@ -309,8 +309,10 @@ export default function ChallengesScreen() {
       {/* Tab Switcher */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
+          data-testid="challenges-tab-btn"
           style={[styles.tab, activeTab === 'challenges' && styles.tabActive]}
           onPress={() => setActiveTab('challenges')}
+          activeOpacity={0.7}
         >
           <Ionicons 
             name="trophy" 
@@ -322,8 +324,10 @@ export default function ChallengesScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          data-testid="goals-tab-btn"
           style={[styles.tab, activeTab === 'goals' && styles.tabActive]}
           onPress={() => setActiveTab('goals')}
+          activeOpacity={0.7}
         >
           <Ionicons 
             name="flag" 
