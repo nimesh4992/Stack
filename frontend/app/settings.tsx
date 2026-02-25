@@ -306,23 +306,115 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         {/* App Settings */}
-        <SettingsSection title="Preferences">
+        <SettingsSection title="Notifications">
           <Card style={styles.settingsCard}>
             <SettingsItem
               icon="notifications-outline"
-              title="Notifications"
-              subtitle="Daily reminders and alerts"
+              title="Push Notifications"
+              subtitle="Enable all notifications"
               color={COLORS.habitOrange}
               rightElement={
                 <Switch
                   value={notificationsEnabled}
-                  onValueChange={setNotificationsEnabled}
+                  onValueChange={handleNotificationToggle}
                   trackColor={{ false: COLORS.border, true: COLORS.primary + '50' }}
                   thumbColor={notificationsEnabled ? COLORS.primary : COLORS.textTertiary}
                 />
               }
             />
+            {notificationsEnabled && (
+              <>
+                <View style={styles.divider} />
+                <SettingsItem
+                  icon="flame-outline"
+                  title="Streak Reminders"
+                  subtitle="Alert before streak breaks"
+                  color={COLORS.habitOrange}
+                  rightElement={
+                    <Switch
+                      value={streakReminders}
+                      onValueChange={handleStreakRemindersToggle}
+                      trackColor={{ false: COLORS.border, true: COLORS.primary + '50' }}
+                      thumbColor={streakReminders ? COLORS.primary : COLORS.textTertiary}
+                    />
+                  }
+                />
+                <View style={styles.divider} />
+                <SettingsItem
+                  icon="time-outline"
+                  title="Daily Reminder"
+                  subtitle="Evening check-in at 8 PM"
+                  color={COLORS.habitCyan}
+                  rightElement={
+                    <Switch
+                      value={dailyReminder}
+                      onValueChange={handleDailyReminderToggle}
+                      trackColor={{ false: COLORS.border, true: COLORS.primary + '50' }}
+                      thumbColor={dailyReminder ? COLORS.primary : COLORS.textTertiary}
+                    />
+                  }
+                />
+              </>
+            )}
+          </Card>
+        </SettingsSection>
+
+        {/* SMS Auto-Read Settings */}
+        <SettingsSection title="SMS Auto-Detection">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="chatbubble-ellipses-outline"
+              title="Auto-Read Bank SMS"
+              subtitle={isSMSSupported ? (hasSMSPermission ? "Detecting transactions automatically" : "Grant permission to enable") : "Android only feature"}
+              color={COLORS.habitCyan}
+              rightElement={
+                <Switch
+                  value={smsAutoRead}
+                  onValueChange={handleSMSAutoReadToggle}
+                  trackColor={{ false: COLORS.border, true: COLORS.habitCyan + '50' }}
+                  thumbColor={smsAutoRead ? COLORS.habitCyan : COLORS.textTertiary}
+                  disabled={!isSMSSupported}
+                />
+              }
+            />
+            {smsAutoRead && (
+              <>
+                <View style={styles.divider} />
+                <SettingsItem
+                  icon="flash-outline"
+                  title="Auto-Log Transactions"
+                  subtitle="Log without confirmation"
+                  color={COLORS.warning}
+                  rightElement={
+                    <Switch
+                      value={smsAutoLog}
+                      onValueChange={handleSMSAutoLogToggle}
+                      trackColor={{ false: COLORS.border, true: COLORS.warning + '50' }}
+                      thumbColor={smsAutoLog ? COLORS.warning : COLORS.textTertiary}
+                    />
+                  }
+                />
+              </>
+            )}
             <View style={styles.divider} />
+            <SettingsItem
+              icon="clipboard-outline"
+              title="Paste SMS Manually"
+              subtitle="Parse any bank SMS text"
+              onPress={() => router.push('/sms-import')}
+              color={COLORS.primary}
+            />
+          </Card>
+          <Text style={styles.sectionHint}>
+            {Platform.OS === 'android' 
+              ? "Bank SMS will be detected automatically when you receive them. Your messages never leave your device."
+              : "SMS reading is only available on Android. Use the manual paste feature on iOS."}
+          </Text>
+        </SettingsSection>
+
+        {/* Appearance */}
+        <SettingsSection title="Appearance">
+          <Card style={styles.settingsCard}>
             <SettingsItem
               icon="moon-outline"
               title="Dark Mode"
