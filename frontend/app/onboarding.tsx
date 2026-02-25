@@ -37,13 +37,6 @@ export default function OnboardingScreen() {
     } else if (currentStep === 1) {
       dispatch(setQuizAnswer({ goal: optionId as any }));
     }
-    
-    // Auto-advance for multiple choice
-    if (currentStep < QUIZ_QUESTIONS.length - 1) {
-      setTimeout(() => {
-        // Move to next step in parent component
-      }, 300);
-    }
   };
 
   const handleNext = async () => {
