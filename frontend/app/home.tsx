@@ -138,7 +138,7 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header with Animation */}
+        {/* Header with Personalized Greeting and Companion */}
         <Animated.View
           style={[
             styles.header,
@@ -148,15 +148,17 @@ export default function HomeScreen() {
             },
           ]}
         >
-          <View style={styles.headerLeft}>
-            <View style={styles.appIconContainer}>
-              <Text style={styles.appIcon}>💰</Text>
+          <TouchableOpacity 
+            style={styles.headerLeft}
+            onPress={() => router.push('/choose-companion')}
+            activeOpacity={0.7}
+          >
+            <CompanionAvatar companionId={companionId} size="medium" />
+            <View style={styles.greetingContainer}>
+              <Text style={styles.greetingText}>{greeting}</Text>
+              <Text style={styles.contextMessage}>{contextMessage}</Text>
             </View>
-            <View>
-              <Text style={styles.appName}>HabitFinance</Text>
-              <Text style={styles.appTagline}>Build wealth, one habit at a time</Text>
-            </View>
-          </View>
+          </TouchableOpacity>
           <View style={styles.onDeviceBadge}>
             <View style={styles.onDeviceIcon} />
             <Text style={styles.onDeviceText}>ON-DEVICE</Text>
