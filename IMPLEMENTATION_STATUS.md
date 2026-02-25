@@ -159,7 +159,7 @@ Run comprehensive testing on all 7 screens
 ---
 
 ## 📱 **APP URL**
-https://habit-finance-dev.preview.emergentagent.com
+https://offline-finance-test.preview.emergentagent.com
 
 **Ready for final push to 100%!** 🚀
 
