@@ -13,53 +13,61 @@ export interface ParsedTransaction {
 }
 
 // Bank SMS patterns for major Indian banks
+// IMPORTANT: Patterns are designed to capture the TRANSACTION amount, not the balance
+// The balance pattern is separate and explicitly excludes balance-related keywords in debit/credit patterns
 const BANK_PATTERNS = {
   // HDFC Bank
+  // Example: "HDFC Bank: INR 1,250.00 has been debited from A/c XX1234 for purchase at AMAZON on 25-Feb-26. Avl Bal: INR 45,678.90"
   hdfc: {
     name: 'HDFC Bank',
-    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:has been|is)\s*debited.*?(?:at|to|for)\s+([A-Za-z0-9\s]+)/i,
+    // Match amount ONLY when followed by "debited" - stops before balance
+    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:has been|is)\s*debited.*?(?:at|to|for|on)\s+([A-Za-z0-9\s]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|$)/i,
     credit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:has been|is)\s*credited/i,
-    balance: /(?:Bal|Balance)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
+    balance: /(?:Avl\s*Bal|Balance)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /(?:A\/c|Acct|Account)\s*[xX*]+([\d]{4})/i,
   },
   // ICICI Bank
   icici: {
     name: 'ICICI Bank',
-    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|spent).*?(?:at|to|for)\s+([A-Za-z0-9\s]+)/i,
+    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|spent).*?(?:at|to|for)\s+([A-Za-z0-9\s]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|$)/i,
     credit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:credited|received)/i,
-    balance: /(?:Avl Bal|Balance)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
+    balance: /(?:Avl\s*Bal|Balance)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /(?:Acct|Account)\s*[xX*]+([\d]{4})/i,
   },
   // SBI (State Bank of India)
+  // Example: "SBI: Rs.500 debited from A/c XX9012 for UPI/P2M/SWIGGY on 25-Feb. Bal: Rs.12,345.67"
   sbi: {
     name: 'SBI',
-    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|withdrawn).*?(?:at|to|for)?\s*([A-Za-z0-9\s]*)/i,
-    credit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:credited|deposited)/i,
-    balance: /(?:Bal|Balance)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
+    debit: /(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|withdrawn).*?(?:for|at|to)\s+([A-Za-z0-9\/\s]+?)(?=\s+on\s+|\s*\.\s*|\s*Bal|$)/i,
+    credit: /(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)\s*(?:credited|deposited)/i,
+    balance: /(?:Bal|Balance)[:\s]*(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /(?:A\/c|Acct)\s*[xX*]+([\d]{4})/i,
   },
   // Axis Bank
+  // Example: "Axis Bank: INR 2,500.00 spent on Credit Card XX4567 at FLIPKART on 25-Feb-26. Avl Bal: INR 97,500.00"
   axis: {
     name: 'Axis Bank',
-    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|spent).*?(?:at|to|for)\s+([A-Za-z0-9\s]+)/i,
+    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|spent).*?(?:at|to|for)\s+([A-Za-z0-9\s]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|$)/i,
     credit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:credited)/i,
-    balance: /(?:Bal)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
+    balance: /(?:Avl\s*Bal|Bal)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /[xX*]+([\d]{4})/i,
   },
   // Kotak Mahindra Bank
+  // Example: "Kotak: INR 3,999.00 debited from your A/c XX7890 for purchase at MYNTRA. Bal: INR 28,001.00"
   kotak: {
     name: 'Kotak Bank',
-    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited).*?(?:at|to|for)\s+([A-Za-z0-9\s]+)/i,
+    debit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited).*?(?:at|to|for)\s+([A-Za-z0-9\s]+?)(?=\s*\.\s*|\s*Bal|$)/i,
     credit: /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:credited)/i,
     balance: /(?:Bal)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /[xX*]+([\d]{4})/i,
   },
   // Generic pattern for UPI transactions
+  // Example: "UPI: Money sent! Rs.150 debited from Paytm Wallet to ZOMATO@paytm. Wallet Bal: Rs.850.00"
   upi: {
     name: 'UPI',
-    debit: /(?:debited|sent).*?(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?).*?(?:to|at)\s+([A-Za-z0-9@\s]+)/i,
+    debit: /(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|sent).*?(?:to|at)\s+([A-Za-z0-9@\s]+?)(?=\s*\.\s*|\s*Wallet|\s*Bal|$)/i,
     credit: /(?:credited|received).*?(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
-    balance: /(?:Bal)[:\s]*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i,
+    balance: /(?:Wallet\s*Bal|Bal)[:\s]*(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)/i,
     account: /[xX*]+([\d]{4})/i,
   },
 };
@@ -135,31 +143,65 @@ export function parseSMS(sms: string): ParsedTransaction | null {
 
 // Generic SMS parser for unknown bank formats
 function parseGenericSMS(sms: string): ParsedTransaction | null {
-  // Generic debit pattern
-  const debitPattern = /(?:debited|spent|withdrawn|paid).*?(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i;
-  const creditPattern = /(?:credited|received|deposited).*?(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/i;
+  // First, try to identify if there's a balance mentioned so we can exclude it
+  const smsLower = sms.toLowerCase();
+  const hasBalance = /(?:avl\s*bal|balance|bal)[:\s]/i.test(sms);
   
-  // Also try amount-first patterns
-  const amountFirstDebit = /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?).*?(?:debited|spent|withdrawn|paid)/i;
-  const amountFirstCredit = /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?).*?(?:credited|received|deposited)/i;
+  // Extract all amounts from the SMS
+  const allAmounts = [...sms.matchAll(/(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/gi)];
   
-  let match = sms.match(debitPattern) || sms.match(amountFirstDebit);
-  if (match) {
+  // Determine if it's a debit or credit
+  const isDebit = /(?:debited|spent|withdrawn|paid|sent)/i.test(sms);
+  const isCredit = /(?:credited|received|deposited)/i.test(sms);
+  
+  if (allAmounts.length === 0) return null;
+  
+  // If there are multiple amounts and we have a balance indicator,
+  // the transaction amount is typically the FIRST amount mentioned (before balance)
+  let transactionAmount: number;
+  
+  if (hasBalance && allAmounts.length >= 2) {
+    // First amount is usually the transaction, second is balance
+    transactionAmount = parseAmount(allAmounts[0][1]);
+  } else if (allAmounts.length === 1) {
+    // Only one amount - that's our transaction
+    transactionAmount = parseAmount(allAmounts[0][1]);
+  } else {
+    // Multiple amounts without clear balance indicator - use first amount
+    transactionAmount = parseAmount(allAmounts[0][1]);
+  }
+  
+  // Extract balance if present (usually the last amount after "Bal" keyword)
+  let balance: number | undefined;
+  if (hasBalance && allAmounts.length >= 2) {
+    balance = parseAmount(allAmounts[allAmounts.length - 1][1]);
+  }
+  
+  // Try to extract merchant name
+  let merchantName: string | undefined;
+  const merchantMatch = sms.match(/(?:at|to|for)\s+([A-Za-z0-9\s@]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|$)/i);
+  if (merchantMatch) {
+    merchantName = merchantMatch[1].trim();
+  }
+  
+  if (isDebit) {
     return {
       type: 'expense',
-      amount: parseAmount(match[1]),
+      amount: transactionAmount,
+      merchantName,
       bankName: 'Unknown Bank',
       date: new Date().toISOString(),
+      balance,
     };
   }
   
-  match = sms.match(creditPattern) || sms.match(amountFirstCredit);
-  if (match) {
+  if (isCredit) {
     return {
       type: 'income',
-      amount: parseAmount(match[1]),
+      amount: transactionAmount,
       bankName: 'Unknown Bank',
       date: new Date().toISOString(),
+      balance,
     };
   }
   
