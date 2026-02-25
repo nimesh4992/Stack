@@ -174,7 +174,7 @@ export default function ChallengesScreen() {
       targetAmount: 100000,
       savedAmount: 25000,
       deadline: '2026-12-31',
-      icon: 'shield',
+      icon: '🛡️',
       color: COLORS.habitCyan,
     },
     {
@@ -183,7 +183,7 @@ export default function ChallengesScreen() {
       targetAmount: 50000,
       savedAmount: 12000,
       deadline: '2026-08-15',
-      icon: 'airplane',
+      icon: '✈️',
       color: COLORS.habitPurple,
     },
     {
@@ -192,7 +192,7 @@ export default function ChallengesScreen() {
       targetAmount: 30000,
       savedAmount: 18000,
       deadline: '2026-04-30',
-      icon: 'phone-portrait',
+      icon: '📱',
       color: COLORS.habitBlue,
     },
   ];
