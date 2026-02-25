@@ -177,7 +177,7 @@ export default function AddExpenseScreen() {
                     ]}
                     onPress={() => setSelectedCategory(cat)}
                   >
-                    <Text style={styles.quickCategoryIcon}>{cat.icon}</Text>
+                    <Ionicons name={cat.iconName as any} size={24} color={cat.color} />
                     <Text style={styles.quickCategoryLabel}>{cat.label}</Text>
                   </TouchableOpacity>
                 ))}
