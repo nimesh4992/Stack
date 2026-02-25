@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 import { RootState } from '../src/store';
 import { selectTodayBalance } from '../src/features/expenseTracking/expenseSlice';
 import { Card } from '../src/core/presentation/components/Card';
