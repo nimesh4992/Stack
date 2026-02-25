@@ -592,6 +592,13 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
     paddingHorizontal: SPACING.xs,
   },
+  sectionHint: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textTertiary,
+    marginTop: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
+    lineHeight: 18,
+  },
   settingsCard: {
     padding: 0,
     overflow: 'hidden',
