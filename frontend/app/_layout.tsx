@@ -24,6 +24,8 @@ export default function RootLayout() {
         <Stack.Screen name="highlights" />
         <Stack.Screen name="insights" />
         <Stack.Screen name="settings" />
+        <Stack.Screen name="sms-import" />
+        <Stack.Screen name="challenges" />
       </Stack>
     </Provider>
   );
