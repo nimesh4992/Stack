@@ -252,7 +252,7 @@ export default function AddExpenseScreen() {
                   style={styles.checkInButton}
                   onPress={() => {}}
                 >
-                  <Text style={styles.checkInIcon}>{habit.icon}</Text>
+                  <Ionicons name={habit.iconName as any} size={24} color={COLORS.primary} />
                   <Text style={styles.checkInLabel}>{habit.label}</Text>
                 </TouchableOpacity>
               ))}
