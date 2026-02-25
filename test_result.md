@@ -122,11 +122,11 @@ frontend:
 
   - task: "Onboarding Flow"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/onboarding.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -134,14 +134,17 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Onboarding flow is now accessible! Successfully navigated from splash to onboarding screen. Goal selection (Emergency Fund) works properly, and the flow progresses to the amount setting screen with ₹15,000 preset amounts available. 'Start Your Journey' button is functional. Navigation fix resolved the blocking issue."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Cannot access onboarding flow due to app initialization failure. App is stuck on blue gradient and completely unresponsive. All onboarding functionality is inaccessible."
 
   - task: "Home Dashboard"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/home.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -149,14 +152,17 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Home dashboard loads successfully! Current rank card visible showing 'Finance Apprentice' rank with LV 1. Bottom navigation tabs (DASH, INSIGHTS, STATS, PROFILE) all present and functional. Habit rings section visible with progress tracking. 'Your Highlights' button accessible. Navigation to home screen works properly after onboarding completion."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Home dashboard is completely inaccessible due to app initialization failure. Cannot reach home screen to test any dashboard features."
 
   - task: "Add Transaction Flow"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/add-expense.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -164,14 +170,17 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Add transaction functionality is accessible! FAB + button is visible and clickable on home screen. Navigation to add expense screen works. Though detailed transaction completion needs refinement, the core flow for accessing and initiating transactions is functional."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Add transaction flow is completely inaccessible due to app initialization failure. Cannot reach home screen to access FAB button."
 
   - task: "Insights & Charts Screen"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/insights.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -179,14 +188,17 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Insights & Charts screen is fully accessible via bottom navigation INSIGHTS tab. Screen loads properly showing financial metrics cards (Total Spent, Total Income, Net Balance, Avg Daily) with ₹0.00 values for new users. 'No Data Yet' state is displayed appropriately with 'Add First Transaction' button. Navigation between insights and other screens works correctly."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Insights & Charts screen is completely inaccessible due to app initialization failure. Cannot reach insights through navigation."
 
   - task: "Highlights Feature"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/highlights.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -194,14 +206,17 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ WORKING: Highlights feature is accessible via 'Your Highlights' button on home screen. The feature is implemented and reachable through proper navigation flow. Users can access daily & weekly progress wrapped as designed."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Highlights feature is completely inaccessible due to app initialization failure. Cannot reach home screen to access highlights button."
 
   - task: "Navigation & Routing"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/app/_layout.tsx"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
+    stuck_count: 2
+    priority: "critical"
+    needs_retesting: true
     status_history:
         - working: false
         - agent: "testing"
@@ -209,6 +224,9 @@ frontend:
         - working: true
         - agent: "testing"
         - comment: "✅ FIXED: Navigation fix is working! Splash screen auto-dismisses after 4 seconds and successfully navigates to onboarding screen. Bottom navigation tabs (DASH, INSIGHTS, STATS, PROFILE) are all visible and functional. Can navigate between screens successfully. The core blocking issue has been resolved."
+        - working: false
+        - agent: "testing"
+        - comment: "🚨 CRITICAL REGRESSION: Navigation has completely failed again. App is stuck on blue gradient background with no user interface elements loaded. This is a complete system failure preventing any navigation testing."
 
 metadata:
   created_by: "testing_agent"
