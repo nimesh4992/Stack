@@ -479,6 +479,200 @@ export async function sendCustomNudge(
 }
 
 // ============================================
+// DAILY COMPANION MESSAGES
+// ============================================
+
+// Companion-specific motivational messages
+const COMPANION_MESSAGES: Record<string, { morning: string[]; afternoon: string[]; evening: string[] }> = {
+  bear: {
+    morning: [
+      "Good morning! Let's save some honey today! 🍯",
+      "Rise and shine! Time to track those morning expenses! ☀️",
+      "New day, new savings opportunities! I believe in you! 💪",
+    ],
+    afternoon: [
+      "How's your spending going? Don't forget to log lunch! 🍽️",
+      "Halfway through the day! Keep that budget in check! 📊",
+      "Remember: every rupee tracked is a step closer to your goals! 🎯",
+    ],
+    evening: [
+      "Evening check-in time! How did we do today? 🌙",
+      "Great job making it through the day! Let's log those expenses! ✨",
+      "Your wallet is proud of you for tracking today! 💰",
+    ],
+  },
+  cat: {
+    morning: [
+      "Purr-fect morning to start tracking! 🐱",
+      "Meow! Don't let expenses sneak up on you today! 😼",
+      "A curious cat always knows where their money goes! 🔍",
+    ],
+    afternoon: [
+      "Cat nap time? Not before logging your lunch! 😸",
+      "Still on track? Paw-some if you are! 🐾",
+      "Don't be a copycat - be unique with your savings! ✨",
+    ],
+    evening: [
+      "Time to curl up and review today's spending! 🌙",
+      "Feeling good about your expenses? I'm purring! 😻",
+      "Nine lives, one budget - make it count! 💫",
+    ],
+  },
+  robot: {
+    morning: [
+      "Good morning! Computing optimal savings strategy... 🤖",
+      "Systems online. Ready to track expenses efficiently! 💻",
+      "Initializing daily budget protocol. Let's optimize! ⚡",
+    ],
+    afternoon: [
+      "Midday analysis: Are you on budget track? 📈",
+      "Processing... Lunch expense detection required! 🔄",
+      "Data shows: Tracking leads to 42% better savings! 📊",
+    ],
+    evening: [
+      "End of day report pending. Log your expenses! 📋",
+      "Calculating... You're doing great, human! 🌟",
+      "Saving data... Your financial future looks bright! 💾",
+    ],
+  },
+  panda: {
+    morning: [
+      "Namaste! A mindful morning starts with budget awareness! 🧘",
+      "Take a deep breath... and log that coffee expense! ☕",
+      "Balance in all things - including your finances! ⚖️",
+    ],
+    afternoon: [
+      "Pause. Breathe. Track. You've got this! 🎋",
+      "Finding zen in your spending? That's the way! 💚",
+      "A peaceful wallet leads to a peaceful mind! 🙏",
+    ],
+    evening: [
+      "As the sun sets, reflect on today's spending journey! 🌅",
+      "Gratitude for every rupee tracked. Well done! 🙏",
+      "Rest well knowing your finances are in order! 🌙",
+    ],
+  },
+  fox: {
+    morning: [
+      "Good morning, clever saver! What's the plan today? 🦊",
+      "Outsmart those unnecessary expenses! You're too clever for them! 🧠",
+      "A fox always knows the best deals! Keep your eyes open! 👀",
+    ],
+    afternoon: [
+      "Sniffing out savings? That's what I like to see! 🔍",
+      "Stay cunning with your spending! No impulse buys! 💡",
+      "Quick and clever - that's how we save! ⚡",
+    ],
+    evening: [
+      "Another day of outsmarting expenses! Well done! 🌟",
+      "Sly move logging all your spending today! 🏆",
+      "The fox approves of your financial wisdom! 🦊",
+    ],
+  },
+  owl: {
+    morning: [
+      "Who's ready to make wise financial choices today? 🦉",
+      "Wisdom says: Track before you spend! 📚",
+      "An early bird catches savings. An owl knows how to keep them! 💰",
+    ],
+    afternoon: [
+      "Stay wise with your afternoon spending! 🎓",
+      "Knowledge is power - know where your money goes! 📖",
+      "The wise owl sees all... including hidden expenses! 👁️",
+    ],
+    evening: [
+      "As darkness falls, reflect on today's financial wisdom! 🌙",
+      "Hoot hoot! Another day of wise money choices! 🎉",
+      "The owl is proud of your thoughtful spending! 💎",
+    ],
+  },
+};
+
+/**
+ * Schedule daily companion message with smart timing
+ * Uses pattern-based timing from user's app usage
+ */
+export async function scheduleDailyCompanionMessage(
+  companionId: string,
+  appOpenTimes: number[],
+  currentStreak: number,
+  todaySpending: number,
+  dailyBudget: number
+): Promise<void> {
+  const settings = await getNotificationSettings();
+  
+  if (!settings.enabled) return;
+  
+  // Cancel existing companion message
+  await cancelScheduledNotification('companion-daily');
+  
+  // Calculate optimal time based on user's app usage pattern
+  let optimalHour = 20; // Default 8 PM
+  
+  if (appOpenTimes.length >= 5) {
+    // Find most common hour
+    const hourCounts: Record<number, number> = {};
+    appOpenTimes.forEach(hour => {
+      hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+    });
+    
+    let maxCount = 0;
+    Object.entries(hourCounts).forEach(([hour, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        optimalHour = parseInt(hour);
+      }
+    });
+  }
+  
+  // Get time-appropriate message
+  const companionMessages = COMPANION_MESSAGES[companionId] || COMPANION_MESSAGES.bear;
+  let messagePool: string[];
+  
+  if (optimalHour >= 5 && optimalHour < 12) {
+    messagePool = companionMessages.morning;
+  } else if (optimalHour >= 12 && optimalHour < 17) {
+    messagePool = companionMessages.afternoon;
+  } else {
+    messagePool = companionMessages.evening;
+  }
+  
+  // Add contextual suffix based on user's stats
+  let contextSuffix = '';
+  if (currentStreak > 0) {
+    contextSuffix = ` 🔥 ${currentStreak}-day streak!`;
+  }
+  if (todaySpending > 0 && dailyBudget > 0) {
+    const percentage = Math.round((todaySpending / dailyBudget) * 100);
+    if (percentage < 50) {
+      contextSuffix += ' Great budget control today!';
+    } else if (percentage >= 80) {
+      contextSuffix += ' Watch that budget!';
+    }
+  }
+  
+  const message = messagePool[Math.floor(Math.random() * messagePool.length)];
+  
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: message,
+      body: `Your daily check-in from HabitFinance!${contextSuffix}`,
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.DEFAULT,
+    },
+    trigger: {
+      hour: optimalHour,
+      minute: 0,
+      repeats: true,
+      channelId: 'companion',
+    },
+    identifier: 'companion-daily',
+  });
+  
+  console.log(`Companion message scheduled for ${optimalHour}:00`);
+}
+
+// ============================================
 // UTILITIES
 // ============================================
 
