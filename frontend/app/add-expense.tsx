@@ -25,12 +25,14 @@ import {
   POINTS,
 } from '../src/core/common/constants';
 
-// Quick select categories (simplified for Dojo style)
+// Quick select categories (simplified for Dojo style) - Icons from Ionicons
 const QUICK_CATEGORIES = [
-  { id: 'food', label: 'Coffee', icon: '☕', color: '#FF9A3C' },
-  { id: 'food', label: 'Food', icon: '🍔', color: '#00D4AA' },
-  { id: 'entertainment', label: 'Fun', icon: '🎭', color: '#7C3AED' },
-  { id: 'transport', label: 'Transit', icon: '🚗', color: '#2E5CFF' },
+  { id: 'food', label: 'Coffee', iconName: 'cafe', color: '#FF9A3C' },
+  { id: 'food', label: 'Food', iconName: 'fast-food', color: '#00D4AA' },
+  { id: 'entertainment', label: 'Fun', iconName: 'game-controller', color: '#7C3AED' },
+  { id: 'transport', label: 'Transit', iconName: 'car', color: '#2E5CFF' },
+  { id: 'shopping', label: 'Shop', iconName: 'bag', color: '#EC4899' },
+  { id: 'bills', label: 'Bills', iconName: 'receipt', color: '#EF4444' },
 ];
 
 // Check-ins (habit tracking)
