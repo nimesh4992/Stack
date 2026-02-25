@@ -1,5 +1,5 @@
 // ⚙️ Settings Screen
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Alert,
   Switch,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +17,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { RootState, AppDispatch } from '../src/store';
 import { Card } from '../src/core/presentation/components/Card';
 import { storageService } from '../src/core/data/storage';
+import {
+  initializeNotifications,
+  getNotificationSettings,
+  updateNotificationSettings,
+  scheduleDailyReminder,
+} from '../src/core/services/notificationService';
+import {
+  checkSMSPermission,
+  requestSMSPermission,
+  getSMSSettings,
+  updateSMSSettings,
+} from '../src/core/services/smsService';
 import {
   COLORS,
   SPACING,
@@ -31,8 +44,124 @@ export default function SettingsScreen() {
   const gamification = useSelector((state: RootState) => state.gamification);
   const transactions = useSelector((state: RootState) => state.expense.transactions);
   
+  // Notification settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [streakReminders, setStreakReminders] = useState(true);
+  const [dailyReminder, setDailyReminder] = useState(true);
+  
+  // SMS settings
+  const [smsAutoRead, setSmsAutoRead] = useState(false);
+  const [smsAutoLog, setSmsAutoLog] = useState(false);
+  const [hasSMSPermission, setHasSMSPermission] = useState(false);
+  const [isSMSSupported, setIsSMSSupported] = useState(false);
+  
+  // Other settings
   const [darkMode, setDarkMode] = useState(false);
+
+  // Load settings on mount
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    // Load notification settings
+    const notifSettings = await getNotificationSettings();
+    setNotificationsEnabled(notifSettings.enabled);
+    setStreakReminders(notifSettings.streakReminders);
+    setDailyReminder(notifSettings.dailyReminder);
+
+    // Load SMS settings
+    const smsSettings = await getSMSSettings();
+    setSmsAutoRead(smsSettings.autoReadEnabled);
+    setSmsAutoLog(smsSettings.autoLogEnabled);
+
+    // Check SMS permissions
+    const smsPerms = await checkSMSPermission();
+    setHasSMSPermission(smsPerms.hasReadPermission && smsPerms.hasReceivePermission);
+    setIsSMSSupported(smsPerms.isSupported);
+  };
+
+  const handleNotificationToggle = async (value: boolean) => {
+    setNotificationsEnabled(value);
+    
+    if (value) {
+      const initialized = await initializeNotifications();
+      if (initialized) {
+        await updateNotificationSettings({ enabled: true });
+        await scheduleDailyReminder();
+        Alert.alert('Notifications Enabled', 'You\'ll receive streak reminders and daily check-ins.');
+      } else {
+        setNotificationsEnabled(false);
+        Alert.alert('Permission Required', 'Please enable notifications in your device settings.');
+      }
+    } else {
+      await updateNotificationSettings({ enabled: false });
+    }
+  };
+
+  const handleStreakRemindersToggle = async (value: boolean) => {
+    setStreakReminders(value);
+    await updateNotificationSettings({ streakReminders: value });
+  };
+
+  const handleDailyReminderToggle = async (value: boolean) => {
+    setDailyReminder(value);
+    await updateNotificationSettings({ dailyReminder: value });
+    if (value) {
+      await scheduleDailyReminder();
+    }
+  };
+
+  const handleSMSAutoReadToggle = async (value: boolean) => {
+    if (value && !hasSMSPermission) {
+      // Request permission first
+      Alert.alert(
+        'SMS Permission Required',
+        'HabitFinance needs permission to read incoming SMS messages to auto-detect bank transactions.\n\nYour messages are processed locally and never leave your device.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Grant Permission',
+            onPress: async () => {
+              const granted = await requestSMSPermission();
+              if (granted) {
+                setHasSMSPermission(true);
+                setSmsAutoRead(true);
+                await updateSMSSettings({ autoReadEnabled: true });
+                Alert.alert('Success', 'SMS auto-detection is now enabled. Bank transactions will be detected automatically!');
+              }
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    setSmsAutoRead(value);
+    await updateSMSSettings({ autoReadEnabled: value });
+  };
+
+  const handleSMSAutoLogToggle = async (value: boolean) => {
+    if (value) {
+      Alert.alert(
+        'Auto-Log Transactions?',
+        'Detected bank SMS will be automatically logged without confirmation.\n\nYou can always edit or delete transactions later.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Enable',
+            onPress: async () => {
+              setSmsAutoLog(true);
+              await updateSMSSettings({ autoLogEnabled: true });
+            },
+          },
+        ]
+      );
+    } else {
+      setSmsAutoLog(false);
+      await updateSMSSettings({ autoLogEnabled: false });
+    }
+  };
 
   const handleExportData = async () => {
     try {
