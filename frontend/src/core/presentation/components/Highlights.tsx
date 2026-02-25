@@ -129,7 +129,7 @@ export const Highlights: React.FC<HighlightsProps> = ({ period, stats }) => {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `I just completed ${period === 'daily' ? 'my daily' : 'this week\\'s'} finance tracking! 💰\n\nCheck out HabitFinance to build your financial habits!`,
+        message: `I just completed ${period === 'daily' ? 'my daily' : 'this week\'s'} finance tracking! 💰\n\nCheck out HabitFinance to build your financial habits!`,
       });
     } catch (error) {
       console.error('Error sharing:', error);
