@@ -147,37 +147,23 @@ export default function HabitsTrackerScreen() {
     animateProgress();
   }, []);
 
-  const updateSteps = (delta: number) => {
-    setHabits(prev => ({
-      ...prev,
-      steps: Math.max(0, prev.steps + delta),
-    }));
+  // Redux dispatch handlers
+  const handleUpdateSteps = (delta: number) => {
+    dispatch(updateSteps({ steps: delta }));
   };
 
-  const updateWater = (delta: number) => {
-    setHabits(prev => ({
-      ...prev,
-      water: Math.max(0, Math.min(prev.waterGoal + 5, prev.water + delta)),
-    }));
+  const handleUpdateWater = (delta: number) => {
+    dispatch(updateWater({ glasses: delta }));
   };
 
-  const updateMindful = (delta: number) => {
-    setHabits(prev => ({
-      ...prev,
-      mindfulMinutes: Math.max(0, prev.mindfulMinutes + delta),
-    }));
+  const handleUpdateMindful = (delta: number) => {
+    dispatch(updateMindful({ minutes: delta }));
   };
 
-  const updateGoal = (type: 'steps' | 'water' | 'mindful', delta: number) => {
-    setHabits(prev => {
-      if (type === 'steps') {
-        return { ...prev, stepsGoal: Math.max(1000, prev.stepsGoal + delta) };
-      } else if (type === 'water') {
-        return { ...prev, waterGoal: Math.max(1, prev.waterGoal + delta) };
-      } else {
-        return { ...prev, mindfulGoal: Math.max(5, prev.mindfulGoal + delta) };
-      }
-    });
+  const handleUpdateGoal = (type: 'steps' | 'water' | 'mindful', delta: number) => {
+    const currentValue = type === 'steps' ? habits.stepsGoal : 
+                         type === 'water' ? habits.waterGoal : habits.mindfulGoal;
+    dispatch(updateGoal({ type, value: currentValue + delta }));
   };
 
   const getStepsPercentage = () => Math.min(100, (habits.steps / habits.stepsGoal) * 100);
