@@ -1088,4 +1088,43 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     opacity: 0.2,
   },
+  highlightsButton: {
+    marginHorizontal: SPACING.lg,
+    marginBottom: SPACING.xl,
+    borderRadius: BORDER_RADIUS.xxl,
+    overflow: 'hidden',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  highlightsButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.lg,
+    backgroundColor: COLORS.primary,
+  },
+  highlightsIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  highlightsText: {
+    flex: 1,
+  },
+  highlightsTitle: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  highlightsSubtitle: {
+    fontSize: FONT_SIZE.sm,
+    color: 'rgba(255, 255, 255, 0.85)',
+  },
 });
