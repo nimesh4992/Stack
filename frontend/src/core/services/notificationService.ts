@@ -195,8 +195,14 @@ export async function updateNotificationSettings(
 // SCHEDULING
 // ============================================
 
+/**
+ * Schedule daily reminder based on user's usage pattern
+ * @param settings - Notification settings
+ * @param optimalHour - Calculated optimal hour from user's app usage pattern
+ */
 export async function scheduleDailyReminder(
-  settings?: NotificationSettings
+  settings?: NotificationSettings,
+  optimalHour?: number
 ): Promise<string | null> {
   const config = settings || (await getNotificationSettings());
 
@@ -207,7 +213,18 @@ export async function scheduleDailyReminder(
   // Cancel existing daily reminders
   await cancelScheduledNotification('daily-reminder');
 
-  const [hours, minutes] = config.dailyReminderTime.split(':').map(Number);
+  // Use optimal hour if provided (pattern-based), otherwise use configured time
+  let hours: number;
+  let minutes: number;
+  
+  if (optimalHour !== undefined) {
+    hours = optimalHour;
+    minutes = 0;
+    console.log('Using pattern-based notification time:', hours + ':00');
+  } else {
+    [hours, minutes] = config.dailyReminderTime.split(':').map(Number);
+  }
+  
   const message = DAILY_REMINDER_MESSAGES[Math.floor(Math.random() * DAILY_REMINDER_MESSAGES.length)];
 
   const identifier = await Notifications.scheduleNotificationAsync({
@@ -226,8 +243,117 @@ export async function scheduleDailyReminder(
     identifier: 'daily-reminder',
   });
 
-  console.log('Daily reminder scheduled for', config.dailyReminderTime);
+  console.log('Daily reminder scheduled for', `${hours}:${minutes.toString().padStart(2, '0')}`);
   return identifier;
+}
+
+/**
+ * Schedule smart notifications based on user behavior patterns
+ * @param appOpenTimes - Array of hours when user typically opens the app
+ * @param companions - User's selected companion for personalized messages
+ */
+export async function scheduleSmartNotifications(
+  appOpenTimes: number[],
+  companionName?: string
+): Promise<void> {
+  const settings = await getNotificationSettings();
+  
+  if (!settings.enabled) return;
+  
+  // Cancel existing smart notifications
+  await cancelScheduledNotification('smart-morning');
+  await cancelScheduledNotification('smart-evening');
+  await cancelScheduledNotification('smart-challenge');
+  
+  // Calculate most common hours
+  const hourCounts: Record<number, number> = {};
+  appOpenTimes.forEach(hour => {
+    hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+  });
+  
+  // Find peak usage times
+  const sortedHours = Object.entries(hourCounts)
+    .sort(([, a], [, b]) => b - a)
+    .map(([hour]) => parseInt(hour));
+  
+  // Schedule notification 1 hour before their typical usage time
+  if (sortedHours.length > 0) {
+    const peakHour = sortedHours[0];
+    const notifyHour = (peakHour - 1 + 24) % 24; // 1 hour before
+    
+    const companionGreeting = companionName 
+      ? `${companionName} says: ` 
+      : '';
+    
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: `${companionGreeting}Time to check in! 📊`,
+        body: "Your wallet is waiting. How's today's spending?",
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      },
+      trigger: {
+        hour: notifyHour,
+        minute: 30,
+        repeats: true,
+        channelId: 'reminders',
+      },
+      identifier: 'smart-peak',
+    });
+    
+    console.log(`Smart notification scheduled for ${notifyHour}:30`);
+  }
+}
+
+/**
+ * Schedule challenge reminder notification
+ * @param challengeTitle - Name of the challenge
+ * @param daysRemaining - Days left to complete
+ */
+export async function scheduleChallengeReminder(
+  challengeTitle: string,
+  daysRemaining: number
+): Promise<string | null> {
+  const settings = await getNotificationSettings();
+  
+  if (!settings.enabled) return null;
+  
+  await cancelScheduledNotification('challenge-reminder');
+  
+  const identifier = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `🎯 Challenge Update: ${challengeTitle}`,
+      body: `${daysRemaining} days left! Keep going, you're doing great!`,
+      sound: true,
+    },
+    trigger: {
+      hour: 10, // 10 AM
+      minute: 0,
+      repeats: true,
+      channelId: 'reminders',
+    },
+    identifier: 'challenge-reminder',
+  });
+  
+  return identifier;
+}
+
+/**
+ * Send invite friends notification
+ */
+export async function sendInviteFriendsNudge(): Promise<void> {
+  const settings = await getNotificationSettings();
+  
+  if (!settings.enabled) return;
+  
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: '👥 Share the Love!',
+      body: 'Know someone who could use better money habits? Invite them to join HabitFinance!',
+      sound: true,
+    },
+    trigger: null, // Immediate
+  });
 }
 
 export async function scheduleStreakReminder(
