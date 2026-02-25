@@ -14,7 +14,7 @@ export default function Index() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [showSplash, setShowSplash] = useState(true);
-  const [isReady, setIsReady] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   useEffect(() => {
     initializeApp();
@@ -26,50 +26,36 @@ export default function Index() {
       const result = await dispatch(loadOnboardingStatus()).unwrap();
       await dispatch(loadTransactions());
       await dispatch(loadGamification());
-
-      setIsReady(true);
-
-      // Navigate after splash finishes
-      if (!showSplash) {
-        navigateToApp(result.isComplete);
-      }
+      
+      setOnboardingComplete(result.isComplete);
     } catch (error) {
       console.error('Failed to initialize app:', error);
-      setIsReady(true);
-    }
-  };
-
-  const navigateToApp = (onboardingComplete: boolean) => {
-    if (onboardingComplete) {
-      router.replace('/home');
-    } else {
-      router.replace('/onboarding');
+      setOnboardingComplete(false);
     }
   };
 
   const handleSplashFinish = () => {
     setShowSplash(false);
-    if (isReady) {
-      // Check onboarding status from store or re-fetch
-      initializeApp().then(() => {
-        // Navigation will happen in the effect above
-      });
-    }
+    // Navigate based on onboarding status
+    setTimeout(() => {
+      if (onboardingComplete) {
+        router.replace('/home');
+      } else {
+        router.replace('/onboarding');
+      }
+    }, 100);
   };
 
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
-  if (!isReady) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
-
-  return null;
+  // Loading state while navigating
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color={COLORS.primary} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
