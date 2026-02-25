@@ -159,10 +159,61 @@ export default function AddExpenseScreen() {
 
       await dispatch(awardPoints(POINTS.LOG_EXPENSE));
       await dispatch(updateStreak());
-
-      Alert.alert('Success! 🎉', 'Expense logged successfully!', [
-        { text: 'OK', onPress: () => router.back() },
-      ]);
+      
+      // Get today's transactions to check if this is the first log
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayTransactions = transactions.filter(t => new Date(t.date) >= todayStart);
+      const isFirstToday = todayTransactions.length === 0;
+      
+      // Check for repeat category
+      const lastCategory = todayTransactions.length > 0 
+        ? todayTransactions[todayTransactions.length - 1]?.categoryId 
+        : null;
+      const isRepeatCategory = lastCategory === selectedCategory.id;
+      
+      // Generate post-log nudge
+      const nudge = getNudgeForPostLog(
+        transactions,
+        {
+          currentStreak: gamification.currentStreak,
+          lastLogDate: gamification.lastLogDate,
+          totalTransactions: gamification.totalTransactions,
+          level: gamification.level,
+          badges: gamification.badges,
+        },
+        {
+          type: 'expense',
+          amount: amountNum,
+          category: selectedCategory.id,
+          categoryLabel: selectedCategory.label,
+          isFirstToday,
+          isRepeatCategory,
+          hasCategory: !!selectedCategory.id,
+        },
+        {
+          dailyBudgetLimit: userProfile?.monthlyTarget ? userProfile.monthlyTarget / 30 : 1000,
+        }
+      );
+      
+      // Try to trigger an ad (won't show on web, but logic runs)
+      await triggerAd('achievement_unlocked', (xp) => {
+        // Award XP if user watched ad
+        dispatch(awardPoints(xp));
+      });
+      
+      // Show nudge toast if available
+      if (nudge) {
+        showToast(nudge);
+        // Delay navigation to show nudge
+        setTimeout(() => {
+          router.back();
+        }, 2500);
+      } else {
+        Alert.alert('Success! 🎉', 'Expense logged successfully!', [
+          { text: 'OK', onPress: () => router.back() },
+        ]);
+      }
     } catch (error) {
       console.error('Failed to add transaction:', error);
       Alert.alert('Error', 'Failed to save transaction. Please try again.');
