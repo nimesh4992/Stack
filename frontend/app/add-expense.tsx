@@ -377,22 +377,22 @@ const styles = StyleSheet.create({
   },
   quickCategories: {
     flexDirection: 'row',
-    gap: SPACING.md,
+    flexWrap: 'wrap',
+    gap: SPACING.sm,
   },
   quickCategoryButton: {
-    flex: 1,
-    paddingVertical: SPACING.lg,
-    borderRadius: BORDER_RADIUS.xl,
+    width: '31%',
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
-  },
-  quickCategoryIcon: {
-    fontSize: 32,
-    marginBottom: SPACING.sm,
+    gap: SPACING.xs,
   },
   quickCategoryLabel: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.xs,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textPrimary,
+    textAlign: 'center',
   },
   checkIns: {
     gap: SPACING.md,
