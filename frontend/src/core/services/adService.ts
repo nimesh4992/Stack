@@ -1,5 +1,6 @@
 // 📰 AdMob Service - Smart Ad Placement with Revenue Optimization
 // Implements frequency capping and strategic ad triggers
+// NOTE: AdMob only works on iOS/Android native apps, not web
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,25 +10,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // ============================================
 
 const AD_CONFIG = {
-  // Production IDs
   production: {
     interstitial: 'ca-app-pub-7302439791882329/9857602581',
     nativeAdvanced: 'ca-app-pub-7302439791882329/5675144563',
+    rewarded: 'ca-app-pub-7302439791882329/5675144563', // Use same for now
   },
-  // Test IDs for development
   test: {
-    interstitial: 'ca-app-pub-3940256099942544/1033173712', // Google test ID
-    rewarded: 'ca-app-pub-3940256099942544/5224354917', // Google test ID
+    interstitial: 'ca-app-pub-3940256099942544/1033173712',
+    rewarded: 'ca-app-pub-3940256099942544/5224354917',
   },
-};
-
-// Use test IDs in development
-const isDev = __DEV__;
-const getAdUnitId = (type: 'interstitial' | 'rewarded' | 'nativeAdvanced') => {
-  if (isDev) {
-    return type === 'nativeAdvanced' ? AD_CONFIG.test.interstitial : AD_CONFIG.test[type as 'interstitial' | 'rewarded'];
-  }
-  return AD_CONFIG.production[type as keyof typeof AD_CONFIG.production] || AD_CONFIG.test.interstitial;
 };
 
 // ============================================
@@ -35,22 +26,22 @@ const getAdUnitId = (type: 'interstitial' | 'rewarded' | 'nativeAdvanced') => {
 // ============================================
 
 export type AdTrigger =
-  | 'achievement_unlocked'    // Badge/milestone earned
-  | 'weekly_insights_view'    // Viewing detailed reports
-  | 'goal_milestone'          // Goal progress (25%, 50%, 75%, 100%)
-  | 'streak_extended'         // 7+ day streak
-  | 'session_end'             // App going to background
-  | 'education_complete';     // After viewing a tip/lesson
+  | 'achievement_unlocked'
+  | 'weekly_insights_view'
+  | 'goal_milestone'
+  | 'streak_extended'
+  | 'session_end'
+  | 'education_complete';
 
 export interface AdFrequencyConfig {
   maxInterstitialPerDay: number;
   maxRewardedPerDay: number;
   minSecondsBetweenAds: number;
-  cooldownAfterInterstitial: number; // seconds
+  cooldownAfterInterstitial: number;
 }
 
 interface AdTrackingData {
-  date: string; // YYYY-MM-DD
+  date: string;
   interstitialCount: number;
   rewardedCount: number;
   lastAdTimestamp: number;
@@ -60,8 +51,8 @@ interface AdTrackingData {
 const DEFAULT_CONFIG: AdFrequencyConfig = {
   maxInterstitialPerDay: 3,
   maxRewardedPerDay: 5,
-  minSecondsBetweenAds: 60, // 1 minute minimum between any ads
-  cooldownAfterInterstitial: 180, // 3 minutes after interstitial
+  minSecondsBetweenAds: 60,
+  cooldownAfterInterstitial: 180,
 };
 
 const STORAGE_KEY = '@ad_tracking';
@@ -71,10 +62,6 @@ const STORAGE_KEY = '@ad_tracking';
 // ============================================
 
 let trackingData: AdTrackingData | null = null;
-let interstitialAd: InterstitialAd | null = null;
-let rewardedAd: RewardedAd | null = null;
-let isInterstitialLoaded = false;
-let isRewardedLoaded = false;
 
 async function loadTrackingData(): Promise<AdTrackingData> {
   if (trackingData) return trackingData;
@@ -85,7 +72,6 @@ async function loadTrackingData(): Promise<AdTrackingData> {
       const data = JSON.parse(stored) as AdTrackingData;
       const today = new Date().toISOString().split('T')[0];
       
-      // Reset if it's a new day
       if (data.date !== today) {
         trackingData = {
           date: today,
@@ -137,10 +123,14 @@ export async function canShowAd(
   type: 'interstitial' | 'rewarded',
   config: AdFrequencyConfig = DEFAULT_CONFIG
 ): Promise<{ canShow: boolean; reason?: string }> {
+  // AdMob not available on web
+  if (Platform.OS === 'web') {
+    return { canShow: false, reason: 'Ads not available on web' };
+  }
+  
   const data = await loadTrackingData();
   const now = Date.now();
   
-  // Check frequency cap
   if (type === 'interstitial' && data.interstitialCount >= config.maxInterstitialPerDay) {
     return { canShow: false, reason: 'Daily interstitial limit reached' };
   }
@@ -148,10 +138,9 @@ export async function canShowAd(
     return { canShow: false, reason: 'Daily rewarded limit reached' };
   }
   
-  // Check cooldown
   const secondsSinceLastAd = (now - data.lastAdTimestamp) / 1000;
   if (secondsSinceLastAd < config.minSecondsBetweenAds) {
-    return { canShow: false, reason: `Cooldown active (${Math.ceil(config.minSecondsBetweenAds - secondsSinceLastAd)}s remaining)` };
+    return { canShow: false, reason: `Cooldown active` };
   }
   
   return { canShow: true };
@@ -164,7 +153,7 @@ export async function canShowAd(
 interface TriggerConfig {
   primaryType: 'rewarded' | 'interstitial';
   fallbackType?: 'interstitial';
-  probability: number; // 0-1, chance of showing ad
+  probability: number;
   rewardXP?: number;
 }
 
@@ -191,7 +180,7 @@ const TRIGGER_CONFIG: Record<AdTrigger, TriggerConfig> = {
   },
   session_end: {
     primaryType: 'interstitial',
-    probability: 0.3, // Low frequency
+    probability: 0.3,
   },
   education_complete: {
     primaryType: 'rewarded',
@@ -206,18 +195,15 @@ export async function shouldShowAdForTrigger(
   const config = TRIGGER_CONFIG[trigger];
   if (!config) return { shouldShow: false, type: 'interstitial' };
   
-  // Random probability check
   if (Math.random() > config.probability) {
     return { shouldShow: false, type: config.primaryType };
   }
   
-  // Check if primary type can be shown
   const primaryCheck = await canShowAd(config.primaryType);
   if (primaryCheck.canShow) {
     return { shouldShow: true, type: config.primaryType, rewardXP: config.rewardXP };
   }
   
-  // Try fallback
   if (config.fallbackType) {
     const fallbackCheck = await canShowAd(config.fallbackType);
     if (fallbackCheck.canShow) {
@@ -229,71 +215,23 @@ export async function shouldShowAdForTrigger(
 }
 
 // ============================================
-// AD LOADING
+// AD SHOWING (Native Only)
 // ============================================
 
-export function loadInterstitialAd(): void {
-  if (Platform.OS === 'web') return;
+let adModule: any = null;
+
+async function getAdModule() {
+  if (Platform.OS === 'web') return null;
+  if (adModule) return adModule;
   
-  const adUnitId = getAdUnitId('interstitial');
-  interstitialAd = InterstitialAd.createForAdRequest(adUnitId, {
-    requestNonPersonalizedAdsOnly: false,
-  });
-  
-  interstitialAd.addAdEventListener(AdEventType.LOADED, () => {
-    console.log('Interstitial ad loaded');
-    isInterstitialLoaded = true;
-  });
-  
-  interstitialAd.addAdEventListener(AdEventType.ERROR, (error) => {
-    console.error('Interstitial ad error:', error);
-    isInterstitialLoaded = false;
-  });
-  
-  interstitialAd.addAdEventListener(AdEventType.CLOSED, () => {
-    console.log('Interstitial ad closed');
-    isInterstitialLoaded = false;
-    // Preload next ad
-    setTimeout(() => loadInterstitialAd(), 1000);
-  });
-  
-  interstitialAd.load();
+  try {
+    adModule = await import('react-native-google-mobile-ads');
+    return adModule;
+  } catch (error) {
+    console.log('AdMob module not available:', error);
+    return null;
+  }
 }
-
-export function loadRewardedAd(): void {
-  if (Platform.OS === 'web') return;
-  
-  const adUnitId = getAdUnitId('rewarded');
-  rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
-    requestNonPersonalizedAdsOnly: false,
-  });
-  
-  rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
-    console.log('Rewarded ad loaded');
-    isRewardedLoaded = true;
-  });
-  
-  rewardedAd.addAdEventListener(RewardedAdEventType.EARNED_REWARD, (reward) => {
-    console.log('Rewarded ad reward earned:', reward);
-  });
-  
-  rewardedAd.addAdEventListener(AdEventType.ERROR, (error) => {
-    console.error('Rewarded ad error:', error);
-    isRewardedLoaded = false;
-  });
-  
-  rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
-    console.log('Rewarded ad closed');
-    isRewardedLoaded = false;
-    setTimeout(() => loadRewardedAd(), 1000);
-  });
-  
-  rewardedAd.load();
-}
-
-// ============================================
-// AD SHOWING
-// ============================================
 
 export async function showInterstitialAd(): Promise<boolean> {
   if (Platform.OS === 'web') return false;
@@ -304,22 +242,31 @@ export async function showInterstitialAd(): Promise<boolean> {
     return false;
   }
   
-  if (!isInterstitialLoaded || !interstitialAd) {
-    console.log('Interstitial not loaded');
-    loadInterstitialAd();
-    return false;
-  }
-  
   try {
-    await interstitialAd.show();
+    const ads = await getAdModule();
+    if (!ads) return false;
     
-    // Update tracking
-    const data = await loadTrackingData();
-    data.interstitialCount++;
-    data.lastAdTimestamp = Date.now();
-    await saveTrackingData();
+    const { InterstitialAd, AdEventType } = ads;
+    const adUnitId = __DEV__ ? AD_CONFIG.test.interstitial : AD_CONFIG.production.interstitial;
     
-    return true;
+    const interstitial = InterstitialAd.createForAdRequest(adUnitId);
+    
+    return new Promise((resolve) => {
+      interstitial.addAdEventListener(AdEventType.LOADED, async () => {
+        await interstitial.show();
+        const data = await loadTrackingData();
+        data.interstitialCount++;
+        data.lastAdTimestamp = Date.now();
+        await saveTrackingData();
+        resolve(true);
+      });
+      
+      interstitial.addAdEventListener(AdEventType.ERROR, () => {
+        resolve(false);
+      });
+      
+      interstitial.load();
+    });
   } catch (error) {
     console.error('Error showing interstitial:', error);
     return false;
@@ -338,31 +285,35 @@ export async function showRewardedAd(
     return false;
   }
   
-  if (!isRewardedLoaded || !rewardedAd) {
-    console.log('Rewarded not loaded');
-    loadRewardedAd();
-    return false;
-  }
-  
   try {
-    // Add one-time reward listener
-    const unsubscribe = rewardedAd.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      () => {
+    const ads = await getAdModule();
+    if (!ads) return false;
+    
+    const { RewardedAd, RewardedAdEventType, AdEventType } = ads;
+    const adUnitId = __DEV__ ? AD_CONFIG.test.rewarded : AD_CONFIG.production.rewarded;
+    
+    const rewarded = RewardedAd.createForAdRequest(adUnitId);
+    
+    return new Promise((resolve) => {
+      rewarded.addAdEventListener(RewardedAdEventType.LOADED, async () => {
+        await rewarded.show();
+      });
+      
+      rewarded.addAdEventListener(RewardedAdEventType.EARNED_REWARD, async () => {
         if (onRewarded) onRewarded(rewardXP);
-        unsubscribe();
-      }
-    );
-    
-    await rewardedAd.show();
-    
-    // Update tracking
-    const data = await loadTrackingData();
-    data.rewardedCount++;
-    data.lastAdTimestamp = Date.now();
-    await saveTrackingData();
-    
-    return true;
+        const data = await loadTrackingData();
+        data.rewardedCount++;
+        data.lastAdTimestamp = Date.now();
+        await saveTrackingData();
+        resolve(true);
+      });
+      
+      rewarded.addAdEventListener(AdEventType.ERROR, () => {
+        resolve(false);
+      });
+      
+      rewarded.load();
+    });
   } catch (error) {
     console.error('Error showing rewarded:', error);
     return false;
@@ -403,13 +354,7 @@ export async function initializeAds(): Promise<void> {
   }
   
   try {
-    // Load tracking data
     await loadTrackingData();
-    
-    // Preload ads
-    loadInterstitialAd();
-    loadRewardedAd();
-    
     console.log('AdMob initialized');
   } catch (error) {
     console.error('Error initializing AdMob:', error);
