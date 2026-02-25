@@ -171,37 +171,37 @@ export const SAMPLE_SMS_MESSAGES = [
   {
     id: '1',
     sender: 'HDFCBK',
-    message: 'INR 1,250.00 has been debited from A/c XX1234 for purchase at AMAZON on 25-Feb-26. Avl Bal: INR 45,678.90',
+    message: 'HDFC Bank: INR 1,250.00 has been debited from A/c XX1234 for purchase at AMAZON on 25-Feb-26. Avl Bal: INR 45,678.90',
     timestamp: new Date().toISOString(),
   },
   {
     id: '2',
     sender: 'ICICIB',
-    message: 'Your Acct XX5678 is credited with INR 50,000.00 on 25-Feb. Avl Bal: INR 75,000.00. -ICICI Bank',
+    message: 'ICICI Bank: Your Acct XX5678 is credited with INR 50,000.00 on 25-Feb. Avl Bal: INR 75,000.00.',
     timestamp: new Date().toISOString(),
   },
   {
     id: '3',
     sender: 'SBIINB',
-    message: 'Rs.500 debited from A/c XX9012 for UPI/P2M/SWIGGY on 25-Feb. Bal: Rs.12,345.67 -SBI',
+    message: 'SBI: Rs.500 debited from A/c XX9012 for UPI/P2M/SWIGGY on 25-Feb. Bal: Rs.12,345.67',
     timestamp: new Date().toISOString(),
   },
   {
     id: '4',
     sender: 'AXISBK',
-    message: 'INR 2,500.00 spent on Axis Bank Credit Card XX4567 at FLIPKART on 25-Feb-26. Avl Bal: INR 97,500.00',
+    message: 'Axis Bank: INR 2,500.00 spent on Credit Card XX4567 at FLIPKART on 25-Feb-26. Avl Bal: INR 97,500.00',
     timestamp: new Date().toISOString(),
   },
   {
     id: '5',
     sender: 'PAYTM',
-    message: 'Money sent! Rs.150 debited from Paytm Wallet to ZOMATO@paytm. Wallet Bal: Rs.850.00',
+    message: 'UPI: Money sent! Rs.150 debited from Paytm Wallet to ZOMATO@paytm. Wallet Bal: Rs.850.00',
     timestamp: new Date().toISOString(),
   },
   {
     id: '6',
     sender: 'KOTAKB',
-    message: 'INR 3,999.00 debited from your Kotak A/c XX7890 for purchase at MYNTRA. Bal: INR 28,001.00',
+    message: 'Kotak: INR 3,999.00 debited from your A/c XX7890 for purchase at MYNTRA. Bal: INR 28,001.00',
     timestamp: new Date().toISOString(),
   },
 ];
