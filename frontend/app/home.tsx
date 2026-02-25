@@ -67,6 +67,9 @@ export default function HomeScreen() {
   // Nudge state
   const [showNudge, setShowNudge] = useState(true);
   
+  // Security modal state
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
+  
   // Load user preferences and track app open on mount
   useEffect(() => {
     dispatch(loadUserPreferences());
