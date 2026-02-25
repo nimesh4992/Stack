@@ -1,42 +1,50 @@
 // 🎨 App Constants - Colors, Categories, and Configuration
 
 export const COLORS = {
-  // Primary palette
-  primary: '#10B981',        // Emerald green - savings/growth
-  primaryDark: '#059669',    // Darker emerald
-  primaryLight: '#6EE7B7',   // Light emerald
+  // Primary palette (The Dojo style)
+  primary: '#2E5CFF',        // Vibrant blue
+  primaryDark: '#1E3FCC',    // Darker blue
+  primaryLight: '#6B8AFF',   // Light blue
   
   // Accent colors
-  accent: '#F59E0B',         // Warm orange - alerts/spending
-  accentDark: '#D97706',     // Darker orange
-  accentLight: '#FCD34D',    // Light orange
+  accent: '#FF6B6B',         // Coral red
+  accentDark: '#EE5A52',     // Darker coral
+  accentLight: '#FF8787',    // Light coral
   
   // Semantic colors
-  success: '#10B981',        // Green
-  warning: '#F59E0B',        // Amber
-  danger: '#EF4444',         // Soft red
-  info: '#3B82F6',           // Blue
+  success: '#00D4AA',        // Cyan/teal
+  warning: '#FFB800',        // Yellow
+  danger: '#FF4757',         // Red
+  info: '#2E5CFF',           // Blue
   
-  // Neutral colors (light mode)
-  background: '#F3F4F6',     // Cool gray
+  // Habit ring colors
+  habitBlue: '#2E5CFF',      // Blue ring
+  habitCyan: '#00D4AA',      // Cyan ring
+  habitPurple: '#7C3AED',    // Purple ring
+  habitOrange: '#FF9A3C',    // Orange ring
+  habitPink: '#EC4899',      // Pink ring
+  
+  // Neutral colors (light mode) - The Dojo style
+  background: '#F7F8FC',     // Very light blue-gray
   surface: '#FFFFFF',        // White
-  surfaceAlt: '#F9FAFB',     // Off-white
-  border: '#E5E7EB',         // Light gray border
+  surfaceAlt: '#F0F2F9',     // Light purple tint
+  surfaceTint: '#F7F9FF',    // Very light blue tint
+  border: '#E2E5F1',         // Subtle border
   
   // Text colors (light mode)
-  textPrimary: '#111827',    // Almost black
+  textPrimary: '#0A0B14',    // Almost black
   textSecondary: '#6B7280',  // Medium gray
   textTertiary: '#9CA3AF',   // Light gray
   
   // Dark mode colors
-  backgroundDark: '#111827',     // Almost black
-  surfaceDark: '#1F2937',        // Dark gray
-  surfaceAltDark: '#374151',     // Medium dark gray
-  borderDark: '#4B5563',         // Dark border
+  backgroundDark: '#0A0B14',     // Very dark blue-black
+  surfaceDark: '#1A1B2E',        // Dark blue-gray
+  surfaceAltDark: '#252640',     // Medium dark
+  borderDark: '#2A2B3F',         // Dark border
   
-  textPrimaryDark: '#F9FAFB',    // Almost white
-  textSecondaryDark: '#D1D5DB',  // Light gray
-  textTertiaryDark: '#9CA3AF',   // Medium gray
+  textPrimaryDark: '#F7F8FC',    // Almost white
+  textSecondaryDark: '#B4B7C9',  // Light gray-blue
+  textTertiaryDark: '#7C7F93',   // Medium gray
 };
 
 export const SPACING = {
