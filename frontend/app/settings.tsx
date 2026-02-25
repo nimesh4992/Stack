@@ -45,6 +45,10 @@ export default function SettingsScreen() {
   const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
   const gamification = useSelector((state: RootState) => state.gamification);
   const transactions = useSelector((state: RootState) => state.expense.transactions);
+  const preferences = useSelector(selectPreferences);
+  
+  // Get display name from preferences or userProfile
+  const displayName = preferences.displayName || userProfile?.name || 'User';
   
   // Notification settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
