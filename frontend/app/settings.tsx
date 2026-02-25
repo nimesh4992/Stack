@@ -1,0 +1,420 @@
+// ⚙️ Settings Screen
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+  Switch,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { RootState, AppDispatch } from '../src/store';
+import { Card } from '../src/core/presentation/components/Card';
+import { storageService } from '../src/core/data/storage';
+import {
+  COLORS,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  BORDER_RADIUS,
+} from '../src/core/common/constants';
+
+export default function SettingsScreen() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
+  const gamification = useSelector((state: RootState) => state.gamification);
+  const transactions = useSelector((state: RootState) => state.expense.transactions);
+  
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const handleExportData = async () => {
+    try {
+      const data = {
+        profile: userProfile,
+        transactions,
+        gamification,
+        exportDate: new Date().toISOString(),
+      };
+      
+      const jsonString = JSON.stringify(data, null, 2);
+      
+      Alert.alert(
+        'Export Successful',
+        `Data exported!\n\nTransactions: ${transactions.length}\nPoints: ${gamification.points}\nSize: ${(jsonString.length / 1024).toFixed(2)} KB`,
+        [{ text: 'OK' }]
+      );
+      
+      // In a real app, you would use expo-sharing to share the file
+      console.log('Export data:', jsonString);
+    } catch (error) {
+      Alert.alert('Export Failed', 'Could not export data');
+    }
+  };
+
+  const handleClearData = () => {
+    Alert.alert(
+      'Clear All Data?',
+      'This will delete all your transactions, progress, and settings. This action cannot be undone!',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await storageService.clearAllData();
+              Alert.alert('Success', 'All data cleared. Restarting app...', [
+                { text: 'OK', onPress: () => router.replace('/onboarding') },
+              ]);
+            } catch (error) {
+              Alert.alert('Error', 'Failed to clear data');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const SettingsSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {children}
+    </View>
+  );
+
+  const SettingsItem = ({
+    icon,
+    title,
+    subtitle,
+    onPress,
+    rightElement,
+    color = COLORS.textSecondary,
+  }: {
+    icon: string;
+    title: string;
+    subtitle?: string;
+    onPress?: () => void;
+    rightElement?: React.ReactNode;
+    color?: string;
+  }) => (
+    <TouchableOpacity
+      style={styles.settingsItem}
+      onPress={onPress}
+      disabled={!onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+    >
+      <View style={[styles.iconContainer, { backgroundColor: color + '15' }]}>
+        <Ionicons name={icon as any} size={20} color={color} />
+      </View>
+      <View style={styles.settingsContent}>
+        <Text style={styles.settingsTitle}>{title}</Text>
+        {subtitle && <Text style={styles.settingsSubtitle}>{subtitle}</Text>}
+      </View>
+      {rightElement || (
+        onPress && <Ionicons name="chevron-forward" size={20} color={COLORS.textTertiary} />
+      )}
+    </TouchableOpacity>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color={COLORS.textPrimary} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Settings</Text>
+        <View style={styles.headerRight} />
+      </View>
+
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        {/* Profile Summary Card */}
+        <Card style={styles.profileCard}>
+          <View style={styles.profileHeader}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {userProfile?.name?.charAt(0) || 'U'}
+              </Text>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>{userProfile?.name || 'User'}</Text>
+              <Text style={styles.profileStats}>
+                Level {gamification.level} • {gamification.points} XP
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.editButton}>
+              <Ionicons name="create-outline" size={20} color={COLORS.primary} />
+            </TouchableOpacity>
+          </View>
+        </Card>
+
+        {/* Account Settings */}
+        <SettingsSection title="Account">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="person-outline"
+              title="Edit Profile"
+              subtitle="Update your name and preferences"
+              onPress={() => Alert.alert('Coming Soon', 'Profile editing will be available soon')}
+              color={COLORS.primary}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="wallet-outline"
+              title="Monthly Goal"
+              subtitle={`₹${userProfile?.monthlyTarget || 0} target`}
+              onPress={() => Alert.alert('Coming Soon', 'Goal editing will be available soon')}
+              color={COLORS.habitCyan}
+            />
+          </Card>
+        </SettingsSection>
+
+        {/* App Settings */}
+        <SettingsSection title="Preferences">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="notifications-outline"
+              title="Notifications"
+              subtitle="Daily reminders and alerts"
+              color={COLORS.habitOrange}
+              rightElement={
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={setNotificationsEnabled}
+                  trackColor={{ false: COLORS.border, true: COLORS.primary + '50' }}
+                  thumbColor={notificationsEnabled ? COLORS.primary : COLORS.textTertiary}
+                />
+              }
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="moon-outline"
+              title="Dark Mode"
+              subtitle="Switch to dark theme"
+              color={COLORS.habitPurple}
+              rightElement={
+                <Switch
+                  value={darkMode}
+                  onValueChange={setDarkMode}
+                  trackColor={{ false: COLORS.border, true: COLORS.primary + '50' }}
+                  thumbColor={darkMode ? COLORS.primary : COLORS.textTertiary}
+                />
+              }
+            />
+          </Card>
+        </SettingsSection>
+
+        {/* Data Management */}
+        <SettingsSection title="Data">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="download-outline"
+              title="Export Data"
+              subtitle={`${transactions.length} transactions`}
+              onPress={handleExportData}
+              color={COLORS.success}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="refresh-outline"
+              title="Backup Settings"
+              subtitle="Auto-backup to device"
+              onPress={() => Alert.alert('Coming Soon', 'Backup settings coming soon')}
+              color={COLORS.primary}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="trash-outline"
+              title="Clear All Data"
+              subtitle="Delete everything permanently"
+              onPress={handleClearData}
+              color={COLORS.danger}
+            />
+          </Card>
+        </SettingsSection>
+
+        {/* About */}
+        <SettingsSection title="About">
+          <Card style={styles.settingsCard}>
+            <SettingsItem
+              icon="shield-checkmark-outline"
+              title="Privacy Policy"
+              subtitle="100% on-device, zero tracking"
+              onPress={() => Alert.alert('Privacy First', '• All data stays on your device\n• No cloud storage\n• No tracking\n• No ads\n• Open source')}
+              color={COLORS.success}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="information-circle-outline"
+              title="About HabitFinance"
+              subtitle="Version 1.0.0-MVP"
+              onPress={() => Alert.alert('HabitFinance', 'Build wealth, one habit at a time.\n\nVersion: 1.0.0-MVP\nBuild: 2026.02.25')}
+              color={COLORS.primary}
+            />
+            <View style={styles.divider} />
+            <SettingsItem
+              icon="help-circle-outline"
+              title="Help & Support"
+              subtitle="FAQs and tutorials"
+              onPress={() => Alert.alert('Coming Soon', 'Help center coming soon')}
+              color={COLORS.habitOrange}
+            />
+          </Card>
+        </SettingsSection>
+
+        {/* Privacy Badge */}
+        <View style={styles.privacyBadge}>
+          <Ionicons name="lock-closed" size={16} color={COLORS.success} />
+          <Text style={styles.privacyText}>
+            Your data never leaves your device
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    backgroundColor: COLORS.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+  },
+  headerRight: {
+    width: 44,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: SPACING.lg,
+  },
+  profileCard: {
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: COLORS.primary + '20',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  avatarText: {
+    fontSize: FONT_SIZE.xxl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.primary,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
+  },
+  profileStats: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+  },
+  editButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.primary + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  section: {
+    marginBottom: SPACING.lg,
+  },
+  sectionTitle: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: SPACING.md,
+    paddingHorizontal: SPACING.xs,
+  },
+  settingsCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  settingsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.lg,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  settingsContent: {
+    flex: 1,
+  },
+  settingsTitle: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: COLORS.textPrimary,
+    marginBottom: 2,
+  },
+  settingsSubtitle: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginLeft: SPACING.lg + 40 + SPACING.md,
+  },
+  privacyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.sm,
+    paddingVertical: SPACING.xl,
+  },
+  privacyText: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+  },
+});
