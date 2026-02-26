@@ -150,7 +150,7 @@ export default function SMSImportScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* SMS Tour Overlay */}
       <SMSTour visible={showTour} onComplete={handleTourComplete} />
       
