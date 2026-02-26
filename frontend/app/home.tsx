@@ -580,7 +580,13 @@ export default function HomeScreen() {
                           },
                         ]}
                       >
-                        <Text style={styles.activityEmoji}>{transaction.categoryIcon}</Text>
+                        <Text style={styles.activityEmoji}>
+                          {transaction.categoryIcon || 
+                            (transaction.type === 'expense' 
+                              ? EXPENSE_CATEGORIES.find(c => c.id === transaction.categoryId)?.icon 
+                              : INCOME_CATEGORIES.find(c => c.id === transaction.categoryId)?.icon) 
+                            || '💰'}
+                        </Text>
                       </View>
                       <View>
                         <Text style={styles.activityCategory}>{transaction.categoryLabel}</Text>
