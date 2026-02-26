@@ -441,18 +441,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: SPACING.lg,
+    padding: SPACING.md,
+    paddingBottom: SPACING.sm,
   },
   typeToggle: {
     flexDirection: 'row',
     backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.full,
     padding: 4,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.md,
   },
   typeButton: {
     flex: 1,
-    paddingVertical: SPACING.md,
+    paddingVertical: SPACING.sm,
     borderRadius: BORDER_RADIUS.full,
     alignItems: 'center',
   },
