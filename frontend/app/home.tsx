@@ -1098,6 +1098,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  fabPlaceholder: {
+    flex: 1,
+    alignItems: 'center',
+  },
   navIcon: {
     width: 44,
     height: 44,
