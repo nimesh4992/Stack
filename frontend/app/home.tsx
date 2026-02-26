@@ -1063,7 +1063,7 @@ const styles = StyleSheet.create({
     top: SPACING.xs,
     right: SPACING.xs,
   },
-  lockIcon: {
+  lockIconText: {
     fontSize: 14,
   },
   activityList: {
