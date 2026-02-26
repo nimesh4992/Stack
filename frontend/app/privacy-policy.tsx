@@ -51,11 +51,20 @@ When you uninstall the app, ALL data is permanently deleted.`,
     icon: 'chatbubble-ellipses',
     content: `If you enable SMS auto-detection:
 
+• We use the SMS User Consent API for compliance
 • SMS messages are read ONLY to detect bank transactions
 • Messages are processed entirely on your device
 • No SMS content is ever transmitted anywhere
-• You can disable this feature anytime
-• We only look for transaction patterns, nothing else`,
+• You must accept our Prominent Disclosure first
+• You can disable this feature anytime in Settings
+• We only look for transaction patterns, nothing else
+
+Data Usage:
+✓ Detect transaction amounts & merchants
+✓ Auto-categorize your expenses
+✗ Never read personal messages
+✗ Never share SMS with third parties
+✗ Never use SMS data for advertising`,
   },
   {
     title: 'Notifications',
