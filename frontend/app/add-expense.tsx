@@ -499,27 +499,27 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   section: {
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.md,
   },
   sectionLabel: {
     fontSize: FONT_SIZE.xs,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textSecondary,
     letterSpacing: 1,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.sm,
   },
   quickCategories: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING.sm,
+    gap: SPACING.xs,
   },
   quickCategoryButton: {
     width: '31%',
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
     borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
-    gap: SPACING.xs,
+    gap: 2,
   },
   quickCategoryLabel: {
     fontSize: FONT_SIZE.xs,
