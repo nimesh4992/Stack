@@ -93,6 +93,10 @@ function parseAmount(amountStr: string): number {
 
 // Main SMS parser function
 export function parseSMS(sms: string): ParsedTransaction | null {
+  if (!sms || sms.trim().length === 0) {
+    return null;
+  }
+  
   const bank = detectBank(sms);
   
   if (!bank) {
@@ -138,7 +142,8 @@ export function parseSMS(sms: string): ParsedTransaction | null {
     };
   }
   
-  return null;
+  // If bank-specific patterns didn't work, try generic
+  return parseGenericSMS(sms);
 }
 
 // Generic SMS parser for unknown bank formats
