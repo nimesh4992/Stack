@@ -3,18 +3,18 @@ import { Stack } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from '../src/store';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'react-native';
+import { View, Platform } from 'react-native';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Provider store={store}>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      {/* Force dark status bar for light backgrounds */}
+      <StatusBar style="dark" backgroundColor="#F8FAFC" translucent={false} />
       <Stack
         screenOptions={{
           headerShown: false,
           animation: 'slide_from_right',
+          contentStyle: { backgroundColor: '#F8FAFC' },
         }}
       >
         <Stack.Screen name="index" />
