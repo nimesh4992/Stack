@@ -159,7 +159,7 @@ Run comprehensive testing on all 7 screens
 ---
 
 ## 📱 **APP URL**
-https://money-mindful-test.preview.emergentagent.com
+https://expo-eas-build-fix.preview.emergentagent.com
 
 **Ready for final push to 100%!** 🚀
 
