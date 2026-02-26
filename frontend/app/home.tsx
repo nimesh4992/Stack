@@ -39,6 +39,9 @@ import {
   BORDER_RADIUS,
 } from '../src/core/common/constants';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const FAB_SIZE = 56;
+
 // Calculate Habit Ring data dynamically based on user activity
 const calculateHabitRingsData = (
   transactions: any[],
