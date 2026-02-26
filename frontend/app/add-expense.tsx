@@ -470,13 +470,13 @@ const styles = StyleSheet.create({
   },
   amountSection: {
     alignItems: 'center',
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.md,
   },
   amountDisplay: {
-    fontSize: 72,
+    fontSize: 56,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.xs,
   },
   onDeviceBadge: {
     flexDirection: 'row',
