@@ -34,19 +34,19 @@ import {
 
 // Quick select categories (simplified for Dojo style) - Icons from Ionicons
 const QUICK_CATEGORIES = [
-  { id: 'food', label: 'Coffee', iconName: 'cafe', color: '#FF9A3C' },
-  { id: 'food', label: 'Food', iconName: 'fast-food', color: '#00D4AA' },
-  { id: 'entertainment', label: 'Fun', iconName: 'game-controller', color: '#7C3AED' },
-  { id: 'transport', label: 'Transit', iconName: 'car', color: '#2E5CFF' },
-  { id: 'shopping', label: 'Shop', iconName: 'bag', color: '#EC4899' },
-  { id: 'bills', label: 'Bills', iconName: 'receipt', color: '#EF4444' },
+  { id: 'food', label: 'Coffee', iconName: 'cafe', icon: '☕', color: '#FF9A3C' },
+  { id: 'food', label: 'Food', iconName: 'fast-food', icon: '🍔', color: '#00D4AA' },
+  { id: 'entertainment', label: 'Fun', iconName: 'game-controller', icon: '🎮', color: '#7C3AED' },
+  { id: 'transport', label: 'Transit', iconName: 'car', icon: '🚗', color: '#2E5CFF' },
+  { id: 'shopping', label: 'Shop', iconName: 'bag', icon: '🛍️', color: '#EC4899' },
+  { id: 'bills', label: 'Bills', iconName: 'receipt', icon: '📄', color: '#EF4444' },
 ];
 
 // Check-ins (habit tracking)
 const CHECK_INS = [
-  { id: 'water', label: 'Drink Water', iconName: 'water' },
-  { id: 'workout', label: 'Workout', iconName: 'fitness' },
-  { id: 'no_spend', label: 'No Spend', iconName: 'wallet' },
+  { id: 'water', label: 'Drink Water', iconName: 'water', icon: '💧' },
+  { id: 'workout', label: 'Workout', iconName: 'fitness', icon: '💪' },
+  { id: 'no_spend', label: 'No Spend', iconName: 'wallet', icon: '💰' },
 ];
 
 export default function AddExpenseScreen() {
