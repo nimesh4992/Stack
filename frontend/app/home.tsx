@@ -72,6 +72,12 @@ export default function HomeScreen() {
   // Security modal state
   const [showSecurityModal, setShowSecurityModal] = useState(false);
   
+  // Check if it's evening (7 PM or later) to show highlights
+  const isEveningTime = useMemo(() => {
+    const currentHour = new Date().getHours();
+    return currentHour >= 19; // 7 PM = 19:00
+  }, []);
+  
   // Load user preferences and track app open on mount
   useEffect(() => {
     dispatch(loadUserPreferences());
