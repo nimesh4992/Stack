@@ -1,0 +1,19 @@
+{
+  "name": "habitfinance-root",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start:frontend": "cd frontend && yarn start",
+    "start:backend": "cd backend && python server.py",
+    "eas:build:android": "cd frontend && eas build --platform android",
+    "eas:build:ios": "cd frontend && eas build --platform ios",
+    "eas:build:all": "cd frontend && eas build --platform all"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
