@@ -466,7 +466,7 @@ export default function HomeScreen() {
             </View>
           </View>
           <View style={styles.powerUpsGrid}>
-            {POWER_UPS_DATA.map((powerUp, index) => (
+            {powerUpsData.map((powerUp, index) => (
               <Animated.View
                 key={powerUp.id}
                 style={{
