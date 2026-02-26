@@ -546,15 +546,15 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   numberPad: {
-    gap: SPACING.md,
+    gap: SPACING.sm,
   },
   numberRow: {
     flexDirection: 'row',
-    gap: SPACING.md,
+    gap: SPACING.sm,
   },
   numberButton: {
     flex: 1,
-    aspectRatio: 1,
+    aspectRatio: 1.3,
     backgroundColor: COLORS.surface,
     borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
@@ -563,19 +563,19 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
   },
   numberText: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textPrimary,
   },
   footer: {
-    padding: SPACING.lg,
+    padding: SPACING.md,
     backgroundColor: COLORS.surface,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
   },
   logButton: {
     backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.lg,
+    paddingVertical: SPACING.md,
     borderRadius: BORDER_RADIUS.xxl,
     alignItems: 'center',
   },
