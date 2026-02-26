@@ -76,12 +76,12 @@ const BANK_PATTERNS = {
 function detectBank(sms: string): keyof typeof BANK_PATTERNS | null {
   const smsLower = sms.toLowerCase();
   
-  if (smsLower.includes('hdfc')) return 'hdfc';
-  if (smsLower.includes('icici')) return 'icici';
-  if (smsLower.includes('sbi') || smsLower.includes('state bank')) return 'sbi';
-  if (smsLower.includes('axis')) return 'axis';
-  if (smsLower.includes('kotak')) return 'kotak';
-  if (smsLower.includes('upi') || smsLower.includes('@')) return 'upi';
+  if (smsLower.includes('hdfc') || smsLower.includes('hdfcbk')) return 'hdfc';
+  if (smsLower.includes('icici') || smsLower.includes('icicib')) return 'icici';
+  if (smsLower.includes('sbi') || smsLower.includes('state bank') || smsLower.includes('sbiinb')) return 'sbi';
+  if (smsLower.includes('axis') || smsLower.includes('axisbk')) return 'axis';
+  if (smsLower.includes('kotak') || smsLower.includes('kotakb')) return 'kotak';
+  if (smsLower.includes('upi') || smsLower.includes('paytm') || smsLower.includes('phonepe') || smsLower.includes('gpay') || smsLower.includes('@')) return 'upi';
   
   return null;
 }
