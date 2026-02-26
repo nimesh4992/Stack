@@ -20,6 +20,7 @@ import { getNudgeForPostLog, SelectedNudge } from '../src/core/common/nudgeEngin
 import { NudgeCard } from '../src/core/presentation/components/NudgeCard';
 import { triggerAd } from '../src/core/services/adService';
 import { detectSpendingAnomaly } from '../src/core/services/aiEngine';
+import { formatCurrency } from '../src/core/common/utils';
 import {
   COLORS,
   SPACING,
