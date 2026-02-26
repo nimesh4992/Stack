@@ -213,7 +213,7 @@ export default function HabitsTrackerScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} data-testid="habits-tracker-screen">
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']} data-testid="habits-tracker-screen">
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton} data-testid="habits-tracker-back-btn">

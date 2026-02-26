@@ -88,7 +88,7 @@ export default function EditProfileScreen() {
   const selectedCurrency = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
 
   return (
-    <SafeAreaView style={styles.container} data-testid="edit-profile-screen">
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']} data-testid="edit-profile-screen">
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton} data-testid="edit-profile-back-btn">

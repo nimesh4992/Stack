@@ -186,7 +186,7 @@ export default function GoogleDriveBackupScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
@@ -195,7 +195,7 @@ export default function GoogleDriveBackupScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} data-testid="google-drive-backup-screen">
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']} data-testid="google-drive-backup-screen">
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton} data-testid="gdrive-back-btn">

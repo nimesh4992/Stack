@@ -84,7 +84,7 @@ export default function WidgetsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} data-testid="widgets-screen">
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']} data-testid="widgets-screen">
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton} data-testid="widgets-back-btn">
