@@ -37,6 +37,8 @@ import {
   FONT_SIZE,
   FONT_WEIGHT,
   BORDER_RADIUS,
+  EXPENSE_CATEGORIES,
+  INCOME_CATEGORIES,
 } from '../src/core/common/constants';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
