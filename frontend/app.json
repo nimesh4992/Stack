@@ -22,9 +22,8 @@
         "backgroundColor": "#4F46E5"
       },
       "edgeToEdgeEnabled": true,
+      "package": "com.habitfinance.stack",
       "permissions": [
-        "RECEIVE_SMS",
-        "READ_SMS",
         "POST_NOTIFICATIONS",
         "VIBRATE",
         "WAKE_LOCK",
