@@ -402,7 +402,7 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.habitRings}
           >
-            {HABIT_RINGS_DATA.map((ring, index) => (
+            {habitRingsData.map((ring, index) => (
               <Animated.View
                 key={ring.id}
                 style={[
