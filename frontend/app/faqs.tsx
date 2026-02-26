@@ -265,7 +265,8 @@ const styles = StyleSheet.create({
   categoryContainer: {
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
-    gap: SPACING.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   categoryChip: {
     paddingHorizontal: SPACING.md,
@@ -275,6 +276,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     marginRight: SPACING.sm,
+    height: 40,
+    justifyContent: 'center',
   },
   categoryChipActive: {
     backgroundColor: COLORS.primary,
