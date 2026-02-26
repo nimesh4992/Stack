@@ -38,24 +38,85 @@ import {
   BORDER_RADIUS,
 } from '../src/core/common/constants';
 
-// Extended Habit Rings Data
-const HABIT_RINGS_DATA = [
-  { id: 'logging', label: 'Daily Log', icon: '💰', color: COLORS.habitBlue, percentage: 0 },
-  { id: 'budget', label: 'Budget', icon: '🎯', color: COLORS.habitCyan, percentage: 65 },
-  { id: 'savings', label: 'Savings', icon: '💎', color: COLORS.habitPurple, percentage: 85 },
-  { id: 'mindful', label: 'Mindful $', icon: '🧘', color: COLORS.habitOrange, percentage: 40 },
-  { id: 'income', label: 'Income', icon: '💵', color: COLORS.success, percentage: 100 },
-];
+// Calculate Habit Ring data dynamically based on user activity
+const calculateHabitRingsData = (
+  transactions: any[],
+  gamification: any,
+  userProfile: any
+) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Today's transactions
+  const todayTransactions = transactions.filter(t => {
+    const transDate = new Date(t.date);
+    transDate.setHours(0, 0, 0, 0);
+    return transDate.getTime() === today.getTime();
+  });
+  
+  // Daily Log - Did user log anything today?
+  const hasLoggedToday = todayTransactions.length > 0;
+  const dailyLogPercentage = hasLoggedToday ? 100 : 0;
+  
+  // Budget - How much spent vs daily budget
+  const dailyBudget = userProfile?.monthlyTarget ? userProfile.monthlyTarget / 30 : 1000;
+  const todayExpenses = todayTransactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+  const budgetPercentage = Math.max(0, Math.min(100, 100 - (todayExpenses / dailyBudget * 100)));
+  
+  // Savings - Based on income vs expenses this week
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  const weekTransactions = transactions.filter(t => {
+    const transDate = new Date(t.date);
+    return transDate >= weekStart;
+  });
+  const weekIncome = weekTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+  const weekExpenses = weekTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+  const savingsPercentage = weekIncome > 0 ? Math.min(100, Math.max(0, ((weekIncome - weekExpenses) / weekIncome) * 100)) : 50;
+  
+  // Mindful Spending - Based on categorized vs uncategorized expenses
+  const categorizedExpenses = todayTransactions.filter(t => t.type === 'expense' && t.categoryId && t.categoryId !== 'other').length;
+  const totalExpenses = todayTransactions.filter(t => t.type === 'expense').length;
+  const mindfulPercentage = totalExpenses > 0 ? (categorizedExpenses / totalExpenses) * 100 : 100;
+  
+  // Income - Did user log any income this month?
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const monthIncomeCount = transactions.filter(t => {
+    const transDate = new Date(t.date);
+    return transDate >= monthStart && t.type === 'income';
+  }).length;
+  const incomePercentage = monthIncomeCount > 0 ? 100 : 0;
+  
+  return [
+    { id: 'logging', label: 'Daily Log', icon: '💰', color: COLORS.habitBlue, percentage: Math.round(dailyLogPercentage) },
+    { id: 'budget', label: 'Budget', icon: '🎯', color: COLORS.habitCyan, percentage: Math.round(budgetPercentage) },
+    { id: 'savings', label: 'Savings', icon: '💎', color: COLORS.habitPurple, percentage: Math.round(savingsPercentage) },
+    { id: 'mindful', label: 'Mindful $', icon: '🧘', color: COLORS.habitOrange, percentage: Math.round(mindfulPercentage) },
+    { id: 'income', label: 'Income', icon: '💵', color: COLORS.success, percentage: Math.round(incomePercentage) },
+  ];
+};
 
-// Extended Power-Ups Data
-const POWER_UPS_DATA = [
-  { id: 'streak_7', label: '7-Day Streak', emoji: '🔥', color: COLORS.habitCyan, active: true },
-  { id: 'first_save', label: 'First Save', emoji: '💰', color: COLORS.primary, active: true },
-  { id: 'budget_king', label: 'Budget King', emoji: '👑', color: COLORS.habitPurple, active: true },
-  { id: 'early_bird', label: 'Early Bird', emoji: '🌅', color: COLORS.habitOrange, active: false },
-  { id: 'night_owl', label: 'Night Owl', emoji: '🦉', color: COLORS.habitBlue, active: false },
-  { id: 'penny_pincher', label: 'Saver', emoji: '🐷', color: COLORS.habitPink, active: true },
-];
+// Calculate Power-Ups based on user achievements
+const calculatePowerUpsData = (gamification: any) => {
+  const hasStreakBadge = gamification.currentStreak >= 7;
+  const hasFirstSave = gamification.badges.some((b: string) => b.includes('save') || b.includes('first'));
+  const hasBudgetKing = gamification.badges.some((b: string) => b.includes('budget'));
+  const currentHour = new Date().getHours();
+  const isEarlyBird = currentHour >= 5 && currentHour < 9;
+  const isNightOwl = currentHour >= 21 || currentHour < 5;
+  const hasPennyPincher = gamification.level >= 2;
+  
+  return [
+    { id: 'streak_7', label: '7-Day Streak', emoji: '🔥', color: COLORS.habitCyan, active: hasStreakBadge || gamification.currentStreak >= 7 },
+    { id: 'first_save', label: 'First Save', emoji: '💰', color: COLORS.primary, active: hasFirstSave || gamification.totalTransactions > 0 },
+    { id: 'budget_king', label: 'Budget King', emoji: '👑', color: COLORS.habitPurple, active: hasBudgetKing || gamification.level >= 3 },
+    { id: 'early_bird', label: 'Early Bird', emoji: '🌅', color: COLORS.habitOrange, active: isEarlyBird },
+    { id: 'night_owl', label: 'Night Owl', emoji: '🦉', color: COLORS.habitBlue, active: isNightOwl },
+    { id: 'penny_pincher', label: 'Saver', emoji: '🐷', color: COLORS.habitPink, active: hasPennyPincher },
+  ];
+};
 
 export default function HomeScreen() {
   const router = useRouter();
