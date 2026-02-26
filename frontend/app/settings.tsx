@@ -295,7 +295,7 @@ export default function SettingsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* SMS Consent Disclosure Modal - Google Play Compliance */}
       <SMSConsentDisclosure
         visible={showSMSDisclosure}
