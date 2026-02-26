@@ -127,32 +127,60 @@ export default function SettingsScreen() {
   };
 
   const handleSMSAutoReadToggle = async (value: boolean) => {
+    if (value && !hasUserConsent) {
+      // GOOGLE PLAY COMPLIANCE: Show prominent disclosure FIRST
+      setShowSMSDisclosure(true);
+      return;
+    }
+
     if (value && !hasSMSPermission) {
-      // Request permission first
-      Alert.alert(
-        'SMS Permission Required',
-        'Stack needs permission to read incoming SMS messages to auto-detect bank transactions.\n\nYour messages are processed locally and never leave your device.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Grant Permission',
-            onPress: async () => {
-              const granted = await requestSMSPermission();
-              if (granted) {
-                setHasSMSPermission(true);
-                setSmsAutoRead(true);
-                await updateSMSSettings({ autoReadEnabled: true });
-                Alert.alert('Success', 'SMS auto-detection is now enabled. Bank transactions will be detected automatically!');
-              }
-            },
-          },
-        ]
-      );
+      // User has given consent, now request system permission
+      const granted = await requestSMSPermission();
+      if (granted) {
+        setHasSMSPermission(true);
+        setSmsAutoRead(true);
+        await updateSMSSettings({ autoReadEnabled: true });
+        Alert.alert('Success', 'SMS auto-detection is now enabled. Bank transactions will be detected automatically!');
+      }
       return;
     }
 
     setSmsAutoRead(value);
     await updateSMSSettings({ autoReadEnabled: value });
+  };
+
+  // Handle SMS Disclosure Accept
+  const handleSMSDisclosureAccept = async () => {
+    setShowSMSDisclosure(false);
+    
+    // Record user consent
+    await recordUserConsent();
+    setHasUserConsent(true);
+    
+    // Now request system permission
+    const granted = await requestSMSPermission();
+    if (granted) {
+      setHasSMSPermission(true);
+      setSmsAutoRead(true);
+      await updateSMSSettings({ autoReadEnabled: true });
+      Alert.alert('Success', 'SMS auto-detection is now enabled. Bank transactions will be detected automatically!');
+    } else {
+      Alert.alert(
+        'Permission Not Granted',
+        'You can still use manual SMS paste feature to log transactions.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  // Handle SMS Disclosure Decline
+  const handleSMSDisclosureDecline = () => {
+    setShowSMSDisclosure(false);
+    Alert.alert(
+      'SMS Detection Disabled',
+      'You can still add transactions manually or paste SMS text in the SMS Import screen.',
+      [{ text: 'OK' }]
+    );
   };
 
   const handleSMSAutoLogToggle = async (value: boolean) => {
