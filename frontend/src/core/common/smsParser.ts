@@ -144,15 +144,26 @@ export function parseSMS(sms: string): ParsedTransaction | null {
 // Generic SMS parser for unknown bank formats
 function parseGenericSMS(sms: string): ParsedTransaction | null {
   // First, try to identify if there's a balance mentioned so we can exclude it
-  const smsLower = sms.toLowerCase();
   const hasBalance = /(?:avl\s*bal|balance|bal)[:\s]/i.test(sms);
   
-  // Extract all amounts from the SMS
-  const allAmounts = [...sms.matchAll(/(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)/gi)];
+  // Extract all amounts from the SMS - multiple patterns
+  const amountPatterns = [
+    /(?:INR|Rs\.?|₹)\s*([\d,]+(?:\.\d{2})?)/gi,
+    /(?:INR|Rs\.?|₹)([\d,]+(?:\.\d{2})?)/gi,
+  ];
+  
+  let allAmounts: RegExpMatchArray[] = [];
+  for (const pattern of amountPatterns) {
+    const matches = [...sms.matchAll(pattern)];
+    if (matches.length > 0) {
+      allAmounts = matches;
+      break;
+    }
+  }
   
   // Determine if it's a debit or credit
-  const isDebit = /(?:debited|spent|withdrawn|paid|sent)/i.test(sms);
-  const isCredit = /(?:credited|received|deposited)/i.test(sms);
+  const isDebit = /(?:debited|spent|withdrawn|paid|sent|purchase|deducted)/i.test(sms);
+  const isCredit = /(?:credited|received|deposited|added|refund)/i.test(sms);
   
   if (allAmounts.length === 0) return null;
   
@@ -177,19 +188,32 @@ function parseGenericSMS(sms: string): ParsedTransaction | null {
     balance = parseAmount(allAmounts[allAmounts.length - 1][1]);
   }
   
-  // Try to extract merchant name
+  // Try to extract merchant name with multiple patterns
   let merchantName: string | undefined;
-  const merchantMatch = sms.match(/(?:at|to|for)\s+([A-Za-z0-9\s@]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|$)/i);
-  if (merchantMatch) {
-    merchantName = merchantMatch[1].trim();
+  const merchantPatterns = [
+    /(?:at|to|for|@)\s+([A-Za-z0-9\s@_-]+?)(?=\s+on\s+|\s*\.\s*|\s*Avl|\s*Bal|\s*VPA|$)/i,
+    /(?:purchase\s+at|payment\s+to|transfer\s+to)\s+([A-Za-z0-9\s@_-]+?)(?=\s+on|\s*\.|\s*Avl|\s*Bal|$)/i,
+    /VPA\s*[:\s]*([A-Za-z0-9@._-]+)/i,
+  ];
+  
+  for (const pattern of merchantPatterns) {
+    const match = sms.match(pattern);
+    if (match) {
+      merchantName = match[1].trim();
+      break;
+    }
   }
+  
+  // Try to extract account number
+  const accountMatch = sms.match(/(?:A\/c|Acct|Account|Card)[:\s]*[xX*]*([\d]{4})/i);
   
   if (isDebit) {
     return {
       type: 'expense',
       amount: transactionAmount,
       merchantName,
-      bankName: 'Unknown Bank',
+      bankName: 'Bank',
+      accountLast4: accountMatch?.[1],
       date: new Date().toISOString(),
       balance,
     };
@@ -199,7 +223,22 @@ function parseGenericSMS(sms: string): ParsedTransaction | null {
     return {
       type: 'income',
       amount: transactionAmount,
-      bankName: 'Unknown Bank',
+      merchantName,
+      bankName: 'Bank',
+      accountLast4: accountMatch?.[1],
+      date: new Date().toISOString(),
+      balance,
+    };
+  }
+  
+  // If we can't determine type but have an amount, return as expense (most common case)
+  if (transactionAmount > 0) {
+    return {
+      type: 'expense',
+      amount: transactionAmount,
+      merchantName,
+      bankName: 'Bank',
+      accountLast4: accountMatch?.[1],
       date: new Date().toISOString(),
       balance,
     };
