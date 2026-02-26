@@ -540,17 +540,8 @@ export default function HomeScreen() {
           <Text style={styles.navLabel}>INSIGHTS</Text>
         </TouchableOpacity>
 
-        {/* FAB - Enhanced */}
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={() => router.push('/add-expense')}
-          activeOpacity={0.8}
-        >
-          <View style={styles.fabInner}>
-            <Text style={styles.fabIcon}>+</Text>
-          </View>
-          <View style={styles.fabPulse} />
-        </TouchableOpacity>
+        {/* FAB Placeholder to reserve center space */}
+        <View style={styles.fabPlaceholder} />
 
         <TouchableOpacity style={styles.navItem} onPress={() => router.push('/highlights')}>
           <View style={styles.navIcon}>
@@ -564,6 +555,18 @@ export default function HomeScreen() {
             <Ionicons name="settings-outline" size={22} color={COLORS.textSecondary} />
           </View>
           <Text style={styles.navLabel}>SETTINGS</Text>
+        </TouchableOpacity>
+
+        {/* FAB - Enhanced - Absolutely positioned in center */}
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => router.push('/add-expense')}
+          activeOpacity={0.8}
+        >
+          <View style={styles.fabInner}>
+            <Text style={styles.fabIcon}>+</Text>
+          </View>
+          <View style={styles.fabPulse} />
         </TouchableOpacity>
       </View>
       
