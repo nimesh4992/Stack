@@ -1228,10 +1228,9 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     top: -28,
-    left: '50%',
-    marginLeft: -28,
-    width: 56,
-    height: 56,
+    left: (SCREEN_WIDTH / 2) - (FAB_SIZE / 2),
+    width: FAB_SIZE,
+    height: FAB_SIZE,
     borderRadius: BORDER_RADIUS.full,
     alignItems: 'center',
     justifyContent: 'center',
