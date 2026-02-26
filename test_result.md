@@ -259,11 +259,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "FAB button z-index fix in home.tsx"
-  stuck_tasks:
-    - "Add Transaction Flow (awaiting FAB z-index fix)"
+    - "All core features verified and working"
+  stuck_tasks: []
   test_all: false
-  test_priority: "critical_fix"
+  test_priority: "maintenance"
 
 agent_communication:
     - agent: "testing"
