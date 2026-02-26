@@ -264,7 +264,7 @@ export default function AddExpenseScreen() {
           <>
             {/* Amount Display */}
             <View style={styles.amountSection}>
-              <Text style={styles.amountDisplay}>${amount}</Text>
+              <Text style={styles.amountDisplay}>₹{amount}</Text>
               <View style={styles.onDeviceBadge}>
                 <View style={styles.lockIcon}>
                   <Text style={styles.lockEmoji}>🔒</Text>
