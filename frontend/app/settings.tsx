@@ -88,10 +88,11 @@ export default function SettingsScreen() {
     setSmsAutoRead(smsSettings.autoReadEnabled);
     setSmsAutoLog(smsSettings.autoLogEnabled);
 
-    // Check SMS permissions
+    // Check SMS permissions and user consent
     const smsPerms = await checkSMSPermission();
     setHasSMSPermission(smsPerms.hasReadPermission && smsPerms.hasReceivePermission);
     setIsSMSSupported(smsPerms.isSupported);
+    setHasUserConsent(smsPerms.hasUserConsent);
   };
 
   const handleNotificationToggle = async (value: boolean) => {
