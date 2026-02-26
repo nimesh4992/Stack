@@ -481,7 +481,7 @@ export default function HomeScreen() {
                   ],
                 }}
               >
-                <Card
+                <View
                   style={[
                     styles.powerUpCard,
                     powerUp.active
@@ -516,10 +516,10 @@ export default function HomeScreen() {
                   )}
                   {!powerUp.active && (
                     <View style={styles.lockOverlay}>
-                      <Text style={styles.lockIcon}>🔒</Text>
+                      <Text style={styles.lockIconText}>🔒</Text>
                     </View>
                   )}
-                </Card>
+                </View>
               </Animated.View>
             ))}
           </View>
