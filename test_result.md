@@ -256,19 +256,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Critical app initialization failure - blue gradient screen"
-    - "JavaScript runtime errors preventing React/Expo from loading"
-    - "Package compatibility issues with AsyncStorage and SVG"
+    - "FAB button z-index fix in home.tsx"
   stuck_tasks:
-    - "Splash Screen & Initialization"
-    - "Onboarding Flow" 
-    - "Home Dashboard"
-    - "Add Transaction Flow"
-    - "Insights & Charts Screen"
-    - "Highlights Feature"
-    - "Navigation & Routing"
+    - "Add Transaction Flow (awaiting FAB z-index fix)"
   test_all: false
-  test_priority: "critical_blocking"
+  test_priority: "critical_fix"
 
 agent_communication:
     - agent: "testing"
