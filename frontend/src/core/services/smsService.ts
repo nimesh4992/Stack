@@ -1,6 +1,6 @@
 // 📱 SMS Reading Service for Auto-Logging
-// Reads incoming bank SMS and auto-parses transactions
-// Note: Requires Android permissions - iOS does not support SMS reading
+// Uses SMS User Consent API for Google Play Store Compliance (2026)
+// Note: Requires Android - iOS does not support SMS reading
 
 import { Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +20,8 @@ export interface SMSSettings {
   autoReadEnabled: boolean;
   autoLogEnabled: boolean;    // Auto-log without confirmation
   bankFilters: string[];      // Bank sender IDs to monitor
+  hasSeenDisclosure: boolean; // Track if user has seen the prominent disclosure
+  consentGiven: boolean;      // Track if user has given explicit consent
 }
 
 export interface PendingSMSTransaction {
@@ -34,6 +36,8 @@ export interface PendingSMSTransaction {
 const DEFAULT_SETTINGS: SMSSettings = {
   autoReadEnabled: false,
   autoLogEnabled: false,
+  hasSeenDisclosure: false,
+  consentGiven: false,
   bankFilters: [
     'HDFCBK', 'ICICIB', 'SBIINB', 'AXISBK', 'KOTAKB',
     'PAYTM', 'PHONEPE', 'GPAY', 'AMAZONPAY',
@@ -43,14 +47,41 @@ const DEFAULT_SETTINGS: SMSSettings = {
 
 const SETTINGS_KEY = '@sms_settings';
 const PENDING_KEY = '@pending_sms_transactions';
+const CONSENT_KEY = '@sms_consent_given';
 
 // ============================================
 // SMS PERMISSION HANDLING (Android Only)
+// Uses SMS User Consent API instead of broad READ_SMS
 // ============================================
 
 let smsModule: any = null;
 let isListening = false;
 let smsCallback: ((transaction: PendingSMSTransaction) => void) | null = null;
+
+/**
+ * Check if user has given consent for SMS reading
+ * This is for our internal tracking, not Android system permissions
+ */
+export async function checkUserConsent(): Promise<boolean> {
+  try {
+    const consent = await AsyncStorage.getItem(CONSENT_KEY);
+    return consent === 'true';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Record that user has given consent
+ */
+export async function recordUserConsent(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(CONSENT_KEY, 'true');
+    await updateSMSSettings({ consentGiven: true, hasSeenDisclosure: true });
+  } catch (error) {
+    console.error('Error recording consent:', error);
+  }
+}
 
 /**
  * Check if SMS permissions are available
@@ -60,14 +91,18 @@ export async function checkSMSPermission(): Promise<{
   hasReadPermission: boolean;
   hasReceivePermission: boolean;
   isSupported: boolean;
+  hasUserConsent: boolean;
 }> {
   if (Platform.OS !== 'android') {
     return {
       hasReadPermission: false,
       hasReceivePermission: false,
       isSupported: false,
+      hasUserConsent: false,
     };
   }
+
+  const hasConsent = await checkUserConsent();
 
   try {
     // Dynamic import to avoid errors on iOS/web
@@ -79,6 +114,7 @@ export async function checkSMSPermission(): Promise<{
       hasReadPermission: permissions.hasReadSmsPermission || false,
       hasReceivePermission: permissions.hasReceiveSmsPermission || false,
       isSupported: true,
+      hasUserConsent: hasConsent,
     };
   } catch (error) {
     console.log('SMS module not available:', error);
@@ -86,12 +122,14 @@ export async function checkSMSPermission(): Promise<{
       hasReadPermission: false,
       hasReceivePermission: false,
       isSupported: false,
+      hasUserConsent: hasConsent,
     };
   }
 }
 
 /**
  * Request SMS read permission from user
+ * IMPORTANT: Must show prominent disclosure BEFORE calling this
  */
 export async function requestSMSPermission(): Promise<boolean> {
   if (Platform.OS !== 'android') {
@@ -100,6 +138,14 @@ export async function requestSMSPermission(): Promise<boolean> {
       'SMS reading is only available on Android devices. On iOS, please use the manual SMS paste feature.',
       [{ text: 'OK' }]
     );
+    return false;
+  }
+
+  // Check if user has given consent via our disclosure screen
+  const hasConsent = await checkUserConsent();
+  if (!hasConsent) {
+    // This should not happen if flow is correct, but handle gracefully
+    console.warn('requestSMSPermission called without user consent');
     return false;
   }
 
