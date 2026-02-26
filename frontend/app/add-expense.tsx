@@ -127,10 +127,46 @@ export default function AddExpenseScreen() {
 
   const handleSave = async () => {
     if (type === 'habit') {
-      // Handle habit check-in
-      Alert.alert('Success! 🎉', 'Habit logged successfully!', [
-        { text: 'OK', onPress: () => router.back() },
-      ]);
+      // Handle habit check-in based on selected check-in
+      if (!selectedCheckIn) {
+        Alert.alert('Select Habit', 'Please select a habit to log');
+        return;
+      }
+      
+      setLoading(true);
+      try {
+        if (selectedCheckIn.id === 'water') {
+          dispatch(updateWater({ glasses: 1 }));
+          await dispatch(saveHabits());
+          Alert.alert('Water Logged! 💧', 'Great job staying hydrated!', [
+            { text: 'OK', onPress: () => router.back() },
+          ]);
+        } else if (selectedCheckIn.id === 'workout') {
+          // Log 30 minutes of workout/meditation
+          dispatch(updateMindful({ minutes: 30 }));
+          await dispatch(saveHabits());
+          Alert.alert('Workout Logged! 💪', 'Awesome! Keep up the fitness routine!', [
+            { text: 'OK', onPress: () => router.back() },
+          ]);
+        } else if (selectedCheckIn.id === 'no_spend') {
+          // No spend day - award bonus points
+          await dispatch(awardPoints(20));
+          Alert.alert('No Spend Day! 🎉', 'Amazing self-control! +20 XP bonus', [
+            { text: 'OK', onPress: () => router.back() },
+          ]);
+        } else {
+          Alert.alert('Success! 🎉', 'Habit logged successfully!', [
+            { text: 'OK', onPress: () => router.back() },
+          ]);
+        }
+        
+        // Award points for habit logging
+        await dispatch(awardPoints(5));
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save habit. Please try again.');
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
