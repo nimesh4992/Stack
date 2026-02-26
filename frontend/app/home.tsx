@@ -1243,6 +1243,8 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.full,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1000,
+    elevation: 8,
   },
   fabInner: {
     width: 56,
