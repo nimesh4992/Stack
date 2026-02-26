@@ -296,6 +296,13 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* SMS Consent Disclosure Modal - Google Play Compliance */}
+      <SMSConsentDisclosure
+        visible={showSMSDisclosure}
+        onAccept={handleSMSDisclosureAccept}
+        onDecline={handleSMSDisclosureDecline}
+      />
+
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
