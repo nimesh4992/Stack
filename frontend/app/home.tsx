@@ -145,7 +145,7 @@ export default function HomeScreen() {
   const xpPercentage = Math.min((xpProgress / xpRequired) * 100, 100);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
