@@ -63,6 +63,10 @@ export default function SettingsScreen() {
   const [smsAutoLog, setSmsAutoLog] = useState(false);
   const [hasSMSPermission, setHasSMSPermission] = useState(false);
   const [isSMSSupported, setIsSMSSupported] = useState(false);
+  const [hasUserConsent, setHasUserConsent] = useState(false);
+  
+  // SMS Consent Disclosure Modal
+  const [showSMSDisclosure, setShowSMSDisclosure] = useState(false);
   
   // Other settings
   const [darkMode, setDarkMode] = useState(false);
