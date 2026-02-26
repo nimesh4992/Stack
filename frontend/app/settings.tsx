@@ -18,6 +18,7 @@ import { RootState, AppDispatch } from '../src/store';
 import { selectPreferences } from '../src/features/userPreferences/userPreferencesSlice';
 import { Card } from '../src/core/presentation/components/Card';
 import { CompanionAvatar } from '../src/core/presentation/components/CompanionAvatar';
+import { SMSConsentDisclosure } from '../src/core/presentation/components/SMSConsentDisclosure';
 import { storageService } from '../src/core/data/storage';
 import {
   initializeNotifications,
@@ -30,6 +31,8 @@ import {
   requestSMSPermission,
   getSMSSettings,
   updateSMSSettings,
+  checkUserConsent,
+  recordUserConsent,
 } from '../src/core/services/smsService';
 import {
   COLORS,
