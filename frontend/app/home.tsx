@@ -167,6 +167,21 @@ export default function HomeScreen() {
     });
   }, [transactions, gamification, userProfile]);
 
+  // Calculate dynamic habit rings and power-ups
+  const habitRingsData = useMemo(() => 
+    calculateHabitRingsData(transactions, gamification, userProfile),
+    [transactions, gamification, userProfile]
+  );
+  
+  const powerUpsData = useMemo(() => 
+    calculatePowerUpsData(gamification),
+    [gamification]
+  );
+  
+  // Count active power-ups
+  const activePowerUps = powerUpsData.filter(p => p.active).length;
+  const lockedPowerUps = powerUpsData.filter(p => !p.active).length;
+
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(30)).current;
