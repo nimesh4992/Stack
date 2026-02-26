@@ -462,7 +462,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <View>
               <Text style={styles.sectionTitle}>Power-Ups Collection</Text>
-              <Text style={styles.sectionSubtitle}>4 active • 2 locked</Text>
+              <Text style={styles.sectionSubtitle}>{activePowerUps} active • {lockedPowerUps} locked</Text>
             </View>
           </View>
           <View style={styles.powerUpsGrid}>
