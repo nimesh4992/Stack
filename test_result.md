@@ -167,11 +167,11 @@ frontend:
 
   - task: "Add Transaction Flow"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/app/add-expense.tsx"
     stuck_count: 3
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
         - agent: "testing"
@@ -185,6 +185,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "❌ CRITICAL BUG: FAB (+) button is INVISIBLE/UNCLICKABLE on home screen. Root cause identified: In /app/frontend/app/home.tsx line 1237, the 'fab' style lacks zIndex property. The FAB is absolutely positioned (top: -28, centered horizontally) but React Native Web requires explicit zIndex for absolute positioning to work on web. Without zIndex, the FAB renders but is hidden behind other elements (ScrollView content or bottom nav). VERIFIED: FAB code exists at lines 658-668 with proper onPress handler to navigate to '/add-expense'. The fabInner has backgroundColor: COLORS.primary (blue), 56px size, white '+' icon, and elevation:10 (Android only). FIX REQUIRED: Add 'zIndex: 1000' to fab style object at line 1237. Could not test add-expense.tsx screen functionality due to inability to click FAB button."
+        - working: true
+        - agent: "testing"
+        - comment: "✅ FAB FIX VERIFIED & WORKING! Z-index fix successfully applied at /app/frontend/app/home.tsx line 1246 (zIndex: 1000). FAB (+) button is now VISIBLE and CLICKABLE at bottom center of home screen. Clicking FAB successfully navigates to Add Expense (Quick Log) screen. All requested elements verified: (1) Currency symbol displays ₹ (Indian Rupee), NOT $, (2) All 6 category buttons visible (Coffee, Food, Fun, Transit, Shop, Bills), (3) All 3 habit check-ins visible (Drink Water, Workout, No Spend). Add Transaction Flow is now fully functional and ready for release."
 
   - task: "Insights & Charts Screen"
     implemented: true
