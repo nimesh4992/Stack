@@ -669,6 +669,7 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flex: 1,
+    marginLeft: SPACING.md,
   },
   profileName: {
     fontSize: FONT_SIZE.lg,
