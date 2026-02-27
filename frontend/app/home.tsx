@@ -562,7 +562,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recent Activity</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/insights')}>
               <Text style={styles.seeAllText}>View All →</Text>
             </TouchableOpacity>
           </View>
