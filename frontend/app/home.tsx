@@ -471,58 +471,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Habit Rings - Enhanced with More Rings */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Habit Rings</Text>
-              <Text style={styles.sectionSubtitle}>Your daily progress tracked</Text>
-            </View>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See All →</Text>
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.habitRings}
-          >
-            {habitRingsData.map((ring, index) => (
-              <Animated.View
-                key={ring.id}
-                style={[
-                  styles.habitRingCard,
-                  {
-                    opacity: fadeAnim,
-                    transform: [
-                      {
-                        translateY: Animated.multiply(slideAnim, new Animated.Value(1 + index * 0.1)),
-                      },
-                    ],
-                  },
-                ]}
-              >
-                <CircularProgress
-                  size={110}
-                  strokeWidth={8}
-                  percentage={ring.percentage}
-                  color={ring.color}
-                  icon={ring.icon}
-                />
-                <Text style={styles.habitRingLabel}>{ring.label}</Text>
-                <Text style={[styles.habitRingPercent, { color: ring.color }]}>
-                  {ring.percentage}%
-                </Text>
-                {ring.percentage === 100 && (
-                  <View style={[styles.completeBadge, { backgroundColor: ring.color }]}>
-                    <Text style={styles.completeBadgeText}>✓</Text>
-                  </View>
-                )}
-              </Animated.View>
-            ))}
-          </ScrollView>
-        </View>
-
         {/* Streak Calendar - New Interactive Component */}
         <Animated.View
           style={{
