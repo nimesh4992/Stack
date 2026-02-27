@@ -359,6 +359,85 @@ export default function HomeScreen() {
           </Animated.View>
         )}
 
+        {/* Quick Progress - Swipeable Cards */}
+        <View style={styles.quickProgressSection}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickProgressScroll}
+          >
+            {/* Daily Log Card */}
+            <TouchableOpacity 
+              style={[styles.quickProgressCard, { backgroundColor: COLORS.primary + '15' }]}
+              onPress={() => router.push('/add-expense')}
+            >
+              <View style={[styles.quickProgressIconBg, { backgroundColor: COLORS.primary }]}>
+                <Ionicons name="add" size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.quickProgressLabel}>Daily Log</Text>
+              <Text style={[styles.quickProgressValue, { color: COLORS.primary }]}>
+                {habitRingsData[0].percentage}%
+              </Text>
+            </TouchableOpacity>
+
+            {/* Budget Card */}
+            <TouchableOpacity 
+              style={[styles.quickProgressCard, { backgroundColor: COLORS.habitCyan + '15' }]}
+              onPress={() => router.push('/insights')}
+            >
+              <View style={[styles.quickProgressIconBg, { backgroundColor: COLORS.habitCyan }]}>
+                <Ionicons name="wallet" size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.quickProgressLabel}>Budget</Text>
+              <Text style={[styles.quickProgressValue, { color: COLORS.habitCyan }]}>
+                {habitRingsData[1].percentage}%
+              </Text>
+            </TouchableOpacity>
+
+            {/* Savings Card */}
+            <TouchableOpacity 
+              style={[styles.quickProgressCard, { backgroundColor: COLORS.habitPurple + '15' }]}
+              onPress={() => router.push('/challenges')}
+            >
+              <View style={[styles.quickProgressIconBg, { backgroundColor: COLORS.habitPurple }]}>
+                <Ionicons name="diamond" size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.quickProgressLabel}>Savings</Text>
+              <Text style={[styles.quickProgressValue, { color: COLORS.habitPurple }]}>
+                {habitRingsData[2].percentage}%
+              </Text>
+            </TouchableOpacity>
+
+            {/* Water Card */}
+            <TouchableOpacity 
+              style={[styles.quickProgressCard, { backgroundColor: COLORS.habitBlue + '15' }]}
+              onPress={() => router.push('/habits-tracker')}
+            >
+              <View style={[styles.quickProgressIconBg, { backgroundColor: COLORS.habitBlue }]}>
+                <Text style={{ fontSize: 14 }}>💧</Text>
+              </View>
+              <Text style={styles.quickProgressLabel}>Water</Text>
+              <Text style={[styles.quickProgressValue, { color: COLORS.habitBlue }]}>
+                0/8
+              </Text>
+            </TouchableOpacity>
+
+            {/* Steps Card */}
+            <TouchableOpacity 
+              style={[styles.quickProgressCard, { backgroundColor: COLORS.success + '15' }]}
+              onPress={() => router.push('/habits-tracker')}
+            >
+              <View style={[styles.quickProgressIconBg, { backgroundColor: COLORS.success }]}>
+                <Text style={{ fontSize: 14 }}>👟</Text>
+              </View>
+              <Text style={styles.quickProgressLabel}>Steps</Text>
+              <Text style={[styles.quickProgressValue, { color: COLORS.success }]}>
+                0
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+
         {/* Quick Actions */}
         <View style={styles.quickActionsRow}>
           <TouchableOpacity
