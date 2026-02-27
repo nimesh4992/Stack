@@ -395,7 +395,7 @@ export default function HomeScreen() {
         {/* Habit Rings - Enhanced with More Rings */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <View>
+            <View style={styles.sectionTitleContainer}>
               <Text style={styles.sectionTitle}>Habit Rings</Text>
               <Text style={styles.sectionSubtitle}>Your daily progress tracked</Text>
             </View>
