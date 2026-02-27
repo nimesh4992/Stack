@@ -60,8 +60,9 @@ export default function AddExpenseScreen() {
   const userProfile = useSelector((state: RootState) => state.onboarding.userProfile);
 
   const [type, setType] = useState<'expense' | 'habit'>('expense');
-  const [amount, setAmount] = useState('50.00');
+  const [amount, setAmount] = useState('0');
   const [selectedCategory, setSelectedCategory] = useState<any>(QUICK_CATEGORIES[0]);
+  const [selectedCheckIn, setSelectedCheckIn] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   
   // Post-log nudge state
