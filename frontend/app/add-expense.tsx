@@ -401,11 +401,21 @@ export default function AddExpenseScreen() {
               {CHECK_INS.map((habit) => (
                 <TouchableOpacity
                   key={habit.id}
-                  style={styles.checkInButton}
-                  onPress={() => {}}
+                  style={[
+                    styles.checkInButton,
+                    selectedCheckIn?.id === habit.id && styles.checkInButtonActive
+                  ]}
+                  onPress={() => setSelectedCheckIn(habit)}
                 >
-                  <Ionicons name={habit.iconName as any} size={24} color={COLORS.primary} />
-                  <Text style={styles.checkInLabel}>{habit.label}</Text>
+                  <Ionicons 
+                    name={habit.iconName as any} 
+                    size={24} 
+                    color={selectedCheckIn?.id === habit.id ? '#FFFFFF' : COLORS.primary} 
+                  />
+                  <Text style={[
+                    styles.checkInLabel,
+                    selectedCheckIn?.id === habit.id && styles.checkInLabelActive
+                  ]}>{habit.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
