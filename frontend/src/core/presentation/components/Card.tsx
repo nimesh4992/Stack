@@ -33,6 +33,7 @@ export const Card: React.FC<CardProps> = ({
 const styles = StyleSheet.create({
   card: {
     borderRadius: BORDER_RADIUS.lg,
+    overflow: 'hidden',
   },
   default: {
     backgroundColor: COLORS.surface,
