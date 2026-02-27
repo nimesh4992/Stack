@@ -1193,11 +1193,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 10,
   },
   navItem: {
     flex: 1,
