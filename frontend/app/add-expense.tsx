@@ -589,10 +589,17 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     gap: SPACING.md,
   },
+  checkInButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
   checkInLabel: {
     fontSize: FONT_SIZE.md,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.textPrimary,
+  },
+  checkInLabelActive: {
+    color: '#FFFFFF',
   },
   numberPad: {
     gap: SPACING.sm,
