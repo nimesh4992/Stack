@@ -950,6 +950,39 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     marginTop: 2,
   },
+  quickProgressSection: {
+    marginBottom: SPACING.lg,
+  },
+  quickProgressScroll: {
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.md,
+  },
+  quickProgressCard: {
+    width: 90,
+    height: 100,
+    borderRadius: BORDER_RADIUS.xl,
+    padding: SPACING.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.sm,
+  },
+  quickProgressIconBg: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.xs,
+  },
+  quickProgressLabel: {
+    fontSize: FONT_SIZE.xs,
+    color: COLORS.textSecondary,
+    marginBottom: 2,
+  },
+  quickProgressValue: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+  },
   streakCalendarWrapper: {
     paddingHorizontal: SPACING.lg,
   },
