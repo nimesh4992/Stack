@@ -854,26 +854,25 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   sectionTitle: {
-    fontSize: FONT_SIZE.xxl,
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.textPrimary,
-    marginBottom: 2,
-    paddingHorizontal: SPACING.lg,
   },
   sectionSubtitle: {
     fontSize: FONT_SIZE.sm,
     color: COLORS.textSecondary,
+    marginTop: 2,
   },
   streakCalendarWrapper: {
     paddingHorizontal: SPACING.lg,
   },
   seeAllText: {
-    fontSize: FONT_SIZE.md,
+    fontSize: FONT_SIZE.sm,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.primary,
   },
