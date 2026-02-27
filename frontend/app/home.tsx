@@ -466,7 +466,7 @@ export default function HomeScreen() {
         {/* Power-Ups Earned - Enhanced with More Badges */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <View>
+            <View style={styles.sectionTitleContainer}>
               <Text style={styles.sectionTitle}>Power-Ups Collection</Text>
               <Text style={styles.sectionSubtitle}>{activePowerUps} active • {lockedPowerUps} locked</Text>
             </View>
