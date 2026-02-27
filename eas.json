@@ -1,0 +1,49 @@
+{
+  "cli": {
+    "version": ">= 5.0.0",
+    "requireCommit": true,
+    "appVersionSource": "local"
+  },
+  "build": {
+    "base": {
+      "node": "20.18.0",
+      "env": {
+        "EXPO_NO_CAPABILITY_SYNC": "1"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "gradleCommand": ":app:assembleDebug"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "ios": {
+        "autoIncrement": true
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
