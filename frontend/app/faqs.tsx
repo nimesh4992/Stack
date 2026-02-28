@@ -179,10 +179,10 @@ export default function FaqsScreen() {
             activeOpacity={0.8}
             onPress={() => toggleExpand(index)}
           >
-            <Card style={[
+            <Card style={StyleSheet.flatten([
               styles.faqCard,
-              expandedIndex === index && styles.faqCardExpanded
-            ]}>
+              expandedIndex === index ? styles.faqCardExpanded : {}
+            ])}>
               <View style={styles.faqHeader}>
                 <View style={styles.faqQuestion}>
                   <View style={styles.questionIcon}>
