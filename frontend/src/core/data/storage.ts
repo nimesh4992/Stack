@@ -66,4 +66,7 @@ export const storageService = {
   // Theme
   saveTheme: (theme: 'light' | 'dark') => storeData(STORAGE_KEYS.THEME, theme),
   getTheme: () => getData<'light' | 'dark'>(STORAGE_KEYS.THEME),
+  
+  // Clear all data
+  clearAllData: clearAllData,
 };
