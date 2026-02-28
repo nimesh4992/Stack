@@ -4,25 +4,32 @@
     "slug": "stack-finance",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./frontend/assets/images/icon.png",
     "scheme": "stack",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./frontend/assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4F46E5"
+    },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
+      "bundleIdentifier": "com.habitfinance.stack",
+      "buildNumber": "1",
       "infoPlist": {
         "NSCameraUsageDescription": "Scan receipts to track expenses",
-        "NSPhotoLibraryUsageDescription": "Save expense receipts and reports",
-        "NSMotionUsageDescription": "Track your daily steps for habit building"
+        "NSPhotoLibraryUsageDescription": "Attach receipt photos to transactions"
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./frontend/assets/images/adaptive-icon.png",
         "backgroundColor": "#4F46E5"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.habitfinance.stack",
+      "versionCode": 1,
       "permissions": [
         "POST_NOTIFICATIONS",
         "VIBRATE",
@@ -33,37 +40,35 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./frontend/assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#4F46E5"
-        }
-      ],
+      "expo-secure-store",
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/notification-icon.png",
-          "color": "#4F46E5",
-          "sounds": []
+          "icon": "./frontend/assets/images/notification-icon.png",
+          "color": "#4F46E5"
         }
       ],
       [
-        "react-native-google-mobile-ads",
+        "expo-sensors",
         {
-          "androidAppId": "ca-app-pub-7302439791882329~8253964613",
-          "iosAppId": "ca-app-pub-7302439791882329~8253964613"
+          "motionPermission": "Track steps for fitness goals"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "your-project-id"
+      }
     }
   }
 }
