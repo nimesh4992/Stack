@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 5.0.0",
-    "requireCommit": true,
+    "version": ">= 10.0.0",
     "appVersionSource": "local"
   },
   "build": {
@@ -16,6 +15,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "android": {
+        "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
       },
       "ios": {
@@ -25,6 +25,7 @@
     "preview": {
       "extends": "base",
       "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       },
@@ -34,7 +35,7 @@
     },
     "production": {
       "extends": "base",
-      "autoIncrement": true,
+      "channel": "production",
       "android": {
         "buildType": "app-bundle"
       },
