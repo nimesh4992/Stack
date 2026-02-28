@@ -16,7 +16,7 @@ export interface Transaction {
   categoryLabel: string;
   date: string;
   merchantName?: string;
-  source: 'manual' | 'sms';
+  source?: 'manual' | 'sms';
 }
 
 export interface SpendingPrediction {
